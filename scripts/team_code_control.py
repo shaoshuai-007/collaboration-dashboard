@@ -21,26 +21,46 @@ CHANGELOG_PATH = f"{WORKSPACE_PATH}/03_输出成果/变更日志"
 CONTROL_LOG = f"{WORKSPACE_PATH}/03_输出成果/代码管控日志.json"
 
 
-def run_git_command(cmd, cwd=WORKSPACE_PATH, env=None):
-    """执行Git命令"""
-    try:
-        full_env = os.environ.copy()
-        if env:
-            full_env.update(env)
-        
-        result = subprocess.run(
-            cmd,
-            cwd=cwd,
-            capture_output=True,
-            text=True,
-            timeout=60,
-            env=full_env
-        )
-        return result.returncode == 0, result.stdout, result.stderr
-    except subprocess.TimeoutExpired:
-        return False, "", "命令超时"
-    except Exception as e:
-        return False, "", str(e)
+def run_git_command(cmd, cwd=WORKSPACE_PATH, env=None, max_retries=3):
+    """执行Git命令（带重试机制）"""
+    full_env = os.environ.copy()
+    if env:
+        full_env.update(env)
+    
+    for attempt in range(max_retries):
+        try:
+            result = subprocess.run(
+                cmd,
+                cwd=cwd,
+                capture_output=True,
+                text=True,
+                timeout=120,  # 增加到120秒
+                env=full_env
+            )
+            if result.returncode == 0:
+                return True, result.stdout, result.stderr
+            
+            # 如果失败且还有重试机会
+            if attempt < max_retries - 1:
+                print(f"  ⚠️ 第{attempt + 1}次尝试失败，等待5秒后重试...")
+                import time
+                time.sleep(5)
+                continue
+            
+            return False, result.stdout, result.stderr
+            
+        except subprocess.TimeoutExpired:
+            if attempt < max_retries - 1:
+                print(f"  ⚠️ 命令超时，等待10秒后重试...")
+                import time
+                time.sleep(10)
+                continue
+            return False, "", f"命令超时（已重试{max_retries}次）"
+            
+        except Exception as e:
+            return False, "", str(e)
+    
+    return False, "", "重试次数用尽"
 
 
 # ============================================
@@ -98,15 +118,16 @@ def _get_change_type(status):
 # ============================================
 
 def yuheng_commit_push(changes):
-    """玉衡：自动提交和推送"""
+    """玉衡：自动提交和推送（带超时重试）"""
     if not changes:
         print("⚖️【玉衡】没有需要提交的变更")
         return True
     
     print("⚖️【玉衡】开始提交和推送...")
+    print(f"  📊 变更统计: 新增{len([c for c in changes if c['type'] == '新增'])}个, 修改{len([c for c in changes if c['type'] == '修改'])}个, 删除{len([c for c in changes if c['type'] == '删除'])}个")
     
-    # 1. 添加所有变更
-    success, _, stderr = run_git_command(["git", "add", "-A"])
+    # 1. 添加所有变更（最多重试3次）
+    success, _, stderr = run_git_command(["git", "add", "-A"], max_retries=3)
     if not success:
         print(f"  ❌ git add 失败: {stderr}")
         return False
@@ -139,15 +160,17 @@ def yuheng_commit_push(changes):
     
     print(f"  ✅ 提交成功: {message}")
     
-    # 4. 推送
+    # 4. 推送（最多重试5次，因为网络可能不稳定）
     github_token = os.environ.get("GITHUB_TOKEN", "")
     if github_token:
         remote_url = f"https://shaoshuai-007:{github_token}@github.com/shaoshuai-007/collaboration-dashboard.git"
         run_git_command(["git", "remote", "set-url", "origin", remote_url])
     
-    success, _, stderr = run_git_command(
+    print("  📤 开始推送...")
+    success, stdout, stderr = run_git_command(
         ["git", "push", "origin", "master"],
-        env={"GIT_SSL_NO_VERIFY": "1"}
+        env={"GIT_SSL_NO_VERIFY": "1"},
+        max_retries=5  # 推送重试5次
     )
     if not success:
         print(f"  ❌ git push 失败: {stderr}")
@@ -254,3 +277,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+测试变更
