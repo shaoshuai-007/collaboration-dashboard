@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <title>技术架构图 - Infographic</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { 
+      font-family: 'Microsoft YaHei', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 40px;
+    }
+    .container {
+      background: white;
+      border-radius: 20px;
+      padding: 40px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      max-width: 1200px;
+      width: 100%;
+    }
+    .title {
+      text-align: center;
+      font-size: 32px;
+      font-weight: bold;
+      color: #1E40AF;
+      margin-bottom: 30px;
+      padding-bottom: 15px;
+      border-bottom: 3px solid #C93832;
+    }
+    .layers {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .layer {
+      display: flex;
+      align-items: stretch;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+    .layer-name {
+      width: 180px;
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 16px;
+      color: white;
+      text-align: center;
+    }
+    .layer-content {
+      flex: 1;
+      padding: 15px 20px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      flex-wrap: wrap;
+      background: #f8fafc;
+    }
+    .component {
+      background: white;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      color: #374151;
+      border: 1px solid #e5e7eb;
+      white-space: nowrap;
+    }
+    /* 层级颜色 */
+    .layer-1 .layer-name { background: linear-gradient(135deg, #C93832, #AC0000); }
+    .layer-2 .layer-name { background: linear-gradient(135deg, #3B82F6, #1E40AF); }
+    .layer-3 .layer-name { background: linear-gradient(135deg, #10B981, #059669); }
+    .layer-4 .layer-name { background: linear-gradient(135deg, #F59E0B, #D97706); }
+    .layer-5 .layer-name { background: linear-gradient(135deg, #8B5CF6, #6D28D9); }
+    .layer-6 .layer-name { background: linear-gradient(135deg, #EC4899, #BE185D); }
+    
+    .layer-1 .component { border-color: #FEE2E2; background: #FEF2F2; }
+    .layer-2 .component { border-color: #DBEAFE; background: #EFF6FF; }
+    .layer-3 .component { border-color: #D1FAE5; background: #ECFDF5; }
+    .layer-4 .component { border-color: #FEF3C7; background: #FFFBEB; }
+    .layer-5 .component { border-color: #EDE9FE; background: #F5F3FF; }
+    .layer-6 .component { border-color: #FCE7F3; background: #FDF2F8; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="title">湖北电信AI智能配案系统 - 六层技术架构</div>
+    <div class="layers">
+      <div class="layer layer-1">
+        <div class="layer-name">交互层<br>PC/移动/小程序</div>
+        <div class="layer-content">
+          <span class="component">Vue3前端框架</span>
+          <span class="component">Element Plus</span>
+          <span class="component">移动端H5</span>
+          <span class="component">小程序SDK</span>
+        </div>
+      </div>
+      <div class="layer layer-2">
+        <div class="layer-name">智能体层<br>四大智能体</div>
+        <div class="layer-content">
+          <span class="component">问答智能体</span>
+          <span class="component">推荐智能体</span>
+          <span class="component">配案智能体</span>
+          <span class="component">校验智能体</span>
+        </div>
+      </div>
+      <div class="layer layer-3">
+        <div class="layer-name">能力层<br>核心能力</div>
+        <div class="layer-content">
+          <span class="component">自然语言处理</span>
+          <span class="component">知识检索</span>
+          <span class="component">推荐算法</span>
+          <span class="component">规则校验</span>
+          <span class="component">OCR识别</span>
+        </div>
+      </div>
+      <div class="layer layer-4">
+        <div class="layer-name">模型层<br>算法模型</div>
+        <div class="layer-content">
+          <span class="component">文心/通义大模型</span>
+          <span class="component">BGE向量模型</span>
+          <span class="component">深度学习推荐模型</span>
+        </div>
+      </div>
+      <div class="layer layer-5">
+        <div class="layer-name">数据层<br>多模态存储</div>
+        <div class="layer-content">
+          <span class="component">MySQL</span>
+          <span class="component">Milvus向量库</span>
+          <span class="component">Neo4j图库</span>
+          <span class="component">Elasticsearch</span>
+          <span class="component">Redis</span>
+        </div>
+      </div>
+      <div class="layer layer-6">
+        <div class="layer-name">集成层<br>外部系统</div>
+        <div class="layer-content">
+          <span class="component">CRM系统</span>
+          <span class="component">计费系统</span>
+          <span class="component">订单中心</span>
+          <span class="component">客户中心</span>
+          <span class="component">随翼选</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <title>智汇工程纪念存档 - Infographic</title>
+  <style>
+    body { margin: 0; padding: 20px; background: #1a1a2e; }
+    #container { width: 100%; height: 100vh; }
+  </style>
+</head>
+<body>
+<div id="container"></div>
+<script src="https://unpkg.com/@antv/infographic@latest/dist/infographic.min.js"></script>
+<script>
+const infographic = new AntVInfographic.Infographic({
+  container: '#container',
+  width: '100%',
+  height: '100%',
+});
+document.fonts?.ready.then(() => {
+  infographic.render(`
+infographic hierarchy-tree-tech-style-badge-card
+data
+  title 💎 智汇工程纪念存档
+  desc ZhiHui Project | 2026-03-11
+  root
+    label 智汇工程
+    children
+      - label 核心理念
+        children
+          - label 自我进化
+          - label 去其糟粕
+          - label 取其精华
+      - label Slogan
+        children
+          - label 汇聚智慧·提炼精华
+      - label 核心成果
+        children
+          - label 2个评估模型
+          - label 7大信息源
+          - label 5级分类标准
+          - label 2层存储体系
+          - label 6条S级精华
+      - label 五维评估模型
+        children
+          - label 准确性25%
+          - label 价值度25%
+          - label 可用性30%
+          - label 时效衰减10%
+          - label 稀缺性10%
+      - label 渠道评级模型
+        children
+          - label 权威性40%
+          - label 可靠性35%
+          - label 先进性25%
+      - label 设计者
+        children
+          - label 少帅 & 南乔
+theme
+  palette #00AA88 #0066CC #FFD700 #9B59B6
+`);
+}).catch((error) => {
+  console.error('Error waiting for fonts to load:', error);
+  infographic.render(`
+infographic hierarchy-tree-tech-style-badge-card
+data
+  title 💎 智汇工程纪念存档
+  desc ZhiHui Project | 2026-03-11
+  root
+    label 智汇工程
+    children
+      - label 核心理念
+        children
+          - label 自我进化
+          - label 去其糟粕
+          - label 取其精华
+      - label Slogan
+        children
+          - label 汇聚智慧·提炼精华
+      - label 核心成果
+        children
+          - label 2个评估模型
+          - label 7大信息源
+          - label 5级分类标准
+          - label 2层存储体系
+          - label 6条S级精华
+      - label 五维评估模型
+        children
+          - label 准确性25%
+          - label 价值度25%
+          - label 可用性30%
+          - label 时效衰减10%
+          - label 稀缺性10%
+      - label 渠道评级模型
+        children
+          - label 权威性40%
+          - label 可靠性35%
+          - label 先进性25%
+      - label 设计者
+        children
+          - label 少帅 & 南乔
+theme
+  palette #00AA88 #0066CC #FFD700 #9B59B6
+`);
+});
+</script>
+</body>
+</html>

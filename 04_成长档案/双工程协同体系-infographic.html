@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <title>双工程协同体系 - Infographic</title>
+  <style>
+    body { margin: 0; padding: 20px; background: #1a1a2e; }
+    #container { width: 100%; height: 100vh; }
+  </style>
+</head>
+<body>
+<div id="container"></div>
+<script src="https://unpkg.com/@antv/infographic@latest/dist/infographic.min.js"></script>
+<script>
+const infographic = new AntVInfographic.Infographic({
+  container: '#container',
+  width: '100%',
+  height: '100%',
+});
+document.fonts?.ready.then(() => {
+  infographic.render(`
+infographic relation-dagre-flow-tb-badge-card
+data
+  title 🧭💎 双工程协同体系
+  desc 智汇工程 × 指南针工程 | 2026-03-11
+  nodes
+    - id zhihui
+      label 💎 智汇工程
+      desc 知识输入引擎
+    - id kb
+      label 📚 知识库
+      desc 沉淀存储
+    - id compass
+      label 🧭 指南针工程
+      desc 方案输出引擎
+    - id output
+      label 📋 高价值方案
+      desc 价值交付
+    - id evolve
+      label 🔄 持续进化
+      desc 迭代优化
+  relations
+    zhihui - 汇聚智慧 → kb
+    kb - 提炼精华 → compass
+    compass - 指引方向 → output
+    output - 沉淀反馈 → evolve
+    evolve - 优化迭代 → zhihui
+theme
+  palette #00AA88 #0066CC #FFD700 #FF6B6B #9B59B6
+`);
+}).catch((error) => {
+  console.error('Error waiting for fonts to load:', error);
+  infographic.render(`
+infographic relation-dagre-flow-tb-badge-card
+data
+  title 🧭💎 双工程协同体系
+  desc 智汇工程 × 指南针工程 | 2026-03-11
+  nodes
+    - id zhihui
+      label 💎 智汇工程
+      desc 知识输入引擎
+    - id kb
+      label 📚 知识库
+      desc 沉淀存储
+    - id compass
+      label 🧭 指南针工程
+      desc 方案输出引擎
+    - id output
+      label 📋 高价值方案
+      desc 价值交付
+    - id evolve
+      label 🔄 持续进化
+      desc 迭代优化
+  relations
+    zhihui - 汇聚智慧 → kb
+    kb - 提炼精华 → compass
+    compass - 指引方向 → output
+    output - 沉淀反馈 → evolve
+    evolve - 优化迭代 → zhihui
+theme
+  palette #00AA88 #0066CC #FFD700 #FF6B6B #9B59B6
+`);
+});
+</script>
+</body>
+</html>

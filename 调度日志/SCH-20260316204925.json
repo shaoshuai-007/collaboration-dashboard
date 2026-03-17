@@ -1,0 +1,34 @@
+{
+  "schedule_id": "SCH-20260316204925",
+  "created_at": "2026-03-16T20:49:25.297417",
+  "input": "简单查询用户信息",
+  "intent": "信息检索",
+  "confidence": 0.5,
+  "complexity": "low",
+  "assignment": {
+    "lead": "南乔",
+    "support": [],
+    "assignment_reason": "根据任务类型【信息检索】和复杂度【low】自动分配"
+  },
+  "workflow": [
+    {
+      "step": 1,
+      "task": "信息检索",
+      "agent": "南乔",
+      "duration": "5分钟"
+    },
+    {
+      "step": 2,
+      "task": "内容整理",
+      "agent": "南乔",
+      "duration": "5分钟"
+    },
+    {
+      "step": 3,
+      "task": "文档生成",
+      "agent": "南乔",
+      "duration": "3分钟"
+    }
+  ],
+  "estimated_duration": "3 步骤"
+}

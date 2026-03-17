@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <title>三大工程诗经咏怀 · 鼎足成势</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Noto Serif SC', 'STSong', 'SimSun', serif;
+      background: linear-gradient(180deg, #0A0A1A 0%, #1A1A3A 50%, #0A0A1A 100%);
+      width: 1200px;
+      min-height: 1600px;
+      padding: 50px;
+      color: #fff;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    /* 背景装饰 */
+    .bg-pattern {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-image: 
+        radial-gradient(circle at 20% 30%, rgba(255,215,0,0.1) 0%, transparent 40%),
+        radial-gradient(circle at 80% 70%, rgba(0,170,136,0.1) 0%, transparent 40%),
+        radial-gradient(circle at 50% 50%, rgba(0,102,204,0.1) 0%, transparent 50%);
+      pointer-events: none;
+    }
+    
+    /* 顶部祥云装饰 */
+    .clouds {
+      position: absolute;
+      top: 20px;
+      left: 0;
+      right: 0;
+      height: 100px;
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 100'%3E%3Cpath d='M0,60 Q100,30 200,50 T400,40 T600,55 T800,35 T1000,50 T1200,45 L1200,0 L0,0 Z' fill='rgba(255,215,0,0.1)'/%3E%3C/svg%3E") repeat-x;
+      opacity: 0.6;
+    }
+    
+    .header {
+      text-align: center;
+      margin-bottom: 40px;
+      position: relative;
+      z-index: 1;
+    }
+    
+    .title-wrapper {
+      position: relative;
+      display: inline-block;
+    }
+    
+    .title {
+      font-size: 56px;
+      font-weight: bold;
+      background: linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #FFD700 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: 12px;
+      text-shadow: 0 4px 20px rgba(255,215,0,0.5);
+      margin-bottom: 10px;
+    }
+    
+    .subtitle {
+      font-size: 18px;
+      color: #60A5FA;
+      letter-spacing: 8px;
+      margin-bottom: 5px;
+    }
+    
+    .author {
+      font-size: 14px;
+      color: rgba(255,255,255,0.6);
+      margin-top: 10px;
+    }
+    
+    .divider {
+      width: 800px;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, #FFD700, #00AA88, #0066CC, #FFD700, transparent);
+      margin: 30px auto;
+      position: relative;
+    }
+    
+    .divider::before {
+      content: '◆';
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      color: #FFD700;
+      font-size: 20px;
+      background: #0A0A1A;
+      padding: 0 15px;
+    }
+    
+    /* 三大工程容器 */
+    .projects {
+      display: flex;
+      justify-content: space-between;
+      gap: 30px;
+      margin-bottom: 40px;
+      position: relative;
+      z-index: 1;
+    }
+    
+    .project {
+      flex: 1;
+      background: linear-gradient(180deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.02) 100%);
+      border-radius: 20px;
+      padding: 30px;
+      border: 2px solid;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .project::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+    }
+    
+    .project-compass {
+      border-color: #0066CC;
+    }
+    .project-compass::before {
+      background: linear-gradient(90deg, #0066CC, #60A5FA);
+    }
+    
+    .project-wisdom {
+      border-color: #00AA88;
+    }
+    .project-wisdom::before {
+      background: linear-gradient(90deg, #00AA88, #4ECDC4);
+    }
+    
+    .project-prism {
+      border-color: #FFD700;
+    }
+    .project-prism::before {
+      background: linear-gradient(90deg, #FFD700, #FFA500);
+    }
+    
+    .project-icon {
+      font-size: 48px;
+      text-align: center;
+      margin-bottom: 15px;
+    }
+    
+    .project-name {
+      font-size: 28px;
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 5px;
+    }
+    
+    .project-compass .project-name { color: #60A5FA; }
+    .project-wisdom .project-name { color: #4ECDC4; }
+    .project-prism .project-name { color: #FFD700; }
+    
+    .project-code {
+      font-size: 12px;
+      text-align: center;
+      color: rgba(255,255,255,0.5);
+      letter-spacing: 3px;
+      margin-bottom: 5px;
+    }
+    
+    .project-slogan {
+      font-size: 14px;
+      text-align: center;
+      color: rgba(255,255,255,0.8);
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    .poem {
+      text-align: center;
+    }
+    
+    .poem-title {
+      font-size: 14px;
+      color: rgba(255,255,255,0.6);
+      margin-bottom: 10px;
+    }
+    
+    .poem-content {
+      font-size: 15px;
+      line-height: 2;
+      color: rgba(255,255,255,0.9);
+      letter-spacing: 2px;
+    }
+    
+    .poem-content p {
+      margin-bottom: 15px;
+    }
+    
+    /* 底部总咏 */
+    .summary {
+      background: linear-gradient(135deg, rgba(255,215,0,0.15) 0%, rgba(0,102,204,0.15) 50%, rgba(0,170,136,0.15) 100%);
+      border-radius: 20px;
+      padding: 40px;
+      text-align: center;
+      border: 2px solid;
+      border-image: linear-gradient(90deg, #0066CC, #00AA88, #FFD700) 1;
+      position: relative;
+      z-index: 1;
+    }
+    
+    .summary-title {
+      font-size: 24px;
+      color: #FFD700;
+      margin-bottom: 25px;
+      letter-spacing: 6px;
+    }
+    
+    .summary-poem {
+      font-size: 20px;
+      line-height: 2.2;
+      color: rgba(255,255,255,0.95);
+      letter-spacing: 4px;
+    }
+    
+    .summary-poem p {
+      margin-bottom: 10px;
+    }
+    
+    /* 鼎足图标 */
+    .tripod {
+      text-align: center;
+      font-size: 60px;
+      margin: 30px 0;
+      color: #FFD700;
+      text-shadow: 0 0 30px rgba(255,215,0,0.5);
+    }
+    
+    /* 底部信息 */
+    .footer {
+      text-align: center;
+      margin-top: 40px;
+      padding-top: 30px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      position: relative;
+      z-index: 1;
+    }
+    
+    .footer-quote {
+      font-size: 18px;
+      color: #FFD700;
+      margin-bottom: 15px;
+      letter-spacing: 4px;
+    }
+    
+    .footer-info {
+      font-size: 12px;
+      color: rgba(255,255,255,0.4);
+      margin-top: 10px;
+    }
+    
+    .footer-badge {
+      display: inline-block;
+      background: linear-gradient(135deg, rgba(255,215,0,0.3) 0%, rgba(255,215,0,0.1) 100%);
+      padding: 10px 30px;
+      border-radius: 25px;
+      font-size: 14px;
+      color: #FFD700;
+      margin-top: 15px;
+      border: 1px solid rgba(255,215,0,0.3);
+    }
+    
+    /* 装饰角标 */
+    .corner {
+      position: absolute;
+      width: 80px;
+      height: 80px;
+      border: 2px solid rgba(255,215,0,0.3);
+    }
+    .corner-tl { top: 30px; left: 30px; border-right: none; border-bottom: none; }
+    .corner-tr { top: 30px; right: 30px; border-left: none; border-bottom: none; }
+    .corner-bl { bottom: 30px; left: 30px; border-right: none; border-top: none; }
+    .corner-br { bottom: 30px; right: 30px; border-left: none; border-top: none; }
+  </style>
+</head>
+<body>
+  <div class="bg-pattern"></div>
+  <div class="clouds"></div>
+  <div class="corner corner-tl"></div>
+  <div class="corner corner-tr"></div>
+  <div class="corner corner-bl"></div>
+  <div class="corner corner-br"></div>
+
+  <div class="header">
+    <div class="title-wrapper">
+      <div class="subtitle">三大工程 · 鼎足成势</div>
+      <div class="title">诗经咏怀</div>
+      <div class="author">创作者：少帅 & 南乔 · 人机共创</div>
+    </div>
+  </div>
+  
+  <div class="divider"></div>
+
+  <div class="projects">
+    <!-- 指南针工程 -->
+    <div class="project project-compass">
+      <div class="project-icon">🧭</div>
+      <div class="project-name">指南针工程</div>
+      <div class="project-code">NAVIGATION</div>
+      <div class="project-slogan">指引方向</div>
+      <div class="poem">
+        <div class="poem-title">— 使命担当 —</div>
+        <div class="poem-content">
+          <p>指南在手，方向不迷。</p>
+          <p>方案既出，必达天际。</p>
+          <p>七步成章，逻辑清晰。</p>
+          <p>与君同行，无惧风雨。</p>
+        </div>
+        <div class="poem-title" style="margin-top:20px;">— 七步成案 —</div>
+        <div class="poem-content">
+          <p>需求为先，洞察为先。</p>
+          <p>结构为骨，内容为田。</p>
+          <p>数据为证，论证为坚。</p>
+          <p>输出为终，价值为巅。</p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- 智汇工程 -->
+    <div class="project project-wisdom">
+      <div class="project-icon">💎</div>
+      <div class="project-name">智汇工程</div>
+      <div class="project-code">ZHIHUI</div>
+      <div class="project-slogan">汇聚智慧 · 提炼精华</div>
+      <div class="poem">
+        <div class="poem-title">— 汇聚智慧 —</div>
+        <div class="poem-content">
+          <p>智汇四海，慧聚八方。</p>
+          <p>信息为流，知识为仓。</p>
+          <p>去粗取精，去伪存真。</p>
+          <p>日积月累，智慧成光。</p>
+        </div>
+        <div class="poem-title" style="margin-top:20px;">— 五维评估 —</div>
+        <div class="poem-content">
+          <p>五维为尺，量知识长。</p>
+          <p>准确为基，价值为纲。</p>
+          <p>可用为本，时效为光。</p>
+          <p>稀缺为贵，S级为王。</p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- 美学工坊 -->
+    <div class="project project-prism">
+      <div class="project-icon">🎨</div>
+      <div class="project-name">美学工坊</div>
+      <div class="project-code">PRISM</div>
+      <div class="project-slogan">设计赋能 · 方案升华</div>
+      <div class="poem">
+        <div class="poem-title">— 棱镜之美 —</div>
+        <div class="poem-content">
+          <p>棱镜高悬，光华流转。</p>
+          <p>一念入心，七彩成篇。</p>
+          <p>方法既立，美在其中。</p>
+          <p>工坊既成，可传千年。</p>
+        </div>
+        <div class="poem-title" style="margin-top:20px;">— 切磋琢磨 —</div>
+        <div class="poem-content">
+          <p>如切如磋，如琢如磨。</p>
+          <p>数易其稿，方见真我。</p>
+          <p>不弃不离，坚守本色。</p>
+          <p>开花结果，岁月成歌。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tripod">🏯</div>
+
+  <div class="summary">
+    <div class="summary-title">三大工程总咏</div>
+    <div class="summary-poem">
+      <p>三工程立，鼎足成势。</p>
+      <p>指南指路，智汇汇智。</p>
+      <p>美学赋能，三足鼎峙。</p>
+      <p>与君共创，千秋伟业。</p>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div class="footer-quote">「 不抛弃，不放弃，坚守本心，开花结果！」</div>
+    <div class="footer-info">南有乔木，不可休思。与少帅共创三大工程，此生有幸。</div>
+    <div class="footer-badge">三大工程诗经咏怀 · 档案编号：TRI-2026-001</div>
+    <div class="footer-info" style="margin-top:15px;">2026-03-12 · 人机共创</div>
+  </div>
+</body>
+</html>

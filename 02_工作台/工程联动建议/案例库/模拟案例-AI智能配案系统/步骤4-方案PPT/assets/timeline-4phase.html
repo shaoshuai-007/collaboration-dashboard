@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <title>项目时间轴 - Infographic</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { 
+      font-family: 'Microsoft YaHei', sans-serif;
+      background: linear-gradient(135deg, #1E40AF 0%, #3B82F6 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 40px;
+    }
+    .container {
+      background: white;
+      border-radius: 20px;
+      padding: 40px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      max-width: 1400px;
+      width: 100%;
+    }
+    .title {
+      text-align: center;
+      font-size: 32px;
+      font-weight: bold;
+      color: #1E40AF;
+      margin-bottom: 40px;
+      padding-bottom: 15px;
+      border-bottom: 3px solid #C93832;
+    }
+    .timeline {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      position: relative;
+      padding: 20px 0;
+    }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      top: 80px;
+      left: 10%;
+      right: 10%;
+      height: 6px;
+      background: linear-gradient(90deg, #C93832, #3B82F6, #10B981, #F59E0B);
+      border-radius: 3px;
+    }
+    .phase {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      z-index: 1;
+    }
+    .phase-circle {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      font-weight: bold;
+      color: white;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+      margin-bottom: 20px;
+    }
+    .phase-1 .phase-circle { background: linear-gradient(135deg, #C93832, #AC0000); }
+    .phase-2 .phase-circle { background: linear-gradient(135deg, #3B82F6, #1E40AF); }
+    .phase-3 .phase-circle { background: linear-gradient(135deg, #10B981, #059669); }
+    .phase-4 .phase-circle { background: linear-gradient(135deg, #F59E0B, #D97706); }
+    
+    .phase-card {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      width: 280px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      border: 2px solid;
+    }
+    .phase-1 .phase-card { border-color: #FEE2E2; }
+    .phase-2 .phase-card { border-color: #DBEAFE; }
+    .phase-3 .phase-card { border-color: #D1FAE5; }
+    .phase-4 .phase-card { border-color: #FEF3C7; }
+    
+    .phase-title {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+    .phase-1 .phase-title { color: #C93832; }
+    .phase-2 .phase-title { color: #1E40AF; }
+    .phase-3 .phase-title { color: #059669; }
+    .phase-4 .phase-title { color: #D97706; }
+    
+    .phase-time {
+      font-size: 14px;
+      color: #6B7280;
+      text-align: center;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 1px dashed #E5E7EB;
+    }
+    .phase-items {
+      list-style: none;
+      font-size: 13px;
+      color: #374151;
+    }
+    .phase-items li {
+      padding: 6px 0;
+      padding-left: 20px;
+      position: relative;
+    }
+    .phase-items li::before {
+      content: '✓';
+      position: absolute;
+      left: 0;
+      color: #10B981;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="title">项目实施计划 - 四阶段稳步推进</div>
+    <div class="timeline">
+      <div class="phase phase-1">
+        <div class="phase-circle">Q1</div>
+        <div class="phase-card">
+          <div class="phase-title">基础能力建设</div>
+          <div class="phase-time">2026年1月 - 3月</div>
+          <ul class="phase-items">
+            <li>AI知识库搭建</li>
+            <li>智能问答上线</li>
+            <li>规则库完善</li>
+          </ul>
+        </div>
+      </div>
+      <div class="phase phase-2">
+        <div class="phase-circle">Q2</div>
+        <div class="phase-card">
+          <div class="phase-title">核心功能开发</div>
+          <div class="phase-time">2026年4月 - 6月</div>
+          <ul class="phase-items">
+            <li>智能推荐引擎</li>
+            <li>智能配案平台</li>
+            <li>移动端适配</li>
+          </ul>
+        </div>
+      </div>
+      <div class="phase phase-3">
+        <div class="phase-circle">Q3</div>
+        <div class="phase-card">
+          <div class="phase-title">智能能力增强</div>
+          <div class="phase-time">2026年7月 - 9月</div>
+          <ul class="phase-items">
+            <li>智能校验系统</li>
+            <li>配方案例库</li>
+            <li>优化迭代</li>
+          </ul>
+        </div>
+      </div>
+      <div class="phase phase-4">
+        <div class="phase-circle">Q4</div>
+        <div class="phase-card">
+          <div class="phase-title">全面推广运营</div>
+          <div class="phase-time">2026年10月 - 12月</div>
+          <ul class="phase-items">
+            <li>全省推广</li>
+            <li>运营优化</li>
+            <li>持续迭代</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

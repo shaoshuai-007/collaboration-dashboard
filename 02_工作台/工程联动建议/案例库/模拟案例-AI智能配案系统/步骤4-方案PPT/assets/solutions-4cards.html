@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <title>四大方案对比 - Infographic</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { 
+      font-family: 'Microsoft YaHei', sans-serif;
+      background: linear-gradient(135deg, #8B5CF6 0%, #6D28D9 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 40px;
+    }
+    .container {
+      background: white;
+      border-radius: 20px;
+      padding: 40px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      max-width: 1400px;
+      width: 100%;
+    }
+    .title {
+      text-align: center;
+      font-size: 32px;
+      font-weight: bold;
+      color: #1E40AF;
+      margin-bottom: 40px;
+      padding-bottom: 15px;
+      border-bottom: 3px solid #C93832;
+    }
+    .solutions-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+    }
+    .solution-card {
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+    .solution-header {
+      padding: 20px;
+      text-align: center;
+      color: white;
+    }
+    .solution-1 .solution-header { background: linear-gradient(135deg, #C93832, #AC0000); }
+    .solution-2 .solution-header { background: linear-gradient(135deg, #3B82F6, #1E40AF); }
+    .solution-3 .solution-header { background: linear-gradient(135deg, #10B981, #059669); }
+    .solution-4 .solution-header { background: linear-gradient(135deg, #F59E0B, #D97706); }
+    
+    .solution-icon {
+      font-size: 40px;
+      margin-bottom: 10px;
+    }
+    .solution-name {
+      font-size: 18px;
+      font-weight: bold;
+    }
+    .solution-body {
+      padding: 20px;
+      background: white;
+    }
+    .solution-target {
+      background: #F9FAFB;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      text-align: center;
+    }
+    .target-label {
+      font-size: 12px;
+      color: #6B7280;
+      margin-bottom: 5px;
+    }
+    .target-value {
+      font-size: 16px;
+      font-weight: bold;
+      color: #1E40AF;
+    }
+    .solution-measures {
+      list-style: none;
+      font-size: 13px;
+    }
+    .solution-measures li {
+      padding: 8px 0;
+      border-bottom: 1px solid #F3F4F6;
+      color: #374151;
+      padding-left: 15px;
+      position: relative;
+    }
+    .solution-1 .solution-measures li::before { content: '●'; color: #C93832; position: absolute; left: 0; }
+    .solution-2 .solution-measures li::before { content: '●'; color: #3B82F6; position: absolute; left: 0; }
+    .solution-3 .solution-measures li::before { content: '●'; color: #10B981; position: absolute; left: 0; }
+    .solution-4 .solution-measures li::before { content: '●'; color: #F59E0B; position: absolute; left: 0; }
+    .solution-measures li:last-child {
+      border-bottom: none;
+    }
+    .measure-count {
+      display: inline-block;
+      background: #E5E7EB;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-size: 11px;
+      color: #6B7280;
+      margin-left: 5px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="title">四大解决方案 - 全面覆盖业务场景</div>
+    <div class="solutions-grid">
+      <div class="solution-card solution-1">
+        <div class="solution-header">
+          <div class="solution-icon">📚</div>
+          <div class="solution-name">方案1<br>AI知识库建设</div>
+        </div>
+        <div class="solution-body">
+          <div class="solution-target">
+            <div class="target-label">核心目标</div>
+            <div class="target-value">规则覆盖率 0%→100%</div>
+          </div>
+          <ul class="solution-measures">
+            <li>知识图谱构建<span class="measure-count">3项</span></li>
+            <li>规则录入系统<span class="measure-count">3项</span></li>
+            <li>搜索引擎集成<span class="measure-count">3项</span></li>
+            <li>向量检索能力<span class="measure-count">3项</span></li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="solution-card solution-2">
+        <div class="solution-header">
+          <div class="solution-icon">🎯</div>
+          <div class="solution-name">方案2<br>智能推荐引擎</div>
+        </div>
+        <div class="solution-body">
+          <div class="solution-target">
+            <div class="target-label">核心目标</div>
+            <div class="target-value">推荐准确率 60%→80%</div>
+          </div>
+          <ul class="solution-measures">
+            <li>客户画像系统<span class="measure-count">3项</span></li>
+            <li>推荐算法开发<span class="measure-count">3项</span></li>
+            <li>优惠匹配引擎<span class="measure-count">3项</span></li>
+            <li>推荐理由生成<span class="measure-count">2项</span></li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="solution-card solution-3">
+        <div class="solution-header">
+          <div class="solution-icon">📝</div>
+          <div class="solution-name">方案3<br>一体化配案平台</div>
+        </div>
+        <div class="solution-body">
+          <div class="solution-target">
+            <div class="target-label">核心目标</div>
+            <div class="target-value">配案时间 30分钟→5分钟</div>
+          </div>
+          <ul class="solution-measures">
+            <li>配案流程引擎<span class="measure-count">4项</span></li>
+            <li>智能填单功能<span class="measure-count">3项</span></li>
+            <li>配方案例库<span class="measure-count">3项</span></li>
+            <li>移动端适配<span class="measure-count">3项</span></li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="solution-card solution-4">
+        <div class="solution-header">
+          <div class="solution-icon">✅</div>
+          <div class="solution-name">方案4<br>智能校验系统</div>
+        </div>
+        <div class="solution-body">
+          <div class="solution-target">
+            <div class="target-label">核心目标</div>
+            <div class="target-value">校验准确率 85%→98%</div>
+          </div>
+          <ul class="solution-measures">
+            <li>规则校验引擎<span class="measure-count">3项</span></li>
+            <li>风险预警系统<span class="measure-count">3项</span></li>
+            <li>校验日志分析<span class="measure-count">2项</span></li>
+            <li>规则优化建议<span class="measure-count">2项</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

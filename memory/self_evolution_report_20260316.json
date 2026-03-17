@@ -1,0 +1,14 @@
+{
+  "check_time": "2026-03-16T23:43:38.437517",
+  "issues": [
+    {
+      "type": "工具配置",
+      "member": "团队",
+      "detail": "web_search 需要配置 Brave Search API Key"
+    }
+  ],
+  "suggestions": [
+    "为 天工 安排实战项目",
+    "为 知微 安排实战项目"
+  ]
+}

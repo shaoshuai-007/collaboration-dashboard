@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>指南针工程 × 美化工坊 联动流程图</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            padding: 40px;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+            color: #fff;
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #888;
+            font-size: 14px;
+            margin-bottom: 40px;
+        }
+        
+        /* 主流程区 */
+        .main-flow {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 60px;
+            position: relative;
+        }
+        .phase {
+            flex: 1;
+            text-align: center;
+        }
+        .phase-title {
+            color: #fff;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            padding: 10px 20px;
+            background: linear-gradient(90deg, #3498db, #2ecc71);
+            border-radius: 20px;
+            display: inline-block;
+        }
+        .steps {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .step {
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            border-radius: 12px;
+            padding: 20px;
+            color: #fff;
+            position: relative;
+            border-left: 4px solid #3498db;
+        }
+        .step-name {
+            font-weight: bold;
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+        .step-output {
+            font-size: 12px;
+            color: #bdc3c7;
+        }
+        
+        /* 箭头连接 */
+        .arrow-right {
+            position: absolute;
+            right: -30px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 24px;
+            color: #3498db;
+        }
+        
+        /* 赋能层 */
+        .empower-section {
+            background: rgba(255,255,255,0.05);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 40px;
+        }
+        .empower-title {
+            color: #e74c3c;
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .empower-layers {
+            display: flex;
+            justify-content: space-around;
+            gap: 20px;
+        }
+        .empower-layer {
+            flex: 1;
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+        }
+        .layer-name {
+            color: #f39c12;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        .layer-items {
+            color: #ecf0f1;
+            font-size: 13px;
+            line-height: 2;
+        }
+        .layer-icon {
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+        
+        /* 质量闭环 */
+        .quality-loop {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .quality-loop-title {
+            color: #2ecc71;
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .loop-items {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+        }
+        .loop-item {
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            color: #fff;
+            padding: 15px 30px;
+            border-radius: 30px;
+            font-weight: bold;
+            font-size: 16px;
+        }
+        .loop-arrow {
+            color: #2ecc71;
+            font-size: 28px;
+        }
+        .loop-desc {
+            color: #95a5a6;
+            font-size: 12px;
+            margin-top: 15px;
+        }
+        
+        /* 底部说明 */
+        .footer {
+            text-align: center;
+            color: #7f8c8d;
+            font-size: 12px;
+            margin-top: 20px;
+        }
+        
+        /* 赋能连接线 */
+        .empower-line {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 2px;
+            height: 40px;
+            background: linear-gradient(to bottom, #e74c3c, #3498db);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧭 指南针工程 × 🎨 美化工坊</h1>
+        <p class="subtitle">模板-案例-审核 三位一体质量闭环</p>
+        
+        <!-- 赋能层 -->
+        <div class="empower-section">
+            <div class="empower-title">🎨 美化工坊 赋能三层架构</div>
+            <div class="empower-layers">
+                <div class="empower-layer">
+                    <div class="layer-icon">📄</div>
+                    <div class="layer-name">第一层：模板赋能</div>
+                    <div class="layer-items">
+                        Word模板（2个）<br>
+                        Excel模板（2个）<br>
+                        PPT模板说明（1个）<br>
+                        方法论库（2个）
+                    </div>
+                </div>
+                <div class="empower-layer">
+                    <div class="layer-icon">📚</div>
+                    <div class="layer-name">第二层：案例赋能</div>
+                    <div class="layer-items">
+                        步骤1案例：需求分析<br>
+                        步骤2案例：思维导图<br>
+                        步骤3案例：方案举措
+                    </div>
+                </div>
+                <div class="empower-layer">
+                    <div class="layer-icon">✅</div>
+                    <div class="layer-name">第三层：审核赋能</div>
+                    <div class="layer-items">
+                        审核模型：质量标准<br>
+                        审核清单：快速检查<br>
+                        自动审核：Python工具
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 质量闭环 -->
+        <div class="quality-loop">
+            <div class="quality-loop-title">🔄 质量闭环机制</div>
+            <div class="loop-items">
+                <div class="loop-item">📦 模板库</div>
+                <span class="loop-arrow">→</span>
+                <div class="loop-item">📖 案例库</div>
+                <span class="loop-arrow">→</span>
+                <div class="loop-item">🔍 审核体系</div>
+                <span class="loop-arrow">→</span>
+                <div class="loop-item">✅ 高质量交付</div>
+            </div>
+            <p class="loop-desc">标准化输出格式 → 实践参考范例 → 确保输出质量达标 → 形成完整质量闭环</p>
+        </div>
+        
+        <!-- 主流程 -->
+        <div class="main-flow">
+            <div class="phase">
+                <div class="phase-title">📋 需求阶段</div>
+                <div class="steps">
+                    <div class="step">
+                        <div class="step-name">步骤1：需求文档</div>
+                        <div class="step-output">输出：Word格式</div>
+                    </div>
+                    <div class="step">
+                        <div class="step-name">步骤2：思维导图</div>
+                        <div class="step-output">输出：Xmind格式</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="phase">
+                <div class="phase-title">💡 方案阶段</div>
+                <div class="steps">
+                    <div class="step">
+                        <div class="step-name">步骤3：方案举措Excel</div>
+                        <div class="step-output">输出：Excel格式</div>
+                    </div>
+                    <div class="step">
+                        <div class="step-name">步骤4：方案PPT</div>
+                        <div class="step-output">输出：PPTX格式</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="phase">
+                <div class="phase-title">🚀 项目阶段</div>
+                <div class="steps">
+                    <div class="step">
+                        <div class="step-name">步骤5：详细设计文档</div>
+                        <div class="step-output">输出：Word格式</div>
+                    </div>
+                    <div class="step">
+                        <div class="step-name">步骤6：项目管控计划</div>
+                        <div class="step-output">输出：Excel格式</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 底部 -->
+        <div class="footer">
+            南乔 🌿 | 2026-03-13 | 指南针工程 V2.1
+        </div>
+    </div>
+</body>
+</html>

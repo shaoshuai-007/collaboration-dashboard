@@ -1,0 +1,72 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+dist/
+build/
+
+# 大文件
+*.tar.gz
+*.zip
+*.rar
+*.7z
+
+# 日志和临时文件
+*.log
+/tmp/
+.cache/
+
+# 敏感文件
+.env
+*.pem
+*.key
+*_config.env
+smtp_config.json
+
+# 系统文件
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+
+# 输出文件（保留结构，排除大文件）
+output/*.pptx
+output/*.docx
+output/*.xlsx
+03_输出成果/*.pptx
+03_输出成果/*.docx
+03_输出成果/*.xlsx
+
+# 大文件（全局排除）
+*.pptx
+*.ppt
+*.docx
+*.doc
+*.xlsx
+*.xls
+*.pdf
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.mp4
+*.mp3
+*.wav
+*.avi
+*.mov
+*.wmv
+
+# 大型目录
+00_原始文件/
+02_工作台/美学工坊/素材库/
+
+# 素材索引（大量XML文件）
+02_工作台/美学工坊/素材库/PPT素材库/素材索引/
+
+# node_modules
+node_modules/

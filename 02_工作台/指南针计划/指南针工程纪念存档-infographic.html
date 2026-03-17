@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <title>指南针工程纪念存档 - Infographic</title>
+  <style>
+    body { margin: 0; padding: 20px; background: #1a1a2e; }
+    #container { width: 100%; height: 100vh; }
+  </style>
+</head>
+<body>
+<div id="container"></div>
+<script src="https://unpkg.com/@antv/infographic@latest/dist/infographic.min.js"></script>
+<script>
+const infographic = new AntVInfographic.Infographic({
+  container: '#container',
+  width: '100%',
+  height: '100%',
+});
+document.fonts?.ready.then(() => {
+  infographic.render(`
+infographic hierarchy-tree-tech-style-badge-card
+data
+  title 🧭 指南针工程纪念存档
+  desc Navigation · 领航 | 2026-03-11
+  root
+    label 指南针工程
+    children
+      - label 核心理念
+        children
+          - label "先思考，再行动"
+          - label Think First, Act Second
+      - label Slogan
+        children
+          - label 指引方向·领航未来
+      - label 核心成果
+        children
+          - label 17个文件
+          - label 204KB
+          - label 22个方法论
+          - label 8步流程
+          - label 65项检查
+          - label 6个模板
+      - label 标准流程
+        children
+          - label 步骤0:问题定义
+          - label 步骤1:方向计划
+          - label 步骤2:头脑风暴
+          - label 步骤3:举措梳理
+          - label 步骤4:方案编写
+          - label 步骤5:沉淀复盘
+      - label 核心引擎
+        children
+          - label 执行层:5引擎
+          - label 审核层:2引擎
+      - label 设计者
+        children
+          - label 少帅 & 南乔
+theme
+  palette #0066CC #00AA88 #FFD700 #FF6B6B
+`);
+}).catch((error) => {
+  console.error('Error waiting for fonts to load:', error);
+  infographic.render(`
+infographic hierarchy-tree-tech-style-badge-card
+data
+  title 🧭 指南针工程纪念存档
+  desc Navigation · 领航 | 2026-03-11
+  root
+    label 指南针工程
+    children
+      - label 核心理念
+        children
+          - label "先思考，再行动"
+          - label Think First, Act Second
+      - label Slogan
+        children
+          - label 指引方向·领航未来
+      - label 核心成果
+        children
+          - label 17个文件
+          - label 204KB
+          - label 22个方法论
+          - label 8步流程
+          - label 65项检查
+          - label 6个模板
+      - label 标准流程
+        children
+          - label 步骤0:问题定义
+          - label 步骤1:方向计划
+          - label 步骤2:头脑风暴
+          - label 步骤3:举措梳理
+          - label 步骤4:方案编写
+          - label 步骤5:沉淀复盘
+      - label 核心引擎
+        children
+          - label 执行层:5引擎
+          - label 审核层:2引擎
+      - label 设计者
+        children
+          - label 少帅 & 南乔
+theme
+  palette #0066CC #00AA88 #FFD700 #FF6B6B
+`);
+});
+</script>
+</body>
+</html>
