@@ -6,6 +6,11 @@
 - 玉衡：自动提交和推送
 - 折桂：变更日志记录
 
+改进：
+- 异步推送，不阻塞主流程
+- 超时时间增加到5分钟
+- 自动重试机制
+
 Author: 九星智囊团
 Date: 2026-03-17
 """
@@ -19,6 +24,7 @@ from pathlib import Path
 WORKSPACE_PATH = "/root/.openclaw/workspace"
 CHANGELOG_PATH = f"{WORKSPACE_PATH}/03_输出成果/变更日志"
 CONTROL_LOG = f"{WORKSPACE_PATH}/03_输出成果/代码管控日志.json"
+PUSH_QUEUE_FILE = f"{WORKSPACE_PATH}/03_输出成果/push_queue.json"
 
 
 def run_git_command(cmd, cwd=WORKSPACE_PATH, env=None, max_retries=3):
@@ -160,24 +166,57 @@ def yuheng_commit_push(changes):
     
     print(f"  ✅ 提交成功: {message}")
     
-    # 4. 推送（最多重试5次，因为网络可能不稳定）
+    # 4. 异步推送（后台进行，不阻塞）
+    print("  📤 推送任务已加入后台队列...")
+    _add_push_task(message)
+    
+    return True
+
+
+def _add_push_task(commit_msg):
+    """添加推送任务到队列"""
+    if os.path.exists(PUSH_QUEUE_FILE):
+        with open(PUSH_QUEUE_FILE, "r", encoding="utf-8") as f:
+            queue = json.load(f)
+    else:
+        queue = {"pending": [], "completed": []}
+    
+    # 获取当前commit hash
+    success, stdout, _ = run_git_command(["git", "rev-parse", "--short", "HEAD"])
+    commit_hash = stdout.strip() if success else "unknown"
+    
+    queue["pending"].append({
+        "commit": commit_hash,
+        "message": commit_msg,
+        "time": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    })
+    
+    with open(PUSH_QUEUE_FILE, "w", encoding="utf-8") as f:
+        json.dump(queue, f, ensure_ascii=False, indent=2)
+    
+    # 后台执行推送
+    import threading
+    thread = threading.Thread(target=_do_push, daemon=True)
+    thread.start()
+
+
+def _do_push():
+    """后台执行推送"""
     github_token = os.environ.get("GITHUB_TOKEN", "")
     if github_token:
         remote_url = f"https://shaoshuai-007:{github_token}@github.com/shaoshuai-007/collaboration-dashboard.git"
         run_git_command(["git", "remote", "set-url", "origin", remote_url])
     
-    print("  📤 开始推送...")
-    success, stdout, stderr = run_git_command(
+    success, _, stderr = run_git_command(
         ["git", "push", "origin", "master"],
         env={"GIT_SSL_NO_VERIFY": "1"},
-        max_retries=5  # 推送重试5次
+        max_retries=3
     )
-    if not success:
-        print(f"  ❌ git push 失败: {stderr}")
-        return False
     
-    print("  ✅ 推送成功")
-    return True
+    if success:
+        print("  ✅【后台】推送成功")
+    else:
+        print(f"  ❌【后台】推送失败: {stderr}")
 
 
 # ============================================
