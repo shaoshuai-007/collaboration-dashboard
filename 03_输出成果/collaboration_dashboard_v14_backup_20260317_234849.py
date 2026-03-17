@@ -1,17 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-多Agent协作框架 V15.1 - 并行调度优化版
-- V14基础功能
+多Agent协作框架 V13 - 智能调度版
+- V12导出功能
+- 新增智能意图识别
+- 新增RACI矩阵调度
+- 新增三阶段协作流程
 - V15质疑增强机制
-- V15.1 并行调度优化（工尺+天工设计）
-  * 多Agent并行调用API
-  * 智能缓存机制
-  * 超时熔断+降级策略
-  * 保留串行模式作为回退
 
-Author: 南乔 + 工尺 + 天工
-Date: 2026-03-17
+Author: 南乔
+Date: 2026-03-15
 """
 
 from flask import Flask, render_template_string, jsonify, request, send_file, Response
@@ -44,13 +42,6 @@ MeetingMinutesGenerator = None
 # ==================== 质疑增强配置 ====================
 CHALLENGE_ENHANCEMENT_ENABLED = True  # 质疑增强开关（可配置）
 challenge_manager = None  # 全局质疑增强管理器
-
-# ==================== 并行调度配置 V15.1 ====================
-PARALLEL_MODE_ENABLED = True  # 并行模式开关（可配置）
-PARALLEL_TIMEOUT = 30  # 并行超时时间（秒）
-PARALLEL_MAX_WORKERS = 5  # 最大并行数
-PARALLEL_CACHE_ENABLED = True  # 缓存开关
-PARALLEL_FALLBACK_ENABLED = True  # 降级开关
 
 def get_challenge_manager():
     """获取质疑增强管理器（单例）"""
@@ -275,202 +266,6 @@ def call_qianfan_stream(system_prompt: str, user_message: str, temperature: floa
     except Exception as e:
         print(f"千帆API流式调用失败: {e}")
         yield f"error: {str(e)}"
-
-
-# ==================== 并行调度模块 V15.1 ====================
-import hashlib
-from concurrent.futures import ThreadPoolExecutor, as_completed
-from threading import Lock
-
-# 缓存目录
-PARALLEL_CACHE_DIR = "/root/.openclaw/workspace/03_输出成果/agent_cache"
-os.makedirs(PARALLEL_CACHE_DIR, exist_ok=True)
-
-# Token统计锁
-parallel_token_lock = Lock()
-parallel_total_tokens = 0
-
-
-def get_parallel_cache_key(system_prompt: str, user_message: str) -> str:
-    """生成缓存键"""
-    content = f"{system_prompt}|{user_message}"
-    return hashlib.md5(content.encode()).hexdigest()
-
-
-def get_parallel_cached_response(cache_key: str) -> Optional[str]:
-    """获取缓存响应"""
-    cache_file = os.path.join(PARALLEL_CACHE_DIR, f"{cache_key}.json")
-    if os.path.exists(cache_file):
-        try:
-            with open(cache_file, "r", encoding="utf-8") as f:
-                data = json.load(f)
-                # 缓存有效期24小时
-                if time.time() - data.get("timestamp", 0) < 86400:
-                    return data.get("response")
-        except:
-            pass
-    return None
-
-
-def save_parallel_cached_response(cache_key: str, response: str):
-    """保存缓存响应"""
-    cache_file = os.path.join(PARALLEL_CACHE_DIR, f"{cache_key}.json")
-    try:
-        with open(cache_file, "w", encoding="utf-8") as f:
-            json.dump({
-                "response": response,
-                "timestamp": time.time()
-            }, f, ensure_ascii=False)
-    except:
-        pass
-
-
-def call_agent_parallel(agent_id: str, system_prompt: str, user_message: str, 
-                        temperature: float = 0.7) -> Tuple[str, str, bool]:
-    """
-    并行调用单个Agent
-    
-    Returns:
-        Tuple[response, agent_id, from_cache]
-    """
-    global parallel_total_tokens
-    
-    # 检查缓存
-    if PARALLEL_CACHE_ENABLED:
-        cache_key = get_parallel_cache_key(system_prompt, user_message)
-        cached = get_parallel_cached_response(cache_key)
-        if cached:
-            print(f"[{agent_id}] 命中缓存", flush=True)
-            return cached, agent_id, True
-    
-    if not QIANFAN_API_KEY:
-        return None, agent_id, False
-    
-    try:
-        headers = {
-            "Authorization": f"Bearer {QIANFAN_API_KEY}",
-            "Content-Type": "application/json"
-        }
-        combined_message = f"{system_prompt}\n\n---\n\n{user_message}"
-        payload = {
-            "model": "qianfan-code-latest",
-            "messages": [{"role": "user", "content": combined_message}],
-            "temperature": temperature,
-            "top_p": 0.9
-        }
-        
-        start_time = time.time()
-        response = requests.post(
-            "https://qianfan.baidubce.com/v2/coding/chat/completions", 
-            headers=headers, json=payload, timeout=PARALLEL_TIMEOUT
-        )
-        elapsed = time.time() - start_time
-        
-        print(f"[{agent_id}] API耗时: {elapsed:.1f}秒", flush=True)
-        
-        result = response.json()
-        
-        # 统计token
-        if 'usage' in result:
-            with parallel_token_lock:
-                parallel_total_tokens += result['usage'].get('total_tokens', 0)
-        
-        if 'choices' in result and len(result['choices']) > 0:
-            content = result['choices'][0]['message']['content']
-            # 保存缓存
-            if PARALLEL_CACHE_ENABLED:
-                save_parallel_cached_response(cache_key, content)
-            return content, agent_id, False
-            
-        return None, agent_id, False
-        
-    except requests.exceptions.Timeout:
-        print(f"[{agent_id}] API超时（{PARALLEL_TIMEOUT}秒）", flush=True)
-        return None, agent_id, False
-    except Exception as e:
-        print(f"[{agent_id}] API调用失败: {e}", flush=True)
-        return None, agent_id, False
-
-
-def dispatch_agents_parallel(agents: List[str], task: str, 
-                             memory_context: str = "") -> Dict[str, Tuple[str, bool]]:
-    """
-    并行调度多个Agent
-    
-    Args:
-        agents: Agent ID列表
-        task: 任务描述
-        memory_context: 对话上下文
-    
-    Returns:
-        Dict[agent_id, Tuple[response, from_cache]]
-    """
-    if not PARALLEL_MODE_ENABLED:
-        return {}
-    
-    results = {}
-    
-    # 讨论维度提示
-    discussion_prompts = {
-        'caiwei': '请从需求拆解、用户故事、验收标准角度分析',
-        'zhijin': '请从技术选型、架构方案、扩展性角度分析',
-        'zhutai': '请从成本估算、资源需求角度分析',
-        'chengcai': '请从UI设计、用户体验角度分析',
-        'gongchi': '请从接口设计、模块划分角度分析',
-        'yuheng': '请从进度计划、风险管控、里程碑角度分析',
-        'fuyao': '请从整体平衡、决策建议、优先级排序角度分析',
-        'zhegui': '请从人员配置、技术资源、知识库支持角度分析',
-        'nanqiao': '请从整体协调角度分析'
-    }
-    
-    # 构建并行任务
-    tasks = []
-    for agent_id in agents:
-        if agent_id not in AGENTS:
-            continue
-        agent = AGENTS[agent_id]
-        role_prompt = discussion_prompts.get(agent_id, '请发表专业意见')
-        
-        user_message = f"""当前任务：{task}
-
-已有讨论：
-{memory_context}
-
-{role_prompt}。如果有不同意见请明确提出质疑。"""
-        
-        tasks.append({
-            "agent_id": agent_id,
-            "system_prompt": agent.get_system_prompt(),
-            "user_message": user_message
-        })
-    
-    # 并行执行
-    start_time = time.time()
-    print(f"[并行调度] 启动 {len(tasks)} 个Agent并行响应...", flush=True)
-    
-    with ThreadPoolExecutor(max_workers=min(len(tasks), PARALLEL_MAX_WORKERS)) as executor:
-        futures = {
-            executor.submit(
-                call_agent_parallel, 
-                t['agent_id'],
-                t['system_prompt'], 
-                t['user_message']
-            ): t['agent_id'] 
-            for t in tasks
-        }
-        
-        for future in as_completed(futures):
-            try:
-                response, agent_id, from_cache = future.result()
-                if response:
-                    results[agent_id] = (response, from_cache)
-            except Exception as e:
-                print(f"[并行调度] 任务异常: {e}", flush=True)
-    
-    elapsed = time.time() - start_time
-    print(f"[并行调度] 完成，总耗时: {elapsed:.1f}秒", flush=True)
-    
-    return results
 
 
 # ==================== Agent角色定义（完整9个）====================
@@ -3907,52 +3702,8 @@ def api_task():
                 else:
                     # 降级：使用V14的讨论逻辑
                     print("[V14] 使用传统讨论逻辑")
-                    
-                    # ========== V15.1 并行调度优化 ==========
-                    if PARALLEL_MODE_ENABLED and round_num == 0:
-                        # 第一轮使用并行调度
-                        print("[V15.1] 并行调度模式启动")
-                        context = memory.get_context()
-                        
-                        # 并行调用所有Agent
-                        parallel_results = dispatch_agents_parallel(
-                            discussion_flow, task, context
-                        )
-                        
-                        # 处理并行结果
-                        for agent_key in discussion_flow:
-                            if agent_key not in AGENTS:
-                                continue
-                            
-                            if agent_key in parallel_results:
-                                response, from_cache = parallel_results[agent_key]
-                                is_challenge = any(kw in response for kw in 
-                                    ['质疑', '反对', '不同意', '不可行', '成本过高', '挑战'])
-                                
-                                # 添加工期评估（仅主Agent）
-                                if agent_key == lead_agent:
-                                    est_msg = responder.generate_estimate_message(
-                                        AGENTS[agent_key].name, task_name, est_time, task_complexity
-                                    )
-                                    response += f"\n\n{est_msg}"
-                                
-                                agent_status[agent_key] = 'challenge' if is_challenge else 'speaking'
-                                memory.add_turn(agent_key, AGENTS[agent_key].name, response,
-                                              is_challenging=is_challenge)
-                                agent_status[agent_key] = 'idle'
-                            else:
-                                # 降级：使用fallback响应
-                                if PARALLEL_FALLBACK_ENABLED:
-                                    response, is_challenge, reply_to = responder._fallback(
-                                        AGENTS[agent_key], task, context
-                                    )
-                                    memory.add_turn(agent_key, AGENTS[agent_key].name, response,
-                                                  is_challenging=is_challenge)
-                        
-                        print(f"[V15.1] 并行调度完成，成功: {len(parallel_results)}/{len(discussion_flow)}")
-                    
-                    # ========== 原有串行逻辑（后续轮次或降级时使用）==========
-                    for round_num in range(1 if PARALLEL_MODE_ENABLED else 0, discussion_rounds):
+                    for round_num in range(discussion_rounds):
+                        print(f"[V14] 第{round_num + 1}轮讨论")
                         
                         for agent_key in discussion_flow:
                             if len(memory.history) >= dynamic_turn_limit:
