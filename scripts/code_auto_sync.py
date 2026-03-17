@@ -40,15 +40,21 @@ EXCLUDE_PATTERNS = [
 ]
 
 
-def run_git_command(cmd, cwd=WORKSPACE_PATH):
+def run_git_command(cmd, cwd=WORKSPACE_PATH, env=None):
     """执行Git命令"""
     try:
+        # 合并环境变量
+        full_env = os.environ.copy()
+        if env:
+            full_env.update(env)
+        
         result = subprocess.run(
             cmd,
             cwd=cwd,
             capture_output=True,
             text=True,
-            timeout=30
+            timeout=60,
+            env=full_env
         )
         return result.returncode == 0, result.stdout, result.stderr
     except subprocess.TimeoutExpired:
@@ -114,8 +120,18 @@ def commit_and_push(changes):
     
     print(f"[SUCCESS] 提交成功: {message}")
     
-    # 4. 推送
-    success, stdout, stderr = run_git_command(["git", "push", "origin", "master"])
+    # 4. 推送（使用环境变量认证，禁用SSL验证）
+    # 设置远程URL（使用环境变量中的Token）
+    github_token = os.environ.get("GITHUB_TOKEN", "")
+    if github_token:
+        remote_url = f"https://shaoshuai-007:{github_token}@github.com/shaoshuai-007/collaboration-dashboard.git"
+        run_git_command(["git", "remote", "set-url", "origin", remote_url])
+    
+    # 推送（禁用SSL验证）
+    success, stdout, stderr = run_git_command(
+        ["git", "push", "origin", "master"],
+        env={"GIT_SSL_NO_VERIFY": "1"}
+    )
     if not success:
         print(f"[ERROR] git push 失败: {stderr}")
         return False
