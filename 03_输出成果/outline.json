@@ -1,0 +1,195 @@
+{
+  "title": "NVIDIA GTC 2026 黄仁勋主题演讲",
+  "subtitle": "视频内容总结",
+  "author": "南乔",
+  "date": "2026-03-17",
+  "pages": [
+    {
+      "page": 1,
+      "type": "cover",
+      "title": "NVIDIA GTC 2026",
+      "subtitle": "黄仁勋主题演讲 视频总结"
+    },
+    {
+      "page": 2,
+      "type": "toc",
+      "items": [
+        "演讲概述",
+        "AI技术发展现状",
+        "核心技术突破",
+        "应用场景拓展",
+        "行业影响与展望"
+      ]
+    },
+    {
+      "page": 3,
+      "type": "content",
+      "title": "演讲概述：AI时代的里程碑",
+      "layout": "left-text-right-image",
+      "left_sections": [
+        {
+          "title": "GTC大会背景",
+          "points": [
+            "全球最具影响力的AI技术盛会",
+            "汇聚全球AI开发者与研究者",
+            "展示最新GPU技术与AI应用"
+          ]
+        },
+        {
+          "title": "黄仁勋演讲亮点",
+          "points": [
+            "NVIDIA创始人兼CEO亲自分享",
+            "展望AI技术未来发展方向",
+            "发布新一代GPU产品"
+          ]
+        }
+      ],
+      "right_sections": [
+        {"name": "GTC 2026", "items": ["主题演讲", "技术展示"]},
+        {"name": "黄仁勋", "items": ["CEO", "AI先驱"]},
+        {"name": "核心内容", "items": ["GPU创新", "AI应用"]},
+        {"name": "未来展望", "items": ["AGI探索", "生态建设"]}
+      ]
+    },
+    {
+      "page": 4,
+      "type": "content",
+      "title": "AI技术发展现状：高速演进",
+      "layout": "top-text-bottom-image",
+      "top_sections": [
+        {
+          "title": "计算能力突破",
+          "points": ["GPU性能持续提升", "能效比大幅改善"]
+        },
+        {
+          "title": "深度学习进展",
+          "points": ["模型规模不断扩大", "训练效率显著提高"]
+        },
+        {
+          "title": "生成式AI崛起",
+          "points": ["文本生成成熟", "多模态融合加速"]
+        }
+      ],
+      "bottom_content": [
+        {
+          "title": "关键趋势",
+          "points": [
+            "大模型训练需求持续增长，对算力要求更高",
+            "AI应用从云端向边缘延伸，场景更加丰富",
+            "开源生态繁荣，降低AI开发门槛"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 5,
+      "type": "architecture",
+      "title": "核心技术突破：GPU架构创新",
+      "layers": [
+        {"name": "应用层", "components": ["AI训练", "AI推理", "科学计算", "图形渲染"]},
+        {"name": "软件层", "components": ["CUDA", "cuDNN", "TensorRT", "NGC容器"]},
+        {"name": "驱动层", "components": ["GPU驱动", "系统接口", "虚拟化支持"]},
+        {"name": "硬件层", "components": ["新一代GPU", "HBM内存", "NVLink", "Tensor Core"]},
+        {"name": "基础设施层", "components": ["数据中心", "云计算", "边缘计算"]}
+      ]
+    },
+    {
+      "page": 6,
+      "type": "metrics",
+      "title": "性能指标对比：质的飞跃",
+      "metrics": [
+        {"name": "AI训练性能", "current": "上一代架构", "target": "新一代架构", "improve": "提升3-5倍"},
+        {"name": "推理效率", "current": "传统方案", "target": "优化方案", "improve": "降低延迟60%"},
+        {"name": "能效比", "current": "基准水平", "target": "优化目标", "improve": "提升2倍"},
+        {"name": "内存带宽", "current": "HBM2e", "target": "HBM3", "improve": "带宽翻倍"},
+        {"name": "互联带宽", "current": "NVLink 3.0", "target": "NVLink 4.0", "improve": "提升1.5倍"},
+        {"name": "集群规模", "current": "千卡级别", "target": "万卡级别", "improve": "扩展10倍"}
+      ]
+    },
+    {
+      "page": 7,
+      "type": "content",
+      "title": "应用场景拓展：AI赋能千行百业",
+      "layout": "left-text-right-image",
+      "left_sections": [
+        {
+          "title": "自动驾驶",
+          "points": [
+            "端到端神经网络驾驶",
+            "实时感知与决策优化",
+            "大规模仿真训练"
+          ]
+        },
+        {
+          "title": "医疗健康",
+          "points": [
+            "医学影像AI诊断",
+            "药物研发加速",
+            "基因组学分析"
+          ]
+        },
+        {
+          "title": "工业制造",
+          "points": [
+            "智能质检与预测维护",
+            "数字孪生与仿真",
+            "柔性生产线优化"
+          ]
+        }
+      ],
+      "right_sections": [
+        {"name": "自动驾驶", "items": ["Tesla", "Waymo"]},
+        {"name": "医疗AI", "items": ["影像诊断", "药物研发"]},
+        {"name": "智能制造", "items": ["质检", "预测维护"]},
+        {"name": "科研计算", "items": ["气象模拟", "材料科学"]}
+      ]
+    },
+    {
+      "page": 8,
+      "type": "content",
+      "title": "行业影响与展望：引领AI时代",
+      "layout": "top-text-bottom-image",
+      "top_sections": [
+        {
+          "title": "芯片产业",
+          "points": ["AI芯片标杆", "技术路线引领"]
+        },
+        {
+          "title": "云计算",
+          "points": ["GPU云服务升级", "AI即服务普及"]
+        },
+        {
+          "title": "企业应用",
+          "points": ["加速AI转型", "降本增效"]
+        }
+      ],
+      "bottom_content": [
+        {
+          "title": "未来展望",
+          "points": [
+            "通用人工智能(AGI)探索持续推进",
+            "AI民主化让更多人受益于AI技术",
+            "可持续发展：绿色计算与碳中和技术"
+          ]
+        }
+      ]
+    },
+    {
+      "page": 9,
+      "type": "summary",
+      "title": "总结与展望",
+      "key_points": [
+        "NVIDIA GTC 2026展示了AI技术的最新突破",
+        "新一代GPU架构带来质的飞跃",
+        "AI应用场景持续拓展，赋能千行百业",
+        "生态系统繁荣，开发者社区壮大",
+        "NVIDIA持续引领AI计算发展方向"
+      ],
+      "next_steps": [
+        "关注NVIDIA最新产品发布动态",
+        "深入学习CUDA开发与AI应用",
+        "探索AI技术在本领域的应用机会"
+      ]
+    }
+  ]
+}

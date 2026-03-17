@@ -1,0 +1,16 @@
+# 指南针工程智能协作平台授权配置
+# 
+# 授权状态: DISABLED (已禁用)
+# 
+# 启用方式：
+# 1. 修改 auth_code 为授权码
+# 2. 设置 expire_time 为过期时间戳或 NEVER
+# 3. 运行 bash start_platform.sh [授权码]
+#
+# 当前状态：需要少帅手动授权才能启动
+
+auth_code=007
+expire_time=NEVER
+created_by=南乔
+created_at=2026-03-14
+note=未经少帅允许，不得自动启动

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>点击测试</title>
+    <style>
+        .agent-item {
+            padding: 10px;
+            margin: 5px;
+            background: #f0f0f0;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+        .agent-item:hover { background: #e0e0e0; }
+        .agent-item.active { border-color: blue; background: #d0e0ff; }
+        .agent-item * { pointer-events: none; }
+    </style>
+</head>
+<body>
+    <h2>点击测试页面</h2>
+    <div id="status">当前选中: 无</div>
+    <div id="list">
+        <div class="agent-item" data-id="1">
+            <span>🌸 采薇</span>
+        </div>
+        <div class="agent-item" data-id="2">
+            <span>🧵 织锦</span>
+        </div>
+        <div class="agent-item" data-id="3">
+            <span>🏗️ 筑台</span>
+        </div>
+    </div>
+    
+    <script>
+        var currentId = null;
+        var items = document.querySelectorAll('.agent-item');
+        
+        for (var i = 0; i < items.length; i++) {
+            items[i].addEventListener('click', function() {
+                var id = this.getAttribute('data-id');
+                
+                // 移除旧的active
+                var oldActive = document.querySelector('.agent-item.active');
+                if (oldActive) oldActive.classList.remove('active');
+                
+                // 添加新的active
+                this.classList.add('active');
+                currentId = id;
+                
+                document.getElementById('status').textContent = '当前选中: ' + id;
+                console.log('点击了: ' + id);
+            });
+        }
+        
+        console.log('初始化完成，共绑定 ' + items.length + ' 个元素');
+    </script>
+</body>
+</html>

@@ -1,0 +1,53 @@
+{
+  "account": "红衣大叔周鸿祎",
+  "keyword": "黄仁勋CES预言",
+  "crawl_time": "2026-03-17T13:24:55.148407",
+  "methods": {
+    "search_engine": {
+      "method": "search_engine",
+      "keyword": "红衣大叔周鸿祎 黄仁勋CES预言",
+      "videos": [],
+      "status": "success",
+      "note": "搜索成功，但需要手动解析结果"
+    },
+    "bilibili": {
+      "method": "bilibili",
+      "uploader": "红衣大叔周鸿祎",
+      "videos": [],
+      "status": "failed",
+      "error": "HTTP 412"
+    },
+    "weibo": {
+      "method": "weibo",
+      "user": "红衣大叔周鸿祎",
+      "posts": [],
+      "status": "success",
+      "note": "搜索成功，但需要登录才能获取完整内容"
+    },
+    "tech_news": {
+      "method": "tech_news",
+      "topic": "黄仁勋CES预言",
+      "articles": [
+        {
+          "site": "虎嗅",
+          "url": "https://www.huxiu.com/search?s=黄仁勋CES预言",
+          "status": "success",
+          "content_length": 204138
+        },
+        {
+          "site": "36氪",
+          "url": "https://36kr.com/search/articles/黄仁勋CES预言",
+          "status": "success",
+          "content_length": 39611
+        },
+        {
+          "site": "钛媒体",
+          "url": "https://www.tmtpost.com/search?q=黄仁勋CES预言",
+          "status": "success",
+          "content_length": 41107
+        }
+      ],
+      "status": "success"
+    }
+  }
+}

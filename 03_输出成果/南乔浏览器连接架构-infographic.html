@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>南乔与浏览器连接架构 - Infographic</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        #container {
+            width: 100%;
+            max-width: 1200px;
+            height: 800px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+    </style>
+</head>
+<body>
+    <div id="container"></div>
+    <script src="https://unpkg.com/@antv/infographic@latest/dist/infographic.min.js"></script>
+    <script>
+        const infographic = new AntVInfographic.Infographic({
+            container: '#container',
+            width: '100%',
+            height: '100%',
+        });
+        
+        document.fonts?.ready.then(() => {
+            infographic.render(`infographic hierarchy-tree-tech-style-badge-card
+data
+  root
+    label 南乔浏览器连接架构
+    children
+      - label 🖥️ 云服务器
+        desc 120.48.169.242
+        children
+          - label 🤖 OpenClaw
+            desc 南乔AI助手 ✅
+          - label 🌐 Gateway
+            desc 端口18789 ✅
+          - label 📡 WebSocket
+            desc 等待连接 ⏳
+      - label 💻 少帅本地电脑
+        desc Chrome浏览器
+        children
+          - label 🌐 Chrome
+            desc 已安装 ✅
+          - label 🔌 扩展
+            desc 已安装 ✅
+          - label 📑 标签页附加
+            desc tabCount=0 ❌
+theme
+  palette #C93832 #006EBD #595959`);
+        }).catch((error) => {
+            console.error('Error waiting for fonts to load:', error);
+            infographic.render(`infographic hierarchy-tree-tech-style-badge-card
+data
+  root
+    label 南乔浏览器连接架构
+    children
+      - label 🖥️ 云服务器
+        desc 120.48.169.242
+        children
+          - label 🤖 OpenClaw
+            desc 南乔AI助手 ✅
+          - label 🌐 Gateway
+            desc 端口18789 ✅
+          - label 📡 WebSocket
+            desc 等待连接 ⏳
+      - label 💻 少帅本地电脑
+        desc Chrome浏览器
+        children
+          - label 🌐 Chrome
+            desc 已安装 ✅
+          - label 🔌 扩展
+            desc 已安装 ✅
+          - label 📑 标签页附加
+            desc tabCount=0 ❌
+theme
+  palette #C93832 #006EBD #595959`);
+        });
+    </script>
+</body>
+</html>

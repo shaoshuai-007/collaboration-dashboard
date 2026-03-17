@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🧭 指南针工程 - 多Agent协作平台</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Microsoft YaHei", sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container { max-width: 1600px; margin: 0 auto; }
+        
+        .header {
+            text-align: center;
+            padding: 24px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 16px;
+            margin-bottom: 24px;
+        }
+        .header h1 { font-size: 28px; color: #C93832; margin-bottom: 8px; }
+        .header p { color: #888; font-size: 14px; }
+        
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 24px;
+        }
+        
+        @media (max-width: 900px) {
+            .main-grid { grid-template-columns: 1fr; }
+        }
+        
+        .left-panel { display: flex; flex-direction: column; gap: 24px; }
+        
+        .agents-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 12px;
+        }
+        
+        .agent-card {
+            background: rgba(255,255,255,0.08);
+            border-radius: 12px;
+            padding: 14px;
+            border-left: 4px solid #595959;
+            transition: all 0.3s;
+        }
+        .agent-card:hover { transform: translateY(-2px); background: rgba(255,255,255,0.12); }
+        .agent-card.speaking { border-left-color: #C93832; background: rgba(201,56,50,0.2); animation: pulse 1.5s infinite; }
+        .agent-card.active { border-left-color: #006EBD; }
+        
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
+        
+        .agent-name { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+        .agent-role { font-size: 11px; color: #888; margin-bottom: 6px; }
+        .agent-status {
+            font-size: 10px;
+            padding: 3px 8px;
+            border-radius: 4px;
+            display: inline-block;
+        }
+        .status-idle { background: #595959; }
+        .status-speaking { background: #C93832; }
+        .status-working { background: #006EBD; }
+        
+        .priority-badge {
+            font-size: 10px;
+            background: rgba(255,255,255,0.15);
+            padding: 2px 6px;
+            border-radius: 3px;
+            margin-left: 6px;
+        }
+        
+        .chat-panel {
+            background: rgba(0,0,0,0.3);
+            border-radius: 16px;
+            padding: 20px;
+            flex: 1;
+            min-height: 400px;
+            display: flex;
+            flex-direction: column;
+        }
+        .chat-header {
+            font-size: 14px;
+            color: #888;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding-right: 8px;
+        }
+        
+        .message {
+            margin-bottom: 12px;
+            padding: 10px 14px;
+            border-radius: 10px;
+            background: rgba(0,110,189,0.25);
+        }
+        .message.broadcast { background: rgba(201,56,50,0.25); border-left: 3px solid #C93832; }
+        .message.task { background: rgba(45,90,39,0.25); border-left: 3px solid #2d5a27; }
+        .message .meta { font-size: 11px; color: #888; margin-bottom: 4px; display: flex; justify-content: space-between; }
+        .message .content { font-size: 13px; line-height: 1.5; }
+        .message .from { color: #C93832; font-weight: 600; }
+        
+        .right-panel {
+            background: rgba(255,255,255,0.05);
+            border-radius: 16px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .panel-section h3 {
+            font-size: 14px;
+            color: #888;
+            margin-bottom: 12px;
+        }
+        
+        .speak-queue {
+            background: rgba(0,0,0,0.2);
+            border-radius: 8px;
+            padding: 12px;
+            min-height: 60px;
+        }
+        .queue-item {
+            padding: 6px 10px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 4px;
+            margin-bottom: 4px;
+            font-size: 12px;
+        }
+        
+        .control-btn {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 13px;
+            cursor: pointer;
+            margin-bottom: 8px;
+            transition: all 0.2s;
+        }
+        .control-btn:hover { transform: scale(1.02); }
+        .btn-primary { background: linear-gradient(135deg, #C93832, #006EBD); color: white; }
+        .btn-secondary { background: rgba(255,255,255,0.1); color: white; }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+        .stat-box {
+            background: rgba(0,0,0,0.2);
+            border-radius: 8px;
+            padding: 12px;
+            text-align: center;
+        }
+        .stat-value { font-size: 24px; font-weight: bold; color: #C93832; }
+        .stat-label { font-size: 11px; color: #888; }
+        
+        .progress-bar {
+            height: 6px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 12px;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #C93832, #006EBD);
+            transition: width 0.5s;
+        }
+        
+        .event-log {
+            font-size: 11px;
+            color: #888;
+            max-height: 150px;
+            overflow-y: auto;
+            background: rgba(0,0,0,0.2);
+            border-radius: 8px;
+            padding: 10px;
+        }
+        .event-item { margin-bottom: 4px; }
+        
+        .input-group {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+        .input-group input, .input-group select {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.1);
+            color: white;
+            font-size: 13px;
+        }
+        .input-group input::placeholder { color: #888; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧭 指南针工程 - 多Agent协作平台</h1>
+            <p>实时协作调度 | 通信总线 | 冲突处理 | 任务分配 | 离线演示版</p>
+        </div>
+        
+        <div class="main-grid">
+            <div class="left-panel">
+                <div class="agents-grid" id="agentsGrid"></div>
+                
+                <div class="chat-panel">
+                    <div class="chat-header">💬 实时对话流 (共 <span id="msgCount">0</span> 条消息)</div>
+                    <div class="chat-messages" id="chatMessages"></div>
+                </div>
+            </div>
+            
+            <div class="right-panel">
+                <div class="panel-section">
+                    <h3>📊 协作状态</h3>
+                    <div class="stats-grid">
+                        <div class="stat-box">
+                            <div class="stat-value" id="agentCount">9</div>
+                            <div class="stat-label">活跃Agent</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-value" id="taskCount">0</div>
+                            <div class="stat-label">进行中任务</div>
+                        </div>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill" style="width: 70%"></div>
+                    </div>
+                </div>
+                
+                <div class="panel-section">
+                    <h3>🎤 发言队列</h3>
+                    <div class="speak-queue" id="speakQueue">
+                        <div style="color: #666; font-size: 12px;">当前空闲</div>
+                    </div>
+                </div>
+                
+                <div class="panel-section">
+                    <h3>🎮 控制面板</h3>
+                    <div class="input-group">
+                        <select id="fromAgent">
+                            <option value="fuyao">🌀 扶摇</option>
+                            <option value="nanqiao">🌿 南乔</option>
+                            <option value="yuheng">⚖️ 玉衡</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <input type="text" id="broadcastContent" placeholder="输入广播内容...">
+                    </div>
+                    <button class="control-btn btn-primary" onclick="sendBroadcast()">📢 发送广播</button>
+                    <button class="control-btn btn-secondary" onclick="simulateCollaboration()">🎬 模拟协作过程</button>
+                    <button class="control-btn btn-secondary" onclick="clearMessages()">🗑️ 清空消息</button>
+                </div>
+                
+                <div class="panel-section">
+                    <h3>📜 最近事件</h3>
+                    <div class="event-log" id="eventLog"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Agent数据
+        const agents = [
+            { id: 'fuyao', name: '扶摇', role: '总指挥', emoji: '🌀', priority: 10, status: 'idle' },
+            { id: 'nanqiao', name: '南乔', role: '主控Agent', emoji: '🌿', priority: 9, status: 'idle' },
+            { id: 'yuheng', name: '玉衡', role: '项目经理', emoji: '⚖️', priority: 8, status: 'idle' },
+            { id: 'caiwei', name: '采薇', role: '需求分析专家', emoji: '🌸', priority: 7, status: 'idle' },
+            { id: 'zhijin', name: '织锦', role: '架构设计师', emoji: '🧵', priority: 6, status: 'idle' },
+            { id: 'gongchi', name: '工尺', role: '详细设计师', emoji: '📐', priority: 5, status: 'idle' },
+            { id: 'zhutai', name: '筑台', role: '售前工程师', emoji: '🏗️', priority: 5, status: 'idle' },
+            { id: 'chengcai', name: '呈彩', role: '方案PPT设计师', emoji: '🎨', priority: 4, status: 'idle' },
+            { id: 'zhegui', name: '折桂', role: '资源管家', emoji: '📚', priority: 3, status: 'idle' },
+        ];
+        
+        let messages = [];
+        let currentSpeaker = null;
+        let speakQueue = [];
+        let activeTasks = {};
+        
+        // 初始化
+        function init() {
+            renderAgents();
+            // 加载历史消息
+            addMessage('fuyao', 'all', '项目启动，请各位准备！', 'broadcast');
+            addMessage('nanqiao', 'caiwei', '请完成需求分析文档', 'task');
+            addMessage('caiwei', 'nanqiao', '收到，采用"先诊断后开方"方法论，预计30分钟完成', 'answer');
+            addMessage('nanqiao', 'zhijin', '请评审采薇的需求产出', 'task');
+            addMessage('zhijin', 'nanqiao', '评审完成：方法论正确✅ 准确率目标建议分阶段达成', 'feedback');
+        }
+        
+        // 渲染Agent卡片
+        function renderAgents() {
+            const grid = document.getElementById('agentsGrid');
+            grid.innerHTML = '';
+            
+            const sorted = [...agents].sort((a, b) => b.priority - a.priority);
+            
+            sorted.forEach(agent => {
+                const isSpeaking = currentSpeaker === agent.id;
+                const hasTask = activeTasks[agent.id];
+                
+                const card = document.createElement('div');
+                card.className = `agent-card ${isSpeaking ? 'speaking' : ''} ${hasTask ? 'active' : ''}`;
+                card.innerHTML = `
+                    <div class="agent-name">${agent.emoji} ${agent.name}
+                        <span class="priority-badge">P${agent.priority}</span>
+                    </div>
+                    <div class="agent-role">${agent.role}</div>
+                    <span class="agent-status ${isSpeaking ? 'status-speaking' : hasTask ? 'status-working' : 'status-idle'}">
+                        ${isSpeaking ? '🎤 发言中' : hasTask ? '💼 工作中' : '💤 空闲'}
+                    </span>
+                `;
+                grid.appendChild(card);
+            });
+        }
+        
+        // 添加消息
+        function addMessage(from, to, content, type = 'message') {
+            const now = new Date();
+            const time = now.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
+            
+            const fromAgent = agents.find(a => a.id === from);
+            const toStr = to === 'all' ? '全体' : (agents.find(a => a.id === to)?.name || to);
+            
+            messages.push({
+                id: 'msg_' + messages.length,
+                from: from,
+                fromName: fromAgent?.name || from,
+                fromEmoji: fromAgent?.emoji || '',
+                to: to,
+                toStr: toStr,
+                content: content,
+                type: type,
+                time: time
+            });
+            
+            renderMessages();
+            addEvent(`${fromAgent?.emoji || ''} ${fromAgent?.name || from} → ${toStr}: ${content.substring(0, 20)}...`);
+        }
+        
+        // 渲染消息
+        function renderMessages() {
+            const container = document.getElementById('chatMessages');
+            container.innerHTML = '';
+            
+            messages.forEach(msg => {
+                const div = document.createElement('div');
+                div.className = `message ${msg.type}`;
+                div.innerHTML = `
+                    <div class="meta">
+                        <span>${msg.type === 'broadcast' ? '📢 广播' : msg.type === 'task' ? '📋 任务' : msg.type === 'feedback' ? '💬 反馈' : '💬 消息'}</span>
+                        <span>${msg.time}</span>
+                    </div>
+                    <div class="content">
+                        <span class="from">${msg.fromEmoji} ${msg.fromName}</span> → ${msg.toStr}: ${msg.content}
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+            
+            container.scrollTop = container.scrollHeight;
+            document.getElementById('msgCount').textContent = messages.length;
+        }
+        
+        // 发送广播
+        function sendBroadcast() {
+            const from = document.getElementById('fromAgent').value;
+            const content = document.getElementById('broadcastContent').value;
+            
+            if (!content) {
+                alert('请输入广播内容');
+                return;
+            }
+            
+            addMessage(from, 'all', content, 'broadcast');
+            document.getElementById('broadcastContent').value = '';
+        }
+        
+        // 模拟协作过程
+        async function simulateCollaboration() {
+            const steps = [
+                { from: 'fuyao', to: 'all', content: '【决策】批准方案调整，工期修正为7-8月', type: 'broadcast' },
+                { from: 'nanqiao', to: 'zhijin', content: '请输出架构设计方案', type: 'task' },
+                { from: 'zhijin', to: 'nanqiao', content: '架构方案：六层架构（接入→网关→业务→AI推理→特征工程→数据存储）', type: 'answer' },
+                { from: 'nanqiao', to: 'zhutai', content: '请评估成本', type: 'task' },
+                { from: 'zhutai', to: 'nanqiao', content: '成本更新：低配445万/年、高配700万/年，双模型切换方案', type: 'answer' },
+                { from: 'yuheng', to: 'all', content: '进度更新：需求分析100%、架构设计100%、成本评估100%', type: 'broadcast' },
+            ];
+            
+            for (const step of steps) {
+                await new Promise(r => setTimeout(r, 1000));
+                addMessage(step.from, step.to, step.content, step.type);
+            }
+        }
+        
+        // 清空消息
+        function clearMessages() {
+            messages = [];
+            renderMessages();
+            document.getElementById('eventLog').innerHTML = '';
+        }
+        
+        // 添加事件
+        function addEvent(text) {
+            const log = document.getElementById('eventLog');
+            const time = new Date().toLocaleTimeString('zh-CN');
+            log.innerHTML = `<div class="event-item">[${time}] ${text}</div>` + log.innerHTML;
+        }
+        
+        // 启动
+        init();
+    </script>
+</body>
+</html>

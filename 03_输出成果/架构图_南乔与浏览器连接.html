@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>南乔与浏览器连接架构图</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .architecture {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+        
+        .server-box, .client-box {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            position: relative;
+        }
+        
+        .server-box {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        }
+        
+        .client-box {
+            background: linear-gradient(135deg, #ffeaa7 0%, #dfe6e9 100%);
+        }
+        
+        .box-title {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .box-title .icon {
+            font-size: 1.5em;
+        }
+        
+        .components {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .component {
+            background: white;
+            border-radius: 12px;
+            padding: 15px 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .component-title {
+            font-weight: bold;
+            color: #2d3436;
+            margin-bottom: 8px;
+            font-size: 1.1em;
+        }
+        
+        .component-status {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: bold;
+        }
+        
+        .status-success {
+            background: #00b894;
+            color: white;
+        }
+        
+        .status-error {
+            background: #d63031;
+            color: white;
+        }
+        
+        .status-warning {
+            background: #fdcb6e;
+            color: #2d3436;
+        }
+        
+        .connection {
+            text-align: center;
+            padding: 20px;
+            position: relative;
+        }
+        
+        .connection-line {
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: linear-gradient(180deg, #00b894, #0984e3);
+            transform: translateX(-50%);
+        }
+        
+        .connection-text {
+            background: linear-gradient(135deg, #0984e3, #6c5ce7);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 50px;
+            display: inline-block;
+            font-weight: bold;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            position: relative;
+            z-index: 1;
+        }
+        
+        .problem-box {
+            background: linear-gradient(135deg, #ff7675, #d63031);
+            color: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 30px;
+            box-shadow: 0 10px 30px rgba(255,118,117,0.4);
+        }
+        
+        .problem-box h3 {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .problem-box ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        .problem-box li {
+            padding: 8px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .solution-box {
+            background: linear-gradient(135deg, #00b894, #00cec9);
+            color: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+            box-shadow: 0 10px 30px rgba(0,184,148,0.4);
+        }
+        
+        .solution-box h3 {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.3);
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.85em;
+            margin-left: 10px;
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8em;
+            }
+            
+            .components {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌿 南乔与浏览器连接架构</h1>
+        
+        <div class="architecture">
+            <!-- 服务器端 -->
+            <div class="server-box">
+                <div class="box-title">
+                    <span class="icon">🖥️</span>
+                    云服务器
+                    <span class="badge">120.48.169.242</span>
+                </div>
+                
+                <div class="components">
+                    <div class="component">
+                        <div class="component-title">🤖 OpenClaw (南乔)</div>
+                        <span class="component-status status-success">运行中</span>
+                    </div>
+                    
+                    <div class="component">
+                        <div class="component-title">🌐 Gateway</div>
+                        <span class="component-status status-success">端口 18789</span>
+                    </div>
+                    
+                    <div class="component">
+                        <div class="component-title">📡 WebSocket服务</div>
+                        <span class="component-status status-success">等待连接</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 连接线 -->
+            <div class="connection">
+                <div class="connection-line"></div>
+                <div class="connection-text">
+                    🔗 远程连接 (WebSocket)
+                </div>
+            </div>
+            
+            <!-- 客户端 -->
+            <div class="client-box">
+                <div class="box-title">
+                    <span class="icon">💻</span>
+                    少帅本地电脑
+                </div>
+                
+                <div class="components">
+                    <div class="component">
+                        <div class="component-title">🌐 Chrome浏览器</div>
+                        <span class="component-status status-success">已安装</span>
+                    </div>
+                    
+                    <div class="component">
+                        <div class="component-title">🔌 OpenClaw扩展</div>
+                        <span class="component-status status-success">已安装</span>
+                    </div>
+                    
+                    <div class="component">
+                        <div class="component-title">📑 标签页附加</div>
+                        <span class="component-status status-error">tabCount = 0 ❌</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 问题诊断 -->
+            <div class="problem-box">
+                <h3>⚠️ 问题诊断</h3>
+                <ul>
+                    <li>❌ 扩展已安装，但未附加到任何标签页</li>
+                    <li>❌ 南乔无法检测到浏览器中的标签页</li>
+                    <li>❌ 因此无法控制浏览器访问微信视频号</li>
+                </ul>
+            </div>
+            
+            <!-- 解决方案 -->
+            <div class="solution-box">
+                <h3>✅ 解决方案</h3>
+                <ul>
+                    <li>🎯 在Chrome任意网页上，点击OpenClaw扩展图标</li>
+                    <li>🎯 等待图标变绿或显示"已连接"</li>
+                    <li>🎯 南乔即可检测到标签页并控制浏览器</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

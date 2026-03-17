@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🧭 指南针工程 - 核心架构图</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .title {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+        .title h1 {
+            font-size: 36px;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .title p {
+            font-size: 18px;
+            opacity: 0.9;
+        }
+        
+        /* 架构图主体 */
+        .architecture {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        /* 顶层：用户层 */
+        .layer {
+            margin-bottom: 30px;
+            border: 2px dashed #e0e0e0;
+            border-radius: 15px;
+            padding: 20px;
+        }
+        .layer-title {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .layer-title span {
+            background: #165DFF;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+        
+        /* Web界面 */
+        .web-interface {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+        .web-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 40px;
+            border-radius: 12px;
+            text-align: center;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        /* 协作引擎层 */
+        .engine-layer {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+        .engine-module {
+            flex: 1;
+            min-width: 280px;
+            max-width: 350px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+        }
+        .engine-module h3 {
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 15px;
+        }
+        .engine-item {
+            background: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin: 8px 0;
+            font-size: 13px;
+            color: #555;
+            border-left: 3px solid #165DFF;
+        }
+        
+        /* Agent团队 */
+        .agent-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+        .agent-card {
+            background: white;
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            border: 2px solid transparent;
+            transition: all 0.3s;
+        }
+        .agent-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        .agent-card.core { border-color: #165DFF; }
+        .agent-card.decision { border-color: #9C27B0; }
+        .agent-card.quality { border-color: #67C23A; }
+        .agent-card.cost { border-color: #E6A23C; }
+        
+        .agent-emoji {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+        .agent-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+        }
+        .agent-role {
+            font-size: 11px;
+            color: #999;
+            margin-top: 4px;
+        }
+        .agent-stance {
+            font-size: 10px;
+            padding: 3px 8px;
+            border-radius: 10px;
+            margin-top: 8px;
+            display: inline-block;
+        }
+        .stance-balance { background: #E8F3FF; color: #165DFF; }
+        .stance-quality { background: #E8F5E9; color: #67C23A; }
+        .stance-cost { background: #FFF7E6; color: #E6A23C; }
+        .stance-schedule { background: #FFEBEE; color: #F56C6C; }
+        
+        /* LLM层 */
+        .llm-layer {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+            color: white;
+        }
+        .llm-title {
+            font-size: 18px;
+            margin-bottom: 15px;
+        }
+        .llm-api {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .llm-badge {
+            background: rgba(255,255,255,0.1);
+            padding: 10px 25px;
+            border-radius: 8px;
+            font-size: 13px;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        /* 数据流 */
+        .flow-arrow {
+            text-align: center;
+            font-size: 24px;
+            color: #165DFF;
+            margin: 20px 0;
+        }
+        
+        /* 底部信息 */
+        .footer {
+            text-align: center;
+            color: rgba(255,255,255,0.8);
+            margin-top: 30px;
+            font-size: 13px;
+        }
+        
+        /* 核心特性 */
+        .features {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-top: 30px;
+        }
+        .feature-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+        }
+        .feature-icon {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        .feature-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        .feature-desc {
+            font-size: 11px;
+            color: #999;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="title">
+            <h1>🧭 指南针工程</h1>
+            <p>多Agent智能协作平台核心架构图</p>
+        </div>
+        
+        <div class="architecture">
+            <!-- 用户层 -->
+            <div class="layer">
+                <div class="layer-title"><span>L1</span> 用户接入层</div>
+                <div class="web-interface">
+                    <div class="web-card">
+                        🌐 Web Dashboard<br>
+                        <small>http://120.48.169.242:5001</small>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flow-arrow">⬇️</div>
+            
+            <!-- 协作引擎层 -->
+            <div class="layer">
+                <div class="layer-title"><span>L2</span> 协作引擎层</div>
+                <div class="engine-layer">
+                    <div class="engine-module">
+                        <h3>🎯 协作调度器</h3>
+                        <div class="engine-item">request_speak() 请求发言</div>
+                        <div class="engine-item">release_speak() 释放发言</div>
+                        <div class="engine-item">conflict_detect() 冲突检测</div>
+                        <div class="engine-item">task_assign() 任务分配</div>
+                    </div>
+                    <div class="engine-module">
+                        <h3>📡 通信总线</h3>
+                        <div class="engine-item">send_to_one() 一对一</div>
+                        <div class="engine-item">send_to_many() 一对多</div>
+                        <div class="engine-item">broadcast() 广播</div>
+                        <div class="engine-item">message_route() 消息路由</div>
+                    </div>
+                    <div class="engine-module">
+                        <h3>📋 Agent角色规则</h3>
+                        <div class="engine-item">speak_priority (1-10)</div>
+                        <div class="engine-item">speak_cooldown 冷却时间</div>
+                        <div class="engine-item">style_attributes 风格属性</div>
+                        <div class="engine-item">role_boundaries 边界约束</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flow-arrow">⬇️</div>
+            
+            <!-- Agent团队层 -->
+            <div class="layer">
+                <div class="layer-title"><span>L3</span> Agent团队层 (九星连珠)</div>
+                <div class="agent-grid">
+                    <div class="agent-card core">
+                        <div class="agent-emoji">🌀</div>
+                        <div class="agent-name">扶摇</div>
+                        <div class="agent-role">总指挥</div>
+                        <div class="agent-stance stance-balance">平衡</div>
+                    </div>
+                    <div class="agent-card decision">
+                        <div class="agent-emoji">🌿</div>
+                        <div class="agent-name">南乔</div>
+                        <div class="agent-role">主控Agent</div>
+                        <div class="agent-stance stance-balance">平衡</div>
+                    </div>
+                    <div class="agent-card cost">
+                        <div class="agent-emoji">⚖️</div>
+                        <div class="agent-name">玉衡</div>
+                        <div class="agent-role">项目经理</div>
+                        <div class="agent-stance stance-schedule">进度优先</div>
+                    </div>
+                    <div class="agent-card quality">
+                        <div class="agent-emoji">🌸</div>
+                        <div class="agent-name">采薇</div>
+                        <div class="agent-role">需求分析专家</div>
+                        <div class="agent-stance stance-quality">质量优先</div>
+                    </div>
+                    <div class="agent-card quality">
+                        <div class="agent-emoji">🧵</div>
+                        <div class="agent-name">织锦</div>
+                        <div class="agent-role">架构设计师</div>
+                        <div class="agent-stance stance-quality">质量优先</div>
+                    </div>
+                    <div class="agent-card cost">
+                        <div class="agent-emoji">🏗️</div>
+                        <div class="agent-name">筑台</div>
+                        <div class="agent-role">售前工程师</div>
+                        <div class="agent-stance stance-cost">成本优先</div>
+                    </div>
+                    <div class="agent-card quality">
+                        <div class="agent-emoji">📐</div>
+                        <div class="agent-name">工尺</div>
+                        <div class="agent-role">详细设计师</div>
+                        <div class="agent-stance stance-quality">质量优先</div>
+                    </div>
+                    <div class="agent-card quality">
+                        <div class="agent-emoji">🎨</div>
+                        <div class="agent-name">呈彩</div>
+                        <div class="agent-role">方案设计师</div>
+                        <div class="agent-stance stance-quality">质量优先</div>
+                    </div>
+                    <div class="agent-card core">
+                        <div class="agent-emoji">📚</div>
+                        <div class="agent-name">折桂</div>
+                        <div class="agent-role">资源管家</div>
+                        <div class="agent-stance stance-balance">平衡</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flow-arrow">⬇️</div>
+            
+            <!-- LLM层 -->
+            <div class="layer">
+                <div class="layer-title"><span>L4</span> LLM能力层</div>
+                <div class="llm-layer">
+                    <div class="llm-title">🤖 百度千帆大模型</div>
+                    <div class="llm-api">
+                        <div class="llm-badge">ERNIE-4.0-8K</div>
+                        <div class="llm-badge">System Prompt</div>
+                        <div class="llm-badge">Temperature: 0.7</div>
+                        <div class="llm-badge">Top-P: 0.9</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 核心特性 -->
+        <div class="features">
+            <div class="feature-card">
+                <div class="feature-icon">🎭</div>
+                <div class="feature-title">角色认知</div>
+                <div class="feature-desc">立场分明，专业边界清晰</div>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">⚡</div>
+                <div class="feature-title">动态调度</div>
+                <div class="feature-desc">基于上下文智能选择发言者</div>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🔥</div>
+                <div class="feature-title">辩论机制</div>
+                <div class="feature-desc">立场冲突触发质疑挑战</div>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">✅</div>
+                <div class="feature-title">共识收敛</div>
+                <div class="feature-desc">2轮无冲突自动达成共识</div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            🧭 指南针工程 · 多Agent智能协作平台 · 2026-03-14<br>
+            「南有乔木，不可休思；九星连珠，共指迷津」
+        </div>
+    </div>
+</body>
+</html>

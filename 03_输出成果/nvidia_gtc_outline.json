@@ -1,0 +1,199 @@
+{
+  "title": "NVIDIA GTC 2026 黄仁勋主题演讲",
+  "subtitle": "AI技术突破与未来展望",
+  "author": "NVIDIA GTC",
+  "date": "2026年3月",
+  "pages": [
+    {
+      "page": 1,
+      "type": "cover",
+      "title": "NVIDIA GTC 2026",
+      "subtitle": "黄仁勋主题演讲 · AI技术突破与未来展望"
+    },
+    {
+      "page": 2,
+      "type": "toc",
+      "items": [
+        "演讲概述",
+        "AI技术发展现状",
+        "下一代GPU架构",
+        "AI应用场景拓展",
+        "生态系统建设",
+        "关键亮点与行业影响",
+        "总结与展望"
+      ]
+    },
+    {
+      "page": 3,
+      "type": "content",
+      "title": "演讲概述：全球AI技术盛会",
+      "layout": "top-text-bottom-image",
+      "top_sections": [
+        {
+          "title": "大会背景",
+          "points": ["GTC是全球最具影响力的AI技术盛会", "NVIDIA创始人兼CEO黄仁勋发表主题演讲", "分享AI领域最新技术突破和发展愿景"]
+        },
+        {
+          "title": "核心主题",
+          "points": ["人工智能快速发展", "GPU计算能力突破", "深度学习与生成式AI"]
+        },
+        {
+          "title": "影响力",
+          "points": ["引领AI芯片发展方向", "推动AI云服务升级", "加速企业AI化转型"]
+        }
+      ],
+      "bottom_content": [
+        {
+          "title": "大会亮点",
+          "points": ["新一代GPU产品发布", "AI生态系统扩展", "行业应用深度渗透"]
+        }
+      ]
+    },
+    {
+      "page": 4,
+      "type": "content",
+      "title": "AI技术发展现状：前所未有的突破",
+      "layout": "left-text-right-image",
+      "left_sections": [
+        {
+          "title": "技术发展态势",
+          "points": ["人工智能正在经历前所未有的快速发展", "GPU计算能力持续突破性能边界", "深度学习与生成式AI成为核心驱动力"]
+        },
+        {
+          "title": "关键技术突破",
+          "points": ["大模型训练效率大幅提升", "推理成本持续下降", "多模态AI技术成熟"]
+        }
+      ],
+      "right_sections": [
+        {"name": "生成式AI", "items": ["文本生成", "图像生成", "代码生成"]},
+        {"name": "深度学习", "items": ["模型优化", "训练加速", "精度提升"]},
+        {"name": "GPU计算", "items": ["算力突破", "能效优化", "架构创新"]},
+        {"name": "AI应用", "items": ["行业落地", "场景拓展", "价值创造"]}
+      ]
+    },
+    {
+      "page": 5,
+      "type": "content",
+      "title": "下一代GPU架构：质的飞跃",
+      "layout": "top-text-bottom-image",
+      "top_sections": [
+        {
+          "title": "性能突破",
+          "points": ["全新一代GPU产品发布", "计算性能大幅提升", "能效比显著优化"]
+        },
+        {
+          "title": "架构创新",
+          "points": ["专为AI训练优化设计", "推理效率革命性提升", "支持更大规模模型"]
+        },
+        {
+          "title": "应用场景",
+          "points": ["大模型训练", "实时推理", "科学计算"]
+        }
+      ],
+      "bottom_content": [
+        {
+          "title": "技术亮点",
+          "points": ["新一代Tensor Core架构", "内存带宽突破性提升", "功耗效率显著改善"]
+        }
+      ]
+    },
+    {
+      "page": 6,
+      "type": "architecture",
+      "title": "AI应用场景拓展：全方位赋能",
+      "layers": [
+        {"name": "应用层", "components": ["自动驾驶", "医疗健康", "工业数字化", "科学研究"]},
+        {"name": "平台层", "components": ["CUDA平台", "开发框架", "AI工具链", "云服务"]},
+        {"name": "模型层", "components": ["大语言模型", "多模态模型", "专业领域模型"]},
+        {"name": "算力层", "components": ["GPU集群", "高性能计算", "分布式训练"]},
+        {"name": "基础设施", "components": ["数据中心", "高速网络", "存储系统"]}
+      ]
+    },
+    {
+      "page": 7,
+      "type": "content",
+      "title": "生态系统建设：开放共赢",
+      "layout": "left-text-right-image",
+      "left_sections": [
+        {
+          "title": "CUDA平台演进",
+          "points": ["持续优化开发体验", "支持更多AI框架", "性能调优工具升级"]
+        },
+        {
+          "title": "开发者生态",
+          "points": ["AI开发者社区持续壮大", "丰富的学习资源", "完善的技术支持"]
+        },
+        {
+          "title": "合作伙伴网络",
+          "points": ["云服务商深度合作", "ISV生态扩展", "行业解决方案丰富"]
+        }
+      ],
+      "right_sections": [
+        {"name": "开发者工具", "items": ["SDK", "API", "文档", "示例代码"]},
+        {"name": "社区生态", "items": ["开发者论坛", "技术博客", "开源项目"]},
+        {"name": "培训认证", "items": ["在线课程", "认证项目", "技术峰会"]},
+        {"name": "合作伙伴", "items": ["云厂商", "系统集成商", "ISV"]}
+      ]
+    },
+    {
+      "page": 8,
+      "type": "metrics",
+      "title": "关键亮点：四大核心突破",
+      "metrics": [
+        {"name": "技术突破", "current": "上一代GPU", "target": "新一代GPU架构", "improve": "性能提升数倍"},
+        {"name": "生态繁荣", "current": "数百万开发者", "target": "千万级开发者", "improve": "社区规模翻倍"},
+        {"name": "应用落地", "current": "重点行业试点", "target": "全行业深度渗透", "improve": "应用场景扩展"},
+        {"name": "未来愿景", "current": "专用AI", "target": "通用人工智能(AGI)", "improve": "AI民主化进程"}
+      ]
+    },
+    {
+      "page": 9,
+      "type": "content",
+      "title": "行业影响：引领AI时代发展",
+      "layout": "top-text-bottom-image",
+      "top_sections": [
+        {
+          "title": "芯片产业",
+          "points": ["引领AI芯片发展方向", "推动行业技术升级", "构建完整技术栈"]
+        },
+        {
+          "title": "云计算",
+          "points": ["推动AI云服务升级", "算力即服务模式成熟", "降低AI使用门槛"]
+        },
+        {
+          "title": "企业应用",
+          "points": ["加速企业AI化转型", "降本增效效果显著", "创新商业模式涌现"]
+        }
+      ],
+      "bottom_content": [
+        {
+          "title": "科研创新",
+          "points": ["为科学研究提供强大算力支撑", "加速新药研发进程", "推动基础科学突破"]
+        }
+      ]
+    },
+    {
+      "page": 10,
+      "type": "summary",
+      "title": "总结与展望",
+      "key_points": [
+        "NVIDIA GTC 2026展示了AI技术的无限可能",
+        "新一代GPU架构带来质的飞跃",
+        "AI应用场景持续拓展，赋能各行各业",
+        "开放生态系统推动AI民主化进程",
+        "构建更智能、更可持续的AI世界"
+      ],
+      "next_steps": [
+        "关注新一代GPU产品发布动态",
+        "探索AI技术在各行业的应用机会",
+        "参与开发者生态建设"
+      ]
+    },
+    {
+      "page": 11,
+      "type": "cover",
+      "title": "感谢观看",
+      "subtitle": "NVIDIA GTC 2026 | AI即未来"
+    }
+  ]
+}
