@@ -5,15 +5,19 @@
 - 支持多轮循环讨论
 - Agent互相回应、质疑、补充
 - 共识检测机制
+- V15.1增强：第一轮并行调用（提升效率）
 
 Author: 南乔
 Date: 2026-03-15
+Updated: 2026-03-18 (V15.1并行优化)
 """
 
 from typing import List, Dict, Optional, Tuple
 from dataclasses import dataclass, field
 from datetime import datetime
 import time
+from concurrent.futures import ThreadPoolExecutor, as_completed
+import threading
 
 # 导入现有模块（从collaboration_dashboard_v14）
 # 注意：AGENTS和AGENT_NAMES定义在collaboration_dashboard_v14.py中
@@ -162,41 +166,83 @@ class MultiRoundDiscussion:
         challenge_count = 0
         has_consensus = False
         
-        for agent_key in participants:
-            if agent_key not in AGENTS:
-                continue
-            
-            agent = AGENTS[agent_key]
-            
-            # 生成发言
-            content = self._generate_agent_response(
-                agent, task, round_num, structured_intent
+        # ========== V15.1优化：第一轮使用并行调用 ==========
+        if round_num == 1:
+            print(f"[V15.1] 第一轮使用并行调用，参与者: {len(participants)}人")
+            responses = self._generate_responses_parallel(
+                participants, task, round_num, structured_intent
             )
             
-            # 检测质疑
-            is_challenge, challenge_target = self._detect_challenge(content)
-            
-            # 检测回应
-            reply_to = self._detect_reply(content, messages)
-            
-            # 创建消息
-            msg = DiscussionMessage(
-                round_num=round_num,
-                speaker=agent_key,
-                speaker_name=agent.name,
-                content=content,
-                is_challenge=is_challenge,
-                challenge_target=challenge_target,
-                reply_to=reply_to
-            )
-            messages.append(msg)
-            self.discussion_history.append(msg)
-            
-            if is_challenge:
-                challenge_count += 1
-            
-            # 添加延迟（模拟真实讨论）
-            time.sleep(0.5)
+            # 按原始顺序处理并行结果
+            for agent_key in participants:
+                if agent_key not in AGENTS:
+                    continue
+                if agent_key not in responses:
+                    continue
+                
+                agent = AGENTS[agent_key]
+                content = responses[agent_key]
+                
+                # 检测质疑
+                is_challenge, challenge_target = self._detect_challenge(content)
+                
+                # 检测回应
+                reply_to = self._detect_reply(content, messages)
+                
+                # 创建消息
+                msg = DiscussionMessage(
+                    round_num=round_num,
+                    speaker=agent_key,
+                    speaker_name=agent.name,
+                    content=content,
+                    is_challenge=is_challenge,
+                    challenge_target=challenge_target,
+                    reply_to=reply_to
+                )
+                messages.append(msg)
+                self.discussion_history.append(msg)
+                
+                if is_challenge:
+                    challenge_count += 1
+        
+        else:
+            # 后续轮次：使用串行调用（保证讨论连贯性）
+            print(f"[V15] 第{round_num}轮使用串行调用（保证讨论连贯性）")
+            for agent_key in participants:
+                if agent_key not in AGENTS:
+                    continue
+                
+                agent = AGENTS[agent_key]
+                
+                # 生成发言
+                content = self._generate_agent_response(
+                    agent, task, round_num, structured_intent
+                )
+                
+                # 检测质疑
+                is_challenge, challenge_target = self._detect_challenge(content)
+                
+                # 检测回应
+                reply_to = self._detect_reply(content, messages)
+                
+                # 创建消息
+                msg = DiscussionMessage(
+                    round_num=round_num,
+                    speaker=agent_key,
+                    speaker_name=agent.name,
+                    content=content,
+                    is_challenge=is_challenge,
+                    challenge_target=challenge_target,
+                    reply_to=reply_to
+                )
+                messages.append(msg)
+                self.discussion_history.append(msg)
+                
+                if is_challenge:
+                    challenge_count += 1
+                
+                # 添加延迟（模拟真实讨论）
+                time.sleep(0.3)  # 优化：0.5→0.3秒
         
         # 检测本轮是否达成共识
         has_consensus = self._check_round_consensus(messages)
@@ -207,6 +253,36 @@ class MultiRoundDiscussion:
             challenge_count=challenge_count,
             has_consensus=has_consensus
         )
+    
+    def _generate_responses_parallel(self, agents: List[str], task: str, 
+                                      round_num: int, structured_intent: dict) -> Dict[str, str]:
+        """并行生成多个Agent的响应（V15.1新增）"""
+        
+        results = {}
+        
+        def call_single(agent_key):
+            """单个Agent调用"""
+            if agent_key not in AGENTS:
+                return agent_key, None
+            agent = AGENTS[agent_key]
+            content = self._generate_agent_response(agent, task, round_num, structured_intent)
+            return agent_key, content
+        
+        # 并行调用（最多5个并发）
+        max_workers = min(len(agents), 5)
+        with ThreadPoolExecutor(max_workers=max_workers) as executor:
+            futures = {executor.submit(call_single, a): a for a in agents}
+            
+            for future in as_completed(futures, timeout=120):
+                try:
+                    agent_key, content = future.result(timeout=60)
+                    if content:
+                        results[agent_key] = content
+                except Exception as e:
+                    print(f"[V15.1] Agent调用失败: {e}")
+        
+        print(f"[V15.1] 并行调用完成，成功: {len(results)}/{len(agents)}")
+        return results
     
     def _generate_agent_response(self, agent, task: str, round_num: int,
                                   structured_intent: dict) -> str:
@@ -349,14 +425,15 @@ class MultiRoundDiscussion:
         if not rounds:
             return "讨论完成，未形成明确共识。"
         
-        # 提取最后一轮的所有发言
+        # 提取最后一轮的所有发言（完整内容）
         last_round = rounds[-1]
         consensus_parts = []
         
         for msg in last_round.messages:
-            consensus_parts.append(f"{msg.speaker_name}：{msg.content[:50]}...")
+            # 不截断，显示完整内容
+            consensus_parts.append(f"【{msg.speaker_name}】\n{msg.content}")
         
-        return "\n".join(consensus_parts)
+        return "\n\n".join(consensus_parts)
     
     def _extract_key_decisions(self, rounds: List[RoundResult]) -> List[str]:
         """提取关键决策"""

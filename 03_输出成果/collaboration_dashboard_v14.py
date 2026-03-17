@@ -4151,31 +4151,31 @@ def api_task():
             summary += f"参与人员：{len(set([t.speaker_name for t in memory.history if t.speaker not in ['user', 'nanqiao']]))}位专家\n"
             summary += f"讨论时长：{discussion_duration}\n"
             summary += f"整体共识度：{consensus}%\n\n"
-            summary += "---\n\n"
             
             # 第2部分：关键决策
             summary += "📌 关键决策\n\n"
             if key_decisions:
                 for i, d in enumerate(key_decisions[:5], 1):
-                    summary += f"{i}. {d['agent']}：{d['decision'][:60]}...\n\n"
+                    # 不截断，显示完整决策内容
+                    summary += f"{i}. 【{d['agent']}】{d['decision']}\n\n"
             else:
                 summary += "暂无明确决策记录。\n\n"
-            summary += "---\n\n"
             
             # 第3部分：质疑链路
             summary += "⚠️ 质疑链路\n\n"
             if challenge_summary and len(challenge_summary) > 20:
-                summary += challenge_summary[:500] + "\n\n"
+                # 不截断，显示完整质疑总结
+                summary += challenge_summary + "\n\n"
             elif key_challenges:
                 summary += "主要质疑：\n"
                 for i, c in enumerate(key_challenges[:3], 1):
-                    summary += f"{i}. {c['challenger']}：{c['content'][:50]}...\n\n"
+                    # 不截断，显示完整质疑内容
+                    summary += f"{i}. 【{c['challenger']}】{c['content']}\n\n"
             else:
                 summary += "本次讨论无重大质疑。\n\n"
             pending_cnt = len(pending_challenges) if isinstance(pending_challenges, list) else 0
             if pending_cnt > 0:
                 summary += f"⏳ 待回应质疑：{pending_cnt}条\n\n"
-            summary += "---\n\n"
             
             # 第4部分：下一步行动（明确责任人、产出物、时间）
             summary += "📝 下一步行动\n\n"
@@ -4203,8 +4203,7 @@ def api_task():
                 summary += f"   - 完成时间：下轮讨论前\n\n"
                 action_idx += 1
             
-            summary += "---\n\n"
-            summary += "🎉 论证完成！\n"
+            summary += "\n🎉 论证完成！\n"
 
             print(f"[DEBUG] 总结构建完成，长度: {len(summary)}")
             print(f"[DEBUG] 总结内容预览: {summary[:200]}...")
