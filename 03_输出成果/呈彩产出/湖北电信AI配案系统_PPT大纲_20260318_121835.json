@@ -1,0 +1,55 @@
+{
+  "title": "湖北电信AI配案系统",
+  "subtitle": "方案设计",
+  "author": "呈彩 @ 九星智囊团",
+  "date": "2026-03-18",
+  "template": "proposal-standard",
+  "pages": [
+    {
+      "type": "cover",
+      "title": "湖北电信AI配案系统",
+      "subtitle": "方案设计"
+    },
+    {
+      "type": "toc",
+      "items": [
+        "方案背景",
+        "解决方案",
+        "技术架构",
+        "预期效果"
+      ]
+    },
+    {
+      "type": "content",
+      "title": "方案背景",
+      "points": [
+        "痛点分析",
+        "需求分析"
+      ]
+    },
+    {
+      "type": "content",
+      "title": "解决方案",
+      "points": [
+        "核心功能",
+        "技术亮点"
+      ]
+    },
+    {
+      "type": "content",
+      "title": "技术架构",
+      "points": [
+        "系统架构",
+        "技术选型"
+      ]
+    },
+    {
+      "type": "content",
+      "title": "预期效果",
+      "points": [
+        "效率提升",
+        "成本降低"
+      ]
+    }
+  ]
+}

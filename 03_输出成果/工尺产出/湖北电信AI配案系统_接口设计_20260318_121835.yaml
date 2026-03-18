@@ -1,0 +1,53 @@
+openapi: 3.0.0
+info:
+  title: 湖北电信AI配案系统 API
+  version: 1.0.0
+  description: 系统接口规范 - 工尺设计
+
+servers:
+  - url: https://api.example.com/v1
+
+paths:
+  /auth/login:
+    post:
+      summary: 用户登录
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '200':
+          description: 登录成功
+
+  /data/query:
+    get:
+      summary: 数据查询
+      parameters:
+        - name: query
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 查询成功
+
+  /ai/inference:
+    post:
+      summary: AI推理
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                input:
+                  type: string
+      responses:
+        '200':
+          description: 推理成功

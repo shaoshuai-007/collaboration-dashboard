@@ -1,0 +1,26 @@
+{
+  "query": "AI Agent发展趋势",
+  "timestamp": "2026-03-18T12:50:21.071068",
+  "search_depth": "basic",
+  "results": [
+    {
+      "title": "AI Agent发展趋势 - 相关文章1",
+      "url": "https://example.com/article1?q=AI%20Agent%E5%8F%91%E5%B1%95%E8%B6%8B%E5%8A%BF",
+      "content": "关于AI Agent发展趋势的详细内容...",
+      "score": 0.95
+    },
+    {
+      "title": "AI Agent发展趋势 - 行业报告",
+      "url": "https://example.com/report?q=AI%20Agent%E5%8F%91%E5%B1%95%E8%B6%8B%E5%8A%BF",
+      "content": "AI Agent发展趋势行业深度分析报告...",
+      "score": 0.89
+    },
+    {
+      "title": "AI Agent发展趋势 - 技术趋势",
+      "url": "https://example.com/trend?q=AI%20Agent%E5%8F%91%E5%B1%95%E8%B6%8B%E5%8A%BF",
+      "content": "AI Agent发展趋势最新技术发展趋势...",
+      "score": 0.85
+    }
+  ],
+  "answer": "关于「AI Agent发展趋势」找到 3 条相关结果，主要包括：AI Agent发展趋势 - 相关文章1, AI Agent发展趋势 - 行业报告 等。"
+}

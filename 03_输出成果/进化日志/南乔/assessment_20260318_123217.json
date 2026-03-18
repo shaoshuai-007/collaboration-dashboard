@@ -1,0 +1,15 @@
+{
+  "agent": "南乔",
+  "timestamp": "2026-03-18T12:32:17.824614",
+  "capabilities": {
+    "task_completion_rate": 1.0,
+    "average_quality": 0.85,
+    "improvement_trend": 0.1,
+    "knowledge_growth": 0.2
+  },
+  "strengths": [
+    "任务完成率高"
+  ],
+  "weaknesses": [],
+  "recommendations": []
+}

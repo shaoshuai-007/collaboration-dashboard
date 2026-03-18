@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>湖北电信AI配案系统 - 系统架构图</title>
+    <style>
+        body { font-family: 'Microsoft YaHei', sans-serif; background: #f5f5f5; padding: 20px; }
+        .container { max-width: 1000px; margin: 0 auto; }
+        h1 { color: #C93832; text-align: center; }
+        .layer { background: white; margin: 10px 0; padding: 20px; border-radius: 8px; border-left: 4px solid #006EBD; }
+        .layer-title { color: #006EBD; font-weight: bold; margin-bottom: 10px; }
+        .layer-content { display: flex; gap: 20px; flex-wrap: wrap; }
+        .component { background: #f9f9f9; padding: 15px; border-radius: 6px; min-width: 150px; text-align: center; }
+        .component.primary { background: #C93832; color: white; }
+        .component.secondary { background: #006EBD; color: white; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧵 湖北电信AI配案系统 - 系统架构图</h1>
+        <p style="text-align: center; color: #888;">生成时间: 2026-03-18 12:18:35</p>
+
+        <div class="layer">
+            <div class="layer-title">前端应用层</div>
+            <div class="layer-content">
+                <div class="component primary">Web端</div>
+                <div class="component primary">移动端</div>
+                <div class="component primary">小程序</div>
+            </div>
+        </div>
+
+        <div class="layer">
+            <div class="layer-title">API网关层</div>
+            <div class="layer-content">
+                <div class="component secondary">统一网关</div>
+                <div class="component secondary">认证中心</div>
+                <div class="component secondary">流量控制</div>
+            </div>
+        </div>
+
+        <div class="layer">
+            <div class="layer-title">业务服务层</div>
+            <div class="layer-content">
+                <div class="component">用户服务</div>
+                <div class="component">业务服务</div>
+                <div class="component">数据服务</div>
+                <div class="component">AI服务</div>
+            </div>
+        </div>
+
+        <div class="layer">
+            <div class="layer-title">数据持久层</div>
+            <div class="layer-content">
+                <div class="component">PostgreSQL</div>
+                <div class="component">Redis</div>
+                <div class="component">对象存储</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

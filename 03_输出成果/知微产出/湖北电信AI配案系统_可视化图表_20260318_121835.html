@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>湖北电信AI配案系统 - 数据可视化</title>
+    <style>
+        body { font-family: 'Microsoft YaHei', sans-serif; background: #f5f5f5; padding: 20px; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        h1 { color: #C93832; text-align: center; }
+        .dashboard { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin: 30px 0; }
+        .card { background: white; border-radius: 10px; padding: 20px; text-align: center; }
+        .card-value { font-size: 36px; font-weight: bold; color: #C93832; }
+        .card-label { color: #595959; margin-top: 10px; }
+        .card:nth-child(2) .card-value { color: #006EBD; }
+        .card:nth-child(3) .card-value { color: #28a745; }
+        .card:nth-child(4) .card-value { color: #6f42c1; }
+        .chart { background: white; border-radius: 10px; padding: 30px; margin-top: 20px; }
+        .bar-chart { display: flex; align-items: flex-end; height: 200px; gap: 20px; padding: 20px; }
+        .bar { flex: 1; background: linear-gradient(to top, #C93832, #006EBD); border-radius: 4px 4px 0 0; }
+        .bar-label { text-align: center; margin-top: 10px; color: #595959; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📊 湖北电信AI配案系统 - 数据仪表盘</h1>
+
+        <div class="dashboard">
+            <div class="card">
+                <div class="card-value">95%</div>
+                <div class="card-label">准确率</div>
+            </div>
+            <div class="card">
+                <div class="card-value">3秒</div>
+                <div class="card-label">响应时间</div>
+            </div>
+            <div class="card">
+                <div class="card-value">10K</div>
+                <div class="card-label">活跃用户</div>
+            </div>
+            <div class="card">
+                <div class="card-value">-20%</div>
+                <div class="card-label">成本降低</div>
+            </div>
+        </div>
+
+        <div class="chart">
+            <h3 style="color: #006EBD; margin-bottom: 20px;">趋势分析</h3>
+            <div class="bar-chart">
+                <div><div class="bar" style="height: 60%;"></div><div class="bar-label">Week 1</div></div>
+                <div><div class="bar" style="height: 75%;"></div><div class="bar-label">Week 2</div></div>
+                <div><div class="bar" style="height: 85%;"></div><div class="bar-label">Week 3</div></div>
+                <div><div class="bar" style="height: 100%;"></div><div class="bar-label">Week 4</div></div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
