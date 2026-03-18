@@ -1795,6 +1795,42 @@ if (conversations.length > 0) {
 
 ---
 
+## 2026-03-18 团队原则（少帅教诲 15:18）⭐⭐⭐
+
+### 核心原则
+
+**"同一个问题不能犯第二次"**
+
+这是九星智囊团的铁律！
+
+### 邮件发送配置（永久记住）
+
+| 项目 | 内容 |
+|------|------|
+| **配置文件** | `/root/.openclaw/workspace/smtp_config.json` |
+| **发送工具** | `/root/.openclaw/skills/compass-shared/scripts/send_email.py` |
+| **SMTP服务器** | smtp.qq.com:465 (SSL) |
+| **发件邮箱** | 417895006@qq.com (南乔) |
+| **默认收件人** | szideaf7@163.com |
+| **备用收件人** | sunzheng@tydic.com |
+
+### 使用方法
+
+```python
+from send_email import send_email
+
+send_email(
+    subject="主题",
+    content="内容",
+    recipient="收件人",
+    attachments=["附件路径1", "附件路径2"]
+)
+```
+
+**来源**：2026-03-18 15:18 少帅教诲
+
+---
+
 ## 2026-03-18 运维知识（少帅教诲 00:00）⭐
 
 ### 代码发布流程
