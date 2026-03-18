@@ -1,0 +1,108 @@
+digraph Token采集系统架构 {
+    // 全局属性
+    rankdir=LR;
+    splines=polyline;
+    nodesep=0.5;
+    ranksep=1.5;
+    fontname="WenQuanYi Zen Hei";
+    
+    // 默认节点样式
+    node [
+        shape=box, 
+        style="rounded,filled", 
+        fontname="WenQuanYi Zen Hei",
+        fontsize=11,
+        width=1.8,
+        height=0.6
+    ];
+    
+    // 定义层级
+    {
+        rank=same;
+        node [fillcolor="#C93832", fontcolor=white];
+        app1 [label="Token统计Dashboard"];
+        app2 [label="成本分析Dashboard"];
+        app3 [label="效果评估Dashboard"];
+        app4 [label="可视化报表"];
+        app5 [label="数据查询API"];
+    }
+    
+    {
+        rank=same;
+        node [fillcolor="#006EBD", fontcolor=white];
+        proc1 [label="数据清洗"];
+        proc2 [label="数据转换"];
+        proc3 [label="数据入库"];
+        proc4 [label="数据汇总"];
+    }
+    
+    {
+        rank=same;
+        node [fillcolor="#3B82F6", fontcolor=white];
+        col1 [label="SFTP接收"];
+        col2 [label="文件解析"];
+        col3 [label="文件校验"];
+        col4 [label="回执生成"];
+    }
+    
+    {
+        rank=same;
+        node [fillcolor="#60A5FA", fontcolor=black];
+        src1 [label="总部部门 (23)"];
+        src2 [label="专业公司 (26)"];
+        src3 [label="省公司 (31)"];
+        src4 [label="直属机构 (6)"];
+    }
+    
+    // 支撑体系
+    {
+        rank=same;
+        node [fillcolor="#FFC107", fontcolor=black];
+        sup1 [label="监控告警"];
+        sup2 [label="日志管理"];
+        sup3 [label="配置管理"];
+        sup4 [label="访问控制"];
+        sup5 [label="数据加密"];
+    }
+    
+    // 层级标签
+    label_app [label="数据应用层", shape=plaintext, fontsize=14, fontcolor="#C93832"];
+    label_proc [label="数据处理层", shape=plaintext, fontsize=14, fontcolor="#006EBD"];
+    label_col [label="数据采集层", shape=plaintext, fontsize=14, fontcolor="#3B82F6"];
+    label_src [label="数据源层", shape=plaintext, fontsize=14, fontcolor="#60A5FA"];
+    label_sup [label="支撑体系", shape=plaintext, fontsize=14, fontcolor="#FFC107"];
+    
+    // 连接层级标签
+    edge [style=invis];
+    label_app -> app1;
+    label_proc -> proc1;
+    label_col -> col1;
+    label_src -> src1;
+    label_sup -> sup1;
+    
+    // 数据流向（从右到左）
+    edge [style=solid, color="#595959", arrowsize=0.8];
+    src1 -> col1;
+    src2 -> col1;
+    src3 -> col1;
+    src4 -> col1;
+    
+    col1 -> col2 -> col3 -> col4;
+    
+    col4 -> proc1;
+    proc1 -> proc2 -> proc3 -> proc4;
+    
+    proc4 -> app1;
+    proc4 -> app2;
+    proc4 -> app3;
+    proc4 -> app4;
+    proc4 -> app5;
+    
+    // 支撑体系连接
+    edge [style=dashed, color="#FFC107"];
+    sup1 -> col3 [constraint=false];
+    sup2 -> proc1 [constraint=false];
+    sup3 -> col1 [constraint=false];
+    sup4 -> src1 [constraint=false];
+    sup5 -> proc3 [constraint=false];
+}

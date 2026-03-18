@@ -1,0 +1,97 @@
+digraph Token采集系统架构 {
+    // 图表属性
+    rankdir=TB;
+    splines=ortho;
+    node [shape=box, style="rounded,filled", fontname="WenQuanYi Zen Hei", fontsize=12];
+    edge [fontname="WenQuanYi Zen Hei", fontsize=10];
+    
+    // 定义节点样式
+    node [fillcolor="#006EBD", fontcolor=white];
+    
+    // 第四层 - 数据应用层
+    subgraph cluster_app {
+        label="第四层：数据应用层";
+        style="rounded,filled";
+        fillcolor="#E8F4FC";
+        fontcolor="#006EBD";
+        fontname="WenQuanYi Zen Hei";
+        
+        app1 [label="Token统计\nDashboard", fillcolor="#C93832"];
+        app2 [label="成本分析\nDashboard", fillcolor="#C93832"];
+        app3 [label="效果评估\nDashboard", fillcolor="#C93832"];
+        app4 [label="可视化报表", fillcolor="#C93832"];
+        app5 [label="数据查询API", fillcolor="#C93832"];
+    }
+    
+    // 第三层 - 数据处理层
+    subgraph cluster_process {
+        label="第三层：数据处理层";
+        style="rounded,filled";
+        fillcolor="#D4EDFC";
+        fontcolor="#006EBD";
+        fontname="WenQuanYi Zen Hei";
+        
+        proc1 [label="数据清洗"];
+        proc2 [label="数据转换"];
+        proc3 [label="数据入库"];
+        proc4 [label="数据汇总"];
+    }
+    
+    // 第二层 - 数据采集层
+    subgraph cluster_collect {
+        label="第二层：数据采集层";
+        style="rounded,filled";
+        fillcolor="#C0E2FA";
+        fontcolor="#006EBD";
+        fontname="WenQuanYi Zen Hei";
+        
+        col1 [label="SFTP接收"];
+        col2 [label="文件解析"];
+        col3 [label="文件校验"];
+        col4 [label="回执生成"];
+    }
+    
+    // 第一层 - 数据源层
+    subgraph cluster_source {
+        label="第一层：数据源层";
+        style="rounded,filled";
+        fillcolor="#ACD6F8";
+        fontcolor="#006EBD";
+        fontname="WenQuanYi Zen Hei";
+        
+        src1 [label="总部部门\n23个"];
+        src2 [label="专业公司\n26个"];
+        src3 [label="省公司\n31个"];
+        src4 [label="直属机构\n6个"];
+    }
+    
+    // 支撑体系
+    subgraph cluster_support {
+        label="支撑体系";
+        style="rounded,filled";
+        fillcolor="#FFF3CD";
+        fontcolor="#856404";
+        fontname="WenQuanYi Zen Hei";
+        
+        sup1 [label="监控告警", fillcolor="#FFC107", fontcolor=black];
+        sup2 [label="日志管理", fillcolor="#FFC107", fontcolor=black];
+        sup3 [label="配置管理", fillcolor="#FFC107", fontcolor=black];
+        sup4 [label="访问控制", fillcolor="#FFC107", fontcolor=black];
+        sup5 [label="数据加密", fillcolor="#FFC107", fontcolor=black];
+    }
+    
+    // 数据流向
+    src1 -> col1 [style=invis];
+    src2 -> col1 [style=invis];
+    src3 -> col1 [style=invis];
+    src4 -> col1 [style=invis];
+    
+    col1 -> col2 -> col3 -> col4;
+    col4 -> proc1;
+    proc1 -> proc2 -> proc3 -> proc4;
+    proc4 -> app1;
+    proc4 -> app2;
+    proc4 -> app3;
+    proc4 -> app4;
+    proc4 -> app5;
+}

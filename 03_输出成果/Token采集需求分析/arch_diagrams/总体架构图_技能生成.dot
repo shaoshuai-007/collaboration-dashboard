@@ -1,0 +1,105 @@
+digraph "Token采集系统总体架构" {
+    // 图表属性
+    rankdir=TB;
+    splines=ortho;
+    node [shape=box, style="rounded,filled", fontname="WenQuanYi Zen Hei", fontsize=12];
+    edge [fontname="WenQuanYi Zen Hei", fontsize=10];
+    
+    // 标题
+    labelloc="t";
+    label="Token采集系统总体架构";
+    fontsize=18;
+    fontcolor="#006EBD";
+
+    // 第4层 - 数据应用层
+    subgraph cluster_layer0 {
+        label="数据应用层";
+        style="rounded,filled";
+        fillcolor="#DEECF8";
+        fontcolor="#006EBD";
+        fontname="WenQuanYi Zen Hei";
+        
+        l0_c0 [label="Token统计Dashboard"];
+        l0_c1 [label="成本分析Dashboard"];
+        l0_c2 [label="效果评估Dashboard"];
+    }
+
+    // 第3层 - 数据处理层
+    subgraph cluster_layer1 {
+        label="数据处理层";
+        style="rounded,filled";
+        fillcolor="#DEECF8";
+        fontcolor="#006EBD";
+        fontname="WenQuanYi Zen Hei";
+        
+        l1_c0 [label="数据清洗"];
+        l1_c1 [label="数据转换"];
+        l1_c2 [label="数据入库"];
+    }
+
+    // 第2层 - 数据采集层
+    subgraph cluster_layer2 {
+        label="数据采集层";
+        style="rounded,filled";
+        fillcolor="#DEECF8";
+        fontcolor="#006EBD";
+        fontname="WenQuanYi Zen Hei";
+        
+        l2_c0 [label="SFTP接收"];
+        l2_c1 [label="文件解析"];
+        l2_c2 [label="文件校验"];
+    }
+
+    // 第1层 - 数据源层
+    subgraph cluster_layer3 {
+        label="数据源层";
+        style="rounded,filled";
+        fillcolor="#DEECF8";
+        fontcolor="#006EBD";
+        fontname="WenQuanYi Zen Hei";
+        
+        l3_c0 [label="总部部门", fillcolor="#C93832"];
+        l3_c1 [label="专业公司", fillcolor="#C93832"];
+        l3_c2 [label="省公司", fillcolor="#C93832"];
+    }
+
+    // 支撑体系
+    subgraph cluster_support {
+        label="支撑体系";
+        style="rounded,filled";
+        fillcolor="#FFF3CD";
+        fontcolor="#856404";
+        fontname="WenQuanYi Zen Hei";
+        
+        sup0 [label="监控告警", fillcolor="#FFC107", fontcolor=black];
+        sup1 [label="日志管理", fillcolor="#FFC107", fontcolor=black];
+        sup2 [label="访问控制", fillcolor="#FFC107", fontcolor=black];
+    }
+    l0_c0 -> l1_c0 [style=invis];
+    l0_c0 -> l1_c1 [style=invis];
+    l0_c0 -> l1_c2 [style=invis];
+    l0_c1 -> l1_c0 [style=invis];
+    l0_c1 -> l1_c1 [style=invis];
+    l0_c1 -> l1_c2 [style=invis];
+    l0_c2 -> l1_c0 [style=invis];
+    l0_c2 -> l1_c1 [style=invis];
+    l0_c2 -> l1_c2 [style=invis];
+    l1_c0 -> l2_c0 [style=invis];
+    l1_c0 -> l2_c1 [style=invis];
+    l1_c0 -> l2_c2 [style=invis];
+    l1_c1 -> l2_c0 [style=invis];
+    l1_c1 -> l2_c1 [style=invis];
+    l1_c1 -> l2_c2 [style=invis];
+    l1_c2 -> l2_c0 [style=invis];
+    l1_c2 -> l2_c1 [style=invis];
+    l1_c2 -> l2_c2 [style=invis];
+    l2_c0 -> l3_c0 [style=invis];
+    l2_c0 -> l3_c1 [style=invis];
+    l2_c0 -> l3_c2 [style=invis];
+    l2_c1 -> l3_c0 [style=invis];
+    l2_c1 -> l3_c1 [style=invis];
+    l2_c1 -> l3_c2 [style=invis];
+    l2_c2 -> l3_c0 [style=invis];
+    l2_c2 -> l3_c1 [style=invis];
+    l2_c2 -> l3_c2 [style=invis];
+}
