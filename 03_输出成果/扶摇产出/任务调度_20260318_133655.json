@@ -1,0 +1,41 @@
+{
+  "coordinator": "扶摇",
+  "timestamp": "2026-03-18T13:36:55.506657",
+  "tasks": [
+    {
+      "name": "需求分析",
+      "type": "需求分析",
+      "priority": "高"
+    },
+    {
+      "name": "架构设计",
+      "type": "架构设计",
+      "priority": "高"
+    },
+    {
+      "name": "开发实现",
+      "type": "开发实现",
+      "priority": "中"
+    }
+  ],
+  "assignments": [
+    {
+      "task": "需求分析",
+      "type": "需求分析",
+      "agent": "采薇",
+      "priority": "高"
+    },
+    {
+      "task": "架构设计",
+      "type": "架构设计",
+      "agent": "织锦",
+      "priority": "高"
+    },
+    {
+      "task": "开发实现",
+      "type": "开发实现",
+      "agent": "天工",
+      "priority": "中"
+    }
+  ]
+}
