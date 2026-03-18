@@ -1814,18 +1814,22 @@ if (conversations.length > 0) {
 | **默认收件人** | szideaf7@163.com |
 | **备用收件人** | sunzheng@tydic.com |
 
-### 使用方法
+### ⭐ 正确使用方法（少帅确认 2026-03-18）
 
-```python
-from send_email import send_email
-
-send_email(
-    subject="主题",
-    content="内容",
-    recipient="收件人",
-    attachments=["附件路径1", "附件路径2"]
-)
+命令行方式：
+```bash
+python3 /root/.openclaw/skills/compass-shared/scripts/send_email.py "主题" "正文" "附件路径"
 ```
+
+示例：
+```bash
+python3 /root/.openclaw/skills/compass-shared/scripts/send_email.py \
+  "NVIDIA视频" \
+  "少帅您好，附件是视频。南乔" \
+  "/root/.openclaw/workspace/03_输出成果/video.mp4"
+```
+
+**警告**：不要用Python自定义代码发邮件！必须用系统脚本，否则附件格式会被邮箱APP识别错误！
 
 **来源**：2026-03-18 15:18 少帅教诲
 
