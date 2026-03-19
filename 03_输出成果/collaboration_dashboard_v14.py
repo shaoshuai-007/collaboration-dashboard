@@ -270,7 +270,10 @@ def call_qianfan(system_prompt: str, user_message: str, temperature: float = 0.7
             print(f"[TOKEN] 本次: {usage.get('total_tokens', 0)}, 累计: {total_tokens_used}", flush=True)
         
         if 'choices' in result and len(result['choices']) > 0:
-            return result['choices'][0]['message']['content']
+            content = result['choices'][0]['message']['content']
+            print(f"[API] 返回内容长度: {len(content) if content else 0}", flush=True)
+            return content
+        print(f"[API] 无choices返回，result keys: {list(result.keys())}", flush=True)
         return None
     except Exception as e:
         print(f"千帆API调用失败: {e}", flush=True)
@@ -2747,7 +2750,7 @@ HTML_TEMPLATE = '''
             // 获取讨论内容作为输入
             const discussionContent = conversations.map(c => 
                 `【${c.speaker_name || c.speaker}】${c.content}`
-            ).join('\n\n');
+            ).join(String.fromCharCode(10, 10));
             
             // 获取项目名称
             const projectName = memory.current_task || '未命名项目';
@@ -4097,9 +4100,12 @@ def api_task():
     memory.add_turn('nanqiao', '南乔', schedule_msg, msg_type='system')
 
     total_tasks = len(schedule_results)
+    
+    # 保存V15意图分析的参与者（防止被V14覆盖）
+    v15_participants_saved = participants.copy() if isinstance(participants, list) else participants
 
     def run_multi_task_discussion():
-        global discussion_completed, agent_status
+        global discussion_completed, agent_status, memory
         nonlocal outputs, project_name, complexity, discussion_rounds, participants
         
         # 初始化默认值
@@ -4113,6 +4119,12 @@ def api_task():
                 task_complexity = schedule_result['complexity']
                 lead_agent = schedule_result['schedule']['lead_agent']
                 participants = schedule_result['schedule'].get('participants', discussion_flow)
+                
+                # V15修复：优先使用V15意图分析的参与者
+                if v15_participants_saved:
+                    participants = v15_participants_saved
+                    discussion_flow = v15_participants_saved
+                    print(f"[V15] 使用V15意图分析的参与者: {participants}")
                 
                 # 收集所有参与人员
                 all_participants = list(set(all_participants + participants))
@@ -4157,14 +4169,18 @@ def api_task():
                     )
                     
                     print(f"[V15] 讨论完成，共识: {result['consensus_reached']}")
+                    print(f"[DEBUG] 讨论轮数: {len(result['rounds'])}")
                     
                     # 将讨论结果转换为memory记录
                     for round_result in result['rounds']:
+                        print(f"[DEBUG] 第{round_result.round_num}轮消息数: {len(round_result.messages)}")
                         for msg in round_result.messages:
                             agent_key = msg.speaker
                             if agent_key not in AGENTS:
+                                print(f"[DEBUG] 跳过未知Agent: {agent_key}")
                                 continue
                             
+                            print(f"[DEBUG] 添加消息到memory: {msg.speaker_name} ({len(msg.content)}字)")
                             agent_status[agent_key] = 'challenge' if msg.is_challenge else 'speaking'
                             memory.add_turn(
                                 agent_key, 
@@ -4281,7 +4297,27 @@ def api_task():
                                     )
                                     if challenge:
                                         print(f"[质疑增强] 检测到{challenge.intensity.name}级质疑: {challenge.category.value}")
-                                        # 如果质疑者接受了（说"调整"、"接受"等），更新状态
+                                        
+                                        # 让被质疑者回复
+                                        target_agent = challenge.target_agent
+                                        if target_agent in AGENTS and target_agent != agent_key:
+                                            try:
+                                                agent_status[target_agent] = 'speaking'
+                                                reply_prompt = f"{AGENTS[agent_key].name}质疑你的观点：{challenge.reason}。请简要回应（30字内）。"
+                                                reply_response = call_qianfan(
+                                                    AGENTS[target_agent].get_system_prompt(),
+                                                    reply_prompt,
+                                                    temperature=0.7
+                                                )
+                                                if reply_response:
+                                                    memory.add_turn(target_agent, AGENTS[target_agent].name, reply_response.strip(),
+                                                                  is_challenging=False, reply_to=agent_key)
+                                                agent_status[target_agent] = 'idle'
+                                            except Exception as e:
+                                                print(f"[质疑回复] 生成失败: {e}")
+                                                agent_status[target_agent] = 'idle'
+                                        
+                                        # 如果质疑者接受了，更新状态
                                         if '接受' in response or '调整' in response or '同意' in response:
                                             cm.chain.add_response(
                                                 challenge.challenge_id, 

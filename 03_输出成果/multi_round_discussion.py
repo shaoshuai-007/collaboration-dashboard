@@ -172,6 +172,7 @@ class MultiRoundDiscussion:
             responses = self._generate_responses_parallel(
                 participants, task, round_num, structured_intent
             )
+            print(f"[V15.1] 并行调用返回: {list(responses.keys())}")
             
             # 按原始顺序处理并行结果
             for agent_key in participants:
@@ -204,6 +205,14 @@ class MultiRoundDiscussion:
                 
                 if is_challenge:
                     challenge_count += 1
+                    # 质疑回复：让被质疑者回应
+                    if challenge_target and challenge_target in AGENTS and challenge_target != agent_key:
+                        reply_msg = self._generate_challenge_response(
+                            challenge_target, agent_key, content, round_num
+                        )
+                        if reply_msg:
+                            messages.append(reply_msg)
+                            self.discussion_history.append(reply_msg)
         
         else:
             # 后续轮次：使用串行调用（保证讨论连贯性）
@@ -240,6 +249,14 @@ class MultiRoundDiscussion:
                 
                 if is_challenge:
                     challenge_count += 1
+                    # 质疑回复：让被质疑者回应
+                    if challenge_target and challenge_target in AGENTS and challenge_target != agent_key:
+                        reply_msg = self._generate_challenge_response(
+                            challenge_target, agent_key, content, round_num
+                        )
+                        if reply_msg:
+                            messages.append(reply_msg)
+                            self.discussion_history.append(reply_msg)
                 
                 # 添加延迟（模拟真实讨论）
                 time.sleep(0.3)  # 优化：0.5→0.3秒
@@ -270,18 +287,30 @@ class MultiRoundDiscussion:
         
         # 并行调用（最多5个并发）
         max_workers = min(len(agents), 5)
+        print(f"[V15.1] 开始并行调用，agents={agents}, max_workers={max_workers}")
         with ThreadPoolExecutor(max_workers=max_workers) as executor:
             futures = {executor.submit(call_single, a): a for a in agents}
+            print(f"[V15.1] 提交了{len(futures)}个任务")
             
+            completed = 0
             for future in as_completed(futures, timeout=120):
+                completed += 1
+                original_agent = futures[future]
+                print(f"[V15.1] 第{completed}个future完成，原始agent={original_agent}")
                 try:
                     agent_key, content = future.result(timeout=60)
+                    print(f"[V15.1] future.result返回: agent_key={agent_key}, content长度={len(content) if content else 0}")
                     if content:
                         results[agent_key] = content
+                        print(f"[V15.1] {agent_key}响应成功: {len(content)}字")
+                    else:
+                        print(f"[V15.1] {agent_key}响应为空!")
                 except Exception as e:
                     print(f"[V15.1] Agent调用失败: {e}")
+                    import traceback
+                    traceback.print_exc()
         
-        print(f"[V15.1] 并行调用完成，成功: {len(results)}/{len(agents)}")
+        print(f"[V15.1] 并行调用完成，成功: {len(results)}/{len(agents)}，返回: {list(results.keys())}")
         return results
     
     def _generate_agent_response(self, agent, task: str, round_num: int,
@@ -373,7 +402,7 @@ class MultiRoundDiscussion:
         challenge_target = ""
         for agent_key, agent in AGENTS.items():
             if agent.name in response and agent.name != "":
-                challenge_target = agent.name
+                challenge_target = agent_key  # 返回agent_key（如"caiwei"），而不是name（如"采薇"）
                 break
         
         return is_challenge, challenge_target
@@ -390,6 +419,39 @@ class MultiRoundDiscussion:
                         return agent.name
         
         return ""
+    
+    def _generate_challenge_response(self, target_agent: str, challenger: str, 
+                                      challenge_content: str, round_num: int) -> Optional[DiscussionMessage]:
+        """生成质疑回复"""
+        
+        if target_agent not in AGENTS:
+            return None
+        
+        agent = AGENTS[target_agent]
+        challenger_name = AGENTS[challenger].name if challenger in AGENTS else "对方"
+        
+        prompt = f"{challenger_name}对你的观点提出质疑：{challenge_content[:100]}\n\n请简要回应（30字内），说明你的看法或调整建议。"
+        
+        try:
+            # 调用API生成回复
+            from collaboration_dashboard_v14 import call_qianfan
+            system_prompt = agent.get_system_prompt() if hasattr(agent, 'get_system_prompt') else agent.system_prompt
+            response = call_qianfan(system_prompt, prompt, temperature=0.7)
+            
+            if response:
+                return DiscussionMessage(
+                    round_num=round_num,
+                    speaker=target_agent,
+                    speaker_name=agent.name,
+                    content=response.strip(),
+                    is_challenge=False,
+                    challenge_target="",
+                    reply_to=challenger
+                )
+        except Exception as e:
+            print(f"[质疑回复] 生成失败: {e}")
+        
+        return None
     
     def _get_context_for_round(self, round_num: int) -> str:
         """获取当前轮次的上下文"""
