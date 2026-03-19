@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-多Agent协作框架 V15.1 - 并行调度优化版
+多Agent协作框架 V15.2 - 产物生成集成版
 - V14基础功能
 - V15质疑增强机制
 - V15.1 并行调度优化（工尺+天工设计）
@@ -9,9 +9,14 @@
   * 智能缓存机制
   * 超时熔断+降级策略
   * 保留串行模式作为回退
+- V15.2 产物生成集成（天工设计）
+  * 产物生成引擎集成
+  * 质量审核引擎集成
+  * 模板管理API集成
+  * 讨论结束后一键生成产物
 
 Author: 南乔 + 工尺 + 天工
-Date: 2026-03-17
+Date: 2026-03-19
 """
 
 from flask import Flask, render_template_string, jsonify, request, send_file, Response
@@ -25,6 +30,17 @@ import os
 import requests
 import json
 import glob
+import sys
+
+# ==================== V15.2模块导入 ====================
+sys.path.insert(0, '/root/.openclaw/workspace/03_输出成果/天工产出/V15.2')
+try:
+    from api_routes import register_api_routes
+    V15_2_LOADED = True
+    print("[V15.2] 模块加载成功：产物生成、质量审核、模板管理API")
+except ImportError as e:
+    V15_2_LOADED = False
+    print(f"[WARN] V15.2模块导入失败: {e}")
 
 # 导入导出模块
 from export_module import ExportAPI, DiscussionTurn, DiscussionSummary
@@ -172,6 +188,14 @@ from cost_estimator import CostEstimator
 cost_estimator = CostEstimator()
 
 app = Flask(__name__)
+
+# ==================== 注册V15.2 API路由 ====================
+if V15_2_LOADED:
+    try:
+        register_api_routes(app)
+        print("[V15.2] API路由注册成功")
+    except Exception as e:
+        print(f"[WARN] V15.2 API路由注册失败: {e}")
 
 # 导出API
 export_api = ExportAPI()
@@ -1754,7 +1778,7 @@ HTML_TEMPLATE = '''
     <div class="header">
         <div class="header-left">
             <div class="logo">🧭 指南针工程</div>
-            <div class="logo-sub">智能协作平台 V14+V15深度融合 | 九星智囊团 <span style="color:#ff0">[V15.11.2:2026-03-15 21:48 修复类型错误]</span></div>
+            <div class="logo-sub">智能协作平台 V14+V15.2产物生成 | 九星智囊团 <span style="color:#ff0">[V15.2:2026-03-19 产物生成集成]</span></div>
             <div style="font-size:11px;color:#909399;margin-top:2px;">九星汇聚，智胜千里 | 以智为针，以信为盘</div>
         </div>
         <div class="header-right">
@@ -1762,6 +1786,7 @@ HTML_TEMPLATE = '''
                 <div class="status-dot"></div>
                 <span id="apiStatus">千帆API已连接</span>
             </div>
+            <button class="filter-btn" id="generateProductBtn" style="display:none; background:#67C23A; color:white; font-weight:bold;" onclick="generateProduct()">🚀 生成产物</button>
             <button class="filter-btn" onclick="exportWord()">📥 Word</button>
             <button class="filter-btn" onclick="exportExcel()">📊 Excel</button>
             <button class="filter-btn" onclick="exportMarkdown()">📝 MD</button>
@@ -2056,6 +2081,14 @@ HTML_TEMPLATE = '''
                     if (sendBtn) {
                         sendBtn.disabled = false;
                     }
+                    
+                    // 显示"生成产物"按钮
+                    const productBtn = document.getElementById('generateProductBtn');
+                    if (productBtn) {
+                        productBtn.style.display = 'inline-block';
+                        console.log('[DEBUG] 已显示"生成产物"按钮');
+                    }
+                    
                     console.log('[DEBUG] ✅ 讨论完成，已解锁输入，isProcessing:', isProcessing);
                 }
 
@@ -2683,6 +2716,219 @@ HTML_TEMPLATE = '''
             submitTask();
         }
 
+        // ========== V15.2 产物生成功能 ==========
+        let productGenerationInProgress = false;
+        
+        async function generateProduct() {
+            if (productGenerationInProgress) {
+                alert('产物正在生成中，请稍候...');
+                return;
+            }
+            
+            // 获取讨论内容作为输入
+            const discussionContent = conversations.map(c => 
+                `【${c.speaker_name || c.speaker}】${c.content}`
+            ).join('\n\n');
+            
+            // 获取项目名称
+            const projectName = memory.current_task || '未命名项目';
+            
+            // 显示生成中提示
+            const chatMessages = document.getElementById('chatMessages');
+            const loadingMsg = document.createElement('div');
+            loadingMsg.className = 'message';
+            loadingMsg.id = 'product-loading';
+            loadingMsg.innerHTML = `
+                <div class="message-avatar" style="background: #9C27B0;">🌿</div>
+                <div class="message-content">
+                    <div class="message-header">
+                        <span class="message-speaker" style="color: #9C27B0;">🌿 南乔</span>
+                        <span class="message-time">产物生成</span>
+                    </div>
+                    <div class="message-text">
+                        🚀 正在调用V15.2产物生成引擎...<br>
+                        <span style="color: var(--text-muted);">这可能需要几秒钟</span>
+                    </div>
+                </div>
+            `;
+            chatMessages.appendChild(loadingMsg);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            
+            productGenerationInProgress = true;
+            
+            try {
+                // 调用V15.2产物生成API
+                const response = await fetch('/api/v15.2/product/generate', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        type: 'document',  // 产物类型：code/document/model/pipeline
+                        name: projectName + ' - 讨论产物',
+                        description: '基于多Agent协作讨论生成的产物文档',
+                        input_data: {
+                            requirements: [discussionContent],
+                            project_name: projectName,
+                            consensus_level: memory.get_consensus_level ? memory.get_consensus_level() : 70
+                        },
+                        tags: ['协作讨论', '自动生成', projectName]
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    const taskId = result.data.task_id;
+                    
+                    // 更新提示
+                    loadingMsg.querySelector('.message-text').innerHTML = `
+                        ✅ 产物生成任务已提交<br>
+                        <span style="color: var(--text-muted);">任务ID: ${taskId}</span><br>
+                        <span style="color: var(--text-muted);">正在生成中，请稍候...</span>
+                    `;
+                    
+                    // 轮询任务状态
+                    const statusUrl = result.data.status_url;
+                    let completed = false;
+                    let attempts = 0;
+                    const maxAttempts = 30;  // 最多等待30次（约30秒）
+                    
+                    while (!completed && attempts < maxAttempts) {
+                        await new Promise(r => setTimeout(r, 1000));
+                        
+                        const statusResponse = await fetch(statusUrl);
+                        const statusData = await statusResponse.json();
+                        
+                        if (statusData.success && statusData.data) {
+                            const status = statusData.data.status;
+                            const progress = statusData.data.progress || 0;
+                            
+                            loadingMsg.querySelector('.message-text').innerHTML = `
+                                ⏳ 产物生成中...<br>
+                                <span style="color: var(--text-muted);">进度: ${progress}% - ${statusData.data.stage || '处理中'}</span>
+                            `;
+                            
+                            if (status === 'completed') {
+                                completed = true;
+                                
+                                // 显示完成信息
+                                loadingMsg.querySelector('.message-text').innerHTML = `
+                                    🎉 产物生成完成！<br>
+                                    <span style="color: var(--success);">质量评分: ${statusData.data.result ? '良好' : '待评估'}</span><br><br>
+                                    <button class="quick-btn" onclick="downloadProduct('${taskId}')" style="background: var(--primary); color: white;">
+                                        📥 下载产物
+                                    </button>
+                                    <button class="quick-btn" onclick="checkProductQuality('${taskId}')">
+                                        🔍 质量检查
+                                    </button>
+                                `;
+                            } else if (status === 'failed') {
+                                completed = true;
+                                loadingMsg.querySelector('.message-text').innerHTML = `
+                                    ❌ 产物生成失败<br>
+                                    <span style="color: var(--danger);">${statusData.data.error || '未知错误'}</span>
+                                `;
+                            }
+                        }
+                        
+                        attempts++;
+                    }
+                    
+                    if (!completed) {
+                        loadingMsg.querySelector('.message-text').innerHTML = `
+                            ⚠️ 产物生成超时<br>
+                            <span style="color: var(--text-muted);">请稍后手动刷新查看结果</span>
+                        `;
+                    }
+                    
+                } else {
+                    loadingMsg.querySelector('.message-text').innerHTML = `
+                        ❌ 产物生成失败<br>
+                        <span style="color: var(--danger);">${result.message || '服务异常'}</span>
+                    `;
+                }
+                
+            } catch (e) {
+                console.error('[产物生成错误]', e);
+                loadingMsg.querySelector('.message-text').innerHTML = `
+                    ❌ 产物生成异常<br>
+                    <span style="color: var(--danger);">${e.message || '网络错误'}</span>
+                `;
+            } finally {
+                productGenerationInProgress = false;
+            }
+        }
+        
+        // 下载产物
+        async function downloadProduct(taskId) {
+            window.open(`/api/v15.2/product/download/${taskId}?format=zip`, '_blank');
+        }
+        
+        // 质量检查
+        async function checkProductQuality(taskId) {
+            const chatMessages = document.getElementById('chatMessages');
+            const qualityMsg = document.createElement('div');
+            qualityMsg.className = 'message';
+            qualityMsg.innerHTML = `
+                <div class="message-avatar" style="background: #E6A23C;">🔍</div>
+                <div class="message-content">
+                    <div class="message-header">
+                        <span class="message-speaker" style="color: #E6A23C;">🔍 质量检查</span>
+                    </div>
+                    <div class="message-text">正在执行质量检查...</div>
+                </div>
+            `;
+            chatMessages.appendChild(qualityMsg);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            
+            try {
+                const response = await fetch('/api/v15.2/quality/check', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        target_type: 'product',
+                        target_id: taskId,
+                        check_types: ['code_quality', 'security', 'performance']
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    const checkId = result.data.check_id;
+                    
+                    // 等待检查完成
+                    await new Promise(r => setTimeout(r, 3000));
+                    
+                    // 获取报告
+                    const reportResponse = await fetch(`/api/v15.2/quality/report/${checkId}`);
+                    const reportData = await reportResponse.json();
+                    
+                    if (reportData.success) {
+                        const summary = reportData.data.summary;
+                        qualityMsg.querySelector('.message-text').innerHTML = `
+                            ✅ 质量检查完成<br>
+                            <span style="color: var(--text-muted);">评分: ${summary.score}分</span><br>
+                            <span style="color: ${summary.critical > 0 ? 'var(--danger)' : 'var(--success)'};">
+                                严重问题: ${summary.critical}个
+                            </span><br>
+                            <span style="color: var(--warning);">警告: ${summary.warning}个</span><br>
+                            <span style="color: var(--info);">提示: ${summary.info}个</span>
+                        `;
+                    }
+                } else {
+                    qualityMsg.querySelector('.message-text').innerHTML = `
+                        ⚠️ 质量检查失败<br>
+                        <span style="color: var(--text-muted);">${result.message || '服务异常'}</span>
+                    `;
+                }
+            } catch (e) {
+                qualityMsg.querySelector('.message-text').innerHTML = `
+                    ❌ 质量检查异常<br>
+                    <span style="color: var(--danger);">${e.message}</span>
+                `;
+            }
+        }
+
         // 清空
         async function clearChat() {
             await fetch('/api/clear', {method: 'POST'});
@@ -2695,6 +2941,11 @@ HTML_TEMPLATE = '''
             lastRenderedIndex = -1;
             // 清除历史
             clearHistory();
+            // 隐藏"生成产物"按钮
+            const productBtn = document.getElementById('generateProductBtn');
+            if (productBtn) {
+                productBtn.style.display = 'none';
+            }
         }
 
         // 上传文档
@@ -4974,7 +5225,7 @@ def api_minutes_download():
 
 if __name__ == '__main__':
     print("=" * 60)
-    print("🧭 指南针工程 - 智能协作平台 V14 + V15增强")
+    print("🧭 指南针工程 - 智能协作平台 V14 + V15.2产物生成")
     print("=" * 60)
     print("新增功能：文档上传 | 知识库集成 | 场景模板 | 成本估算")
     print("流式输出：实时逐字显示 | 打字机效果 | 历史保存")
@@ -4984,6 +5235,11 @@ if __name__ == '__main__':
     print("任务类型：20种细粒度任务（全生命周期覆盖）")
     print("")
     print("🌿 V15增强：意图分析 | 会议纪要自动生成")
+    print("🚀 V15.2新增：产物生成 | 质量审核 | 模板管理")
+    print("   - 讨论结束后点击「生成产物」按钮")
+    print("   - 自动生成可交付产物文档")
+    print("   - 支持质量检查和下载")
+    print("")
     print("访问地址：http://120.48.169.242:5001")
     print("=" * 60)
     app.run(host='0.0.0.0', port=5001, debug=False)
