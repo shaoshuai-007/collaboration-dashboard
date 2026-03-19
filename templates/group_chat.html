@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌿 九星智囊团全员群</title>
+    <link rel="stylesheet" href="/static/css/group-chat.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- 左侧：成员列表 -->
+        <div class="sidebar-left">
+            <div class="panel">
+                <div class="panel-header">
+                    <h3>👥 团队成员</h3>
+                </div>
+                <div class="panel-body" id="agentList">
+                    <!-- 动态加载 -->
+                </div>
+            </div>
+        </div>
+        
+        <!-- 中间：消息区 -->
+        <div class="main-content">
+            <!-- 顶部信息栏 -->
+            <div class="header">
+                <div class="group-info">
+                    <h2>🌿 九星智囊团全员群</h2>
+                    <span class="member-count" id="memberCount">成员：9人</span>
+                </div>
+                <div class="task-info">
+                    <span class="current-task" id="currentTask">当前任务：无</span>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="taskProgress" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 消息流 -->
+            <div class="message-container" id="messageContainer">
+                <div class="welcome-message">
+                    <div class="welcome-icon">🌿</div>
+                    <h3>欢迎来到九星智囊团全员群</h3>
+                    <p>这里是与团队协作的主阵地，随时@成员或发起任务讨论</p>
+                </div>
+            </div>
+            
+            <!-- 输入区 -->
+            <div class="input-area">
+                <div class="input-tools">
+                    <button class="tool-btn" onclick="insertMention()" title="@提及">
+                        @
+                    </button>
+                    <button class="tool-btn" onclick="showEmojiPicker()" title="表情">
+                        😊
+                    </button>
+                </div>
+                <div class="input-wrapper">
+                    <textarea 
+                        id="messageInput" 
+                        placeholder="输入消息，@Agent 调度任务..." 
+                        rows="3"
+                        onkeydown="handleKeyDown(event)"
+                    ></textarea>
+                    <button class="send-btn" onclick="sendMessage()">
+                        发送
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 右侧：任务面板 -->
+        <div class="sidebar-right">
+            <div class="panel">
+                <div class="panel-header">
+                    <h3>📋 任务面板</h3>
+                </div>
+                <div class="panel-body" id="taskList">
+                    <!-- 动态加载 -->
+                </div>
+            </div>
+            
+            <div class="panel">
+                <div class="panel-header">
+                    <h3>⚠️ 风险提醒</h3>
+                </div>
+                <div class="panel-body" id="riskList">
+                    <div class="empty-state">暂无风险</div>
+                </div>
+            </div>
+            
+            <div class="panel">
+                <div class="panel-header">
+                    <h3>📊 今日产出</h3>
+                </div>
+                <div class="panel-body" id="outputList">
+                    <div class="empty-state">暂无产出</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- @提及选择器 -->
+    <div class="mention-popup" id="mentionPopup">
+        <div class="mention-list" id="mentionList">
+            <!-- 动态生成 -->
+        </div>
+    </div>
+    
+    <script src="/static/js/group-chat.js"></script>
+</body>
+</html>
