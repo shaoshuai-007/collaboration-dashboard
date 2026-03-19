@@ -354,6 +354,47 @@ class NanqiaoScheduler:
         )
         
         return msg
+    
+    def get_auto_reply(self, user_message: str) -> str:
+        """智能自动回复 - 非任务消息时南乔的响应"""
+        
+        user_msg = user_message.lower()
+        
+        # 问候语
+        greetings = ['你好', 'hi', 'hello', '嗨', '在吗', '在么']
+        if any(g in user_msg for g in greetings):
+            return "🌿 少帅好！我是南乔，九星智囊团的Leader。有什么任务尽管安排！"
+        
+        # 帮助
+        if any(h in user_msg for h in ['帮助', 'help', '能做什么', '怎么用']):
+            return "🌿 我可以帮你调度团队完成各种任务，例如：\n• 需求分析 → @采薇\n• 架构设计 → @织锦\n• 方案撰写 → @呈彩\n• 项目管理 → @玉衡\n\n直接告诉我需要做什么就行！"
+        
+        # 查看团队
+        if any(k in user_msg for k in ['团队', '成员', '有哪些', 'agent', '都有谁']):
+            agents = self.group_manager.get_all_agents()
+            reply = "🌿 九星智囊团成员：\n\n"
+            for a in agents:
+                reply += f"{a['emoji']} {a['name']} - {a['role']}\n"
+            return reply
+        
+        # 状态查询
+        if any(s in user_msg for s in ['状态', '进行中', '进度', '任务情况']):
+            tasks = self.message_persistence.get_tasks()
+            running = [t for t in tasks if t.get('status') == 'running']
+            if running:
+                reply = "🌿 当前进行中的任务：\n"
+                for t in running:
+                    reply += f"• {t.get('title', '未命名')}\n"
+                return reply
+            else:
+                return "🌿 当前没有进行中的任务"
+        
+        # 感谢
+        if any(t in user_msg for t in ['谢谢', '感谢', '好的', '收到', '明白']):
+            return "🌿 不客气！有问题随时叫我～"
+        
+        # 默认回复
+        return None  # 返回None时不回复
 
 
 # 用于后续集成

@@ -18,10 +18,12 @@ import os
 
 # 添加模块路径
 sys.path.insert(0, '/root/.openclaw/workspace/modules')
+sys.path.insert(0, '/root/.openclaw/workspace/03_输出成果')
 
 from group_manager import group_manager, GroupManager
 from message_persistence import message_persistence, MessagePersistence
 from nanqiao_scheduler import NanqiaoScheduler
+from intent_scheduler import IntelligentScheduler, TASK_TYPES, TaskCategory
 
 # 创建Flask应用
 app = Flask(__name__,
@@ -38,6 +40,11 @@ def after_request(response):
 
 # 初始化调度器
 scheduler = NanqiaoScheduler(group_manager, message_persistence)
+
+# 初始化V15智能调度器（四层意图识别）
+intent_scheduler = IntelligentScheduler()
+# 初始化智能意图识别调度器
+intent_scheduler = IntelligentScheduler()
 
 # SSE订阅者
 sse_clients = {}
@@ -162,12 +169,59 @@ def create_message():
         }
     })
     
-    # 如果是用户消息，触发南乔调度
+    # 如果是用户消息，触发南乔智能调度
     if from_type == 'user':
-        # 检查是否是任务调度
-        if '@' in content and any(keyword in content for keyword in ['帮我', '做一个', '分析', '设计', '开发']):
-            # 异步调度任务
+        # 扩大任务关键词识别范围
+        task_keywords = ['帮我', '做一个', '做一', '分析', '设计', '开发', '写', '做', 
+                       '需求', '方案', '架构', 'PPT', '文档', '接口', '数据库',
+                       '项目', '任务', '评估', '报价', '售前', '技术', '实现',
+                       '生成', '创建', '制作', '整理', '规划', '优化', '改进']
+        
+        # 检查是否是任务请求
+        is_task = any(keyword in content for keyword in task_keywords)
+        
+        # 如果是任务，触发调度
+        if is_task:
+            print(f"📋 检测到任务请求: {content[:50]}...")
             threading.Thread(target=handle_task_dispatch, args=(content,)).start()
+        else:
+            # 非任务消息，南乔自动回复
+            auto_reply = scheduler.get_auto_reply(content)
+            if auto_reply:
+                reply_msg = group_manager.create_message(
+                    from_type='agent',
+                    from_id='nanqiao',
+                    content=auto_reply
+                )
+                message_persistence.save_message({
+                    'msg_id': reply_msg.msg_id,
+                    'group_id': reply_msg.group_id,
+                    'from_type': reply_msg.from_type,
+                    'from_id': reply_msg.from_id,
+                    'from_name': reply_msg.from_name,
+                    'from_emoji': reply_msg.from_emoji,
+                    'content': reply_msg.content,
+                    'mentions': reply_msg.mentions,
+                    'reply_to': reply_msg.reply_to,
+                    'seq': reply_msg.seq,
+                    'created_at': reply_msg.created_at
+                })
+                push_to_sse_clients({
+                    'type': 'new_message',
+                    'message': {
+                        'msg_id': reply_msg.msg_id,
+                        'group_id': reply_msg.group_id,
+                        'from_type': reply_msg.from_type,
+                        'from_id': reply_msg.from_id,
+                        'from_name': reply_msg.from_name,
+                        'from_emoji': reply_msg.from_emoji,
+                        'content': reply_msg.content,
+                        'mentions': reply_msg.mentions,
+                        'reply_to': reply_msg.reply_to,
+                        'seq': reply_msg.seq,
+                        'created_at': reply_msg.created_at
+                    }
+                })
     
     return jsonify({
         'success': True,
@@ -180,28 +234,123 @@ def create_message():
 
 
 def handle_task_dispatch(content):
-    """处理任务调度"""
+    """处理任务调度 - 使用完整四层意图识别"""
     try:
-        # 使用调度器分析任务
-        result = scheduler.dispatch_task(content)
+        # 使用智能意图识别（IntelligentScheduler的process方法）
+        result = intent_scheduler.process(content)
         
-        # 推送南乔的响应消息
-        msg = result.get('message_obj')
-        if msg:
+        print(f"🎯 意图识别结果: {result}")
+        
+        # 根据识别结果进行调度
+        if result.get('task_code'):
+            task_code = result['task_code']
+            task_name = result.get('task_name', '')
+            confidence = result.get('confidence', 0)
+            
+            # 获取任务信息
+            task_info = TASK_TYPES.get(task_code)
+            
+            if task_info:
+                # 创建任务消息
+                dispatch_msg = f"🌿 收到任务请求：{task_name}\n\n"
+                dispatch_msg += f"📋 任务类型：{task_code}\n"
+                dispatch_msg += f"📝 任务描述：{task_info.description}\n"
+                dispatch_msg += f"📄 产出物：{task_info.output_template}\n"
+                dispatch_msg += f"🎯 置信度：{confidence:.0%}\n\n"
+                
+                # 简单调度 - 直接分配给对应Agent
+                agent_map = {
+                    'REQ': '采薇', 'DES': '织锦', 'DEV': '天工',
+                    'PM': '玉衡', 'TEST': '测试', 'DEPLOY': '部署'
+                }
+                prefix = task_code.split('-')[0] if '-' in task_code else ''
+                assigned_agent = agent_map.get(prefix, '南乔')
+                
+                dispatch_msg += f"👤 分配：@{assigned_agent} 请开始工作\n"
+                
+                # 创建南乔的消息
+                msg = group_manager.create_message(
+                    from_type='agent',
+                    from_id='nanqiao',
+                    content=dispatch_msg
+                )
+                
+                # 保存并推送
+                message_persistence.save_message({
+                    'msg_id': msg.msg_id,
+                    'group_id': msg.group_id,
+                    'from_type': msg.from_type,
+                    'from_id': msg.from_id,
+                    'from_name': msg.from_name,
+                    'from_emoji': msg.from_emoji,
+                    'content': msg.content,
+                    'mentions': msg.mentions,
+                    'reply_to': msg.reply_to,
+                    'seq': msg.seq,
+                    'created_at': msg.created_at
+                })
+                
+                push_to_sse_clients({
+                    'type': 'new_message',
+                    'message': {
+                        'msg_id': msg.msg_id,
+                        'group_id': msg.group_id,
+                        'from_type': msg.from_type,
+                        'from_id': msg.from_id,
+                        'from_name': msg.from_name,
+                        'from_emoji': msg.from_emoji,
+                        'content': msg.content,
+                        'mentions': msg.mentions,
+                        'reply_to': msg.reply_to,
+                        'seq': msg.seq,
+                        'created_at': msg.created_at
+                    }
+                })
+                
+                print(f"✅ 任务调度完成: {task_code}")
+        else:
+            # 未识别到任务，使用简单回复
+            msg = group_manager.create_message(
+                from_type='agent',
+                from_id='nanqiao',
+                content=f"🌿 收到消息：{content[:50]}...\n\n暂未识别为具体任务，如有需要请详细说明需求～"
+            )
+            
+            message_persistence.save_message({
+                'msg_id': msg.msg_id,
+                'group_id': msg.group_id,
+                'from_type': msg.from_type,
+                'from_id': msg.from_id,
+                'from_name': msg.from_name,
+                'from_emoji': msg.from_emoji,
+                'content': msg.content,
+                'mentions': msg.mentions,
+                'reply_to': msg.reply_to,
+                'seq': msg.seq,
+                'created_at': msg.created_at
+            })
+            
             push_to_sse_clients({
                 'type': 'new_message',
-                'message': msg
+                'message': {
+                    'msg_id': msg.msg_id,
+                    'group_id': msg.group_id,
+                    'from_type': msg.from_type,
+                    'from_id': msg.from_id,
+                    'from_name': msg.from_name,
+                    'from_emoji': msg.from_emoji,
+                    'content': msg.content,
+                    'mentions': msg.mentions,
+                    'reply_to': msg.reply_to,
+                    'seq': msg.seq,
+                    'created_at': msg.created_at
+                }
             })
-        
-        # 推送任务更新
-        push_to_sse_clients({
-            'type': 'task_update',
-            'task': result['task']
-        })
-        
-        print(f"✅ 任务调度完成: {result['task']['task_id']}")
+                
     except Exception as e:
         print(f"❌ 任务调度失败: {e}")
+        import traceback
+        traceback.print_exc()
 
 
 @app.route('/api/v16/tasks', methods=['GET'])
