@@ -1,56 +1,36 @@
+# -*- coding: utf-8 -*-
 """
-V15.2 多智能体协同平台核心模块
-
-包含:
-- product_engine: 产物生成引擎
-- quality_engine: 质量审核引擎
-- templates: 产物模板库
+V15.2 任务调度模块
+QQ任务调度功能后端核心组件
 """
 
-__version__ = "15.2.0"
-__author__ = "天工"
-
-from product_engine import (
-    ProductType,
-    TaskStatus,
-    AgentRole,
-    ProductBlueprint,
-    AgentTask,
-    ProductResult,
-    ProductBlueprintGenerator,
-    AgentTaskScheduler,
-    ResultIntegrator,
+from task_store import (
+    TaskStore, Task, Agent, LogEntry,
+    TaskStatus, AgentStatus,
+    get_store
 )
 
-from quality_engine import (
-    CheckLevel,
-    CheckCategory,
-    CheckResult,
-    ReviewReport,
-    StandardChecker,
-    ExpertReviewer,
-    FeedbackGenerator,
-    Feedback,
+from task_scheduler import (
+    TaskScheduler, get_scheduler,
+    TaskNotFoundError, AgentNotFoundError,
+    InvalidStatusError, AgentNotAvailableError
 )
+
+from task_api import task_bp, register_task_api
+
 
 __all__ = [
-    # 产物生成引擎
-    "ProductType",
-    "TaskStatus",
-    "AgentRole",
-    "ProductBlueprint",
-    "AgentTask",
-    "ProductResult",
-    "ProductBlueprintGenerator",
-    "AgentTaskScheduler",
-    "ResultIntegrator",
-    # 质量审核引擎
-    "CheckLevel",
-    "CheckCategory",
-    "CheckResult",
-    "ReviewReport",
-    "StandardChecker",
-    "ExpertReviewer",
-    "FeedbackGenerator",
-    "Feedback",
+    # 存储
+    'TaskStore', 'Task', 'Agent', 'LogEntry',
+    'TaskStatus', 'AgentStatus', 'get_store',
+    
+    # 调度器
+    'TaskScheduler', 'get_scheduler',
+    'TaskNotFoundError', 'AgentNotFoundError',
+    'InvalidStatusError', 'AgentNotAvailableError',
+    
+    # API
+    'task_bp', 'register_task_api'
 ]
+
+__version__ = '15.2.0'

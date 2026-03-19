@@ -42,6 +42,16 @@ except ImportError as e:
     V15_2_LOADED = False
     print(f"[WARN] V15.2模块导入失败: {e}")
 
+# 导入任务调度模块
+TASK_API_LOADED = False
+task_bp = None
+try:
+    from task_api import task_bp
+    TASK_API_LOADED = True
+    print("[V15.2] 任务调度模块加载成功")
+except ImportError as e:
+    print(f"[WARN] 任务调度模块导入失败: {e}")
+
 # 导入导出模块
 from export_module import ExportAPI, DiscussionTurn, DiscussionSummary
 
@@ -196,6 +206,14 @@ if V15_2_LOADED:
         print("[V15.2] API路由注册成功")
     except Exception as e:
         print(f"[WARN] V15.2 API路由注册失败: {e}")
+
+# 注册任务调度API
+if TASK_API_LOADED and task_bp:
+    try:
+        app.register_blueprint(task_bp)
+        print("[V15.2] 任务调度API注册成功")
+    except Exception as e:
+        print(f"[WARN] 任务调度API注册失败: {e}")
 
 # 导出API
 export_api = ExportAPI()
@@ -1786,6 +1804,7 @@ HTML_TEMPLATE = '''
                 <div class="status-dot"></div>
                 <span id="apiStatus">千帆API已连接</span>
             </div>
+            <button class="filter-btn" onclick="window.location.href='/dispatch'" style="background:#C93832; color:white;">📋 调度看板</button>
             <button class="filter-btn" id="generateProductBtn" style="display:none; background:#67C23A; color:white; font-weight:bold;" onclick="generateProduct()">🚀 生成产物</button>
             <button class="filter-btn" onclick="exportWord()">📥 Word</button>
             <button class="filter-btn" onclick="exportExcel()">📊 Excel</button>
@@ -3844,6 +3863,15 @@ HTML_TEMPLATE = '''
 @app.route('/')
 def index():
     return render_template_string(HTML_TEMPLATE)
+
+@app.route('/dispatch')
+def dispatch_board():
+    """任务调度看板"""
+    try:
+        with open('/root/.openclaw/workspace/03_输出成果/呈彩产出/task_dispatch_board.html', 'r', encoding='utf-8') as f:
+            return f.read()
+    except FileNotFoundError:
+        return "<h1>调度看板页面未找到</h1><p>请确认文件已生成</p>", 404
 
 @app.route('/test')
 def test_page():
