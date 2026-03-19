@@ -60,4 +60,4 @@ def test():
     return render_template_string(HTML)
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5003, debug=False)
+    app.run(host='0.0.0.0', port=5002, debug=False)

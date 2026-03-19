@@ -953,13 +953,70 @@ SINGLE_AGENT_PAGE = '''
         .agent-info-panel {
             padding: 16px 20px;
             border-bottom: 1px solid #e0e0e0;
-            display: block !important;
-            background: #fff;
-            border: 2px solid red;
+            display: block;
+            min-height: 150px;
+            background: linear-gradient(135deg, #f5f7fa, #e4e7eb);
+            border-left: 4px solid #409EFF;
         }
         
         .agent-info-panel.show {
             display: block;
+        }
+        
+        .agent-intro {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+        }
+        
+        .agent-intro-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            color: white;
+            flex-shrink: 0;
+        }
+        
+        .agent-intro-content {
+            flex: 1;
+        }
+        
+        .agent-intro-name {
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 4px;
+        }
+        
+        .agent-intro-role {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+        
+        .agent-intro-desc {
+            font-size: 13px;
+            color: #888;
+            line-height: 1.6;
+        }
+        
+        .agent-expertise {
+            margin-top: 12px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .expertise-tag {
+            background: #e8f4ff;
+            color: #006EBD;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
         }
         
         .agent-intro {
@@ -1262,15 +1319,24 @@ SINGLE_AGENT_PAGE = '''
             console.log('页面加载完成');
             
             // 绑定发送按钮事件
-            document.getElementById('sendBtn').addEventListener('click', sendMessage);
+            var sendBtn = document.getElementById('sendBtn');
+            if (sendBtn) {
+                sendBtn.addEventListener('click', sendMessage);
+            }
             
             // 绑定回车发送
-            document.getElementById('messageInput').addEventListener('keydown', function(e) {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                    e.preventDefault();
-                    sendMessage();
-                }
-            });
+            var input = document.getElementById('messageInput');
+            if (input) {
+                input.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        sendMessage();
+                    }
+                });
+            }
+            
+            // 默认选中第一个专家
+            window.selectAgent('caiwei');
         });
         
         // 渲染专家列表
@@ -1352,78 +1418,72 @@ SINGLE_AGENT_PAGE = '''
         window.selectAgent = function(agentId) {
             console.log('selectAgent called: ' + agentId);
             
-            // 强制重置状态，确保可以切换
-            isProcessing = false;
-            document.getElementById('sendBtn').disabled = false;
-            
-            var prevAgent = currentAgent;
-            currentAgent = agentId;
-            
-            // 更新左侧列表的active状态
-            var agentItems = document.querySelectorAll('.agent-item');
-            agentItems.forEach(function(item) {
-                var itemAgentId = item.getAttribute('data-agent-id');
-                if (itemAgentId === agentId) {
-                    item.classList.add('active');
-                } else {
-                    item.classList.remove('active');
-                }
-            });
-            
-            // 如果没有data-agent-id属性（静态HTML），则使用另一种方式更新
-            if (!document.querySelector('.agent-item[data-agent-id="' + agentId + '"]')) {
-                // 静态HTML的回退处理
-                var container = document.getElementById('agentList');
-                var staticItems = container.querySelectorAll('.agent-item');
-                staticItems.forEach(function(item) {
-                    item.classList.remove('active');
-                    // 从onclick属性中提取agentId
+            try {
+                // 强制重置状态
+                isProcessing = false;
+                var sendBtn = document.getElementById('sendBtn');
+                if (sendBtn) sendBtn.disabled = false;
+                
+                currentAgent = agentId;
+                
+                // 更新左侧列表active状态
+                var agentItems = document.querySelectorAll('.agent-item');
+                agentItems.forEach(function(item) {
                     var onclickAttr = item.getAttribute('onclick');
                     if (onclickAttr && onclickAttr.indexOf("'" + agentId + "'") > -1) {
                         item.classList.add('active');
+                    } else {
+                        item.classList.remove('active');
                     }
                 });
+                
+                // 初始化对话
+                if (!conversations[agentId]) {
+                    conversations[agentId] = [];
+                }
+                
+                // 隐藏欢迎提示
+                var tip = document.getElementById('welcomeTip');
+                if (tip) tip.style.display = 'none';
+                
+                var input = document.getElementById('messageInput');
+                if (input) input.disabled = false;
+                if (sendBtn) sendBtn.disabled = false;
+                
+                // 显示专家信息
+                var panel = document.getElementById('agentInfoPanel');
+                if (!panel) return;
+                
+                var agents = {
+                    'caiwei': {name:'采薇',role:'需求分析专家',emoji:'🌸',color:'#409EFF',intro:'电信行业资深需求分析专家，深耕业务流程分析、用户故事编写及验收标准定义领域超十年。',expertise:['业务流程分析','用户故事编写','验收标准定义','需求追踪矩阵'],guidance:'您可以问我：<br>• 请帮我梳理XX业务的需求<br>• 请帮我编写用户故事<br>• 请帮我制定验收标准'},
+                    'zhijin': {name:'织锦',role:'架构设计师',emoji:'🧵',color:'#67C23A',intro:'系统架构设计专家，擅长复杂业务系统架构、微服务设计和技术选型。',expertise:['系统架构设计','微服务设计','技术选型','性能优化'],guidance:'您可以问我：<br>• 请帮我设计XX系统的技术架构<br>• XX技术选型有什么建议<br>• 如何优化系统性能'},
+                    'zhutai': {name:'筑台',role:'售前工程师',emoji:'🏗️',color:'#E6A23C',intro:'资深售前顾问，擅长需求分析、方案演讲和客户沟通。',expertise:['需求分析','方案演讲','客户沟通','报价估算'],guidance:'您可以问我：<br>• 请帮我准备售前咨询方案<br>• 如何进行方案演示<br>• 请帮我分析客户需求'},
+                    'chengcai': {name:'呈彩',role:'方案设计师',emoji:'🎨',color:'#FF9800',intro:'方案设计专家，擅长PPT制作、方案呈现和演示demo。',expertise:['PPT制作','方案呈现','演示demo','视觉设计'],guidance:'您可以问我：<br>• 请帮我制作方案PPT<br>• 如何设计演示Demo<br>• 请帮我优化方案呈现'},
+                    'yuheng': {name:'玉衡',role:'项目经理',emoji:'⚖️',color:'#F56C6C',intro:'项目管理专家，擅长项目计划、进度控制和风险管理。',expertise:['项目计划','进度控制','风险管理','团队协调'],guidance:'您可以问我：<br>• 请帮我制定项目计划<br>• 如何控制项目进度<br>• 请帮我识别项目风险'},
+                    'gongchi': {name:'工尺',role:'系统设计师',emoji:'📐',color:'#607D8B',intro:'系统设计专家，擅长接口设计、数据库设计和详细设计。',expertise:['接口设计','数据库设计','详细设计','API规范'],guidance:'您可以问我：<br>• 请帮我设计接口<br>• 请帮我设计数据库<br>• 请帮我编写详细设计文档'},
+                    'zhegui': {name:'折桂',role:'资源管家',emoji:'📚',color:'#00BCD4',intro:'知识管理专家，擅长知识整理、知识分类和知识图谱构建。',expertise:['知识整理','知识分类','知识图谱','智能搜索'],guidance:'您可以问我：<br>• 请帮我整理知识库<br>• 如何构建知识图谱<br>• 请帮我分类知识文档'},
+                    'fuyao': {name:'扶摇',role:'总指挥',emoji:'🌀',color:'#165DFF',intro:'团队协调专家，擅长任务调度、团队协作和进度监控。',expertise:['任务调度','团队协作','进度监控','资源协调'],guidance:'您可以问我：<br>• 请帮我分配任务<br>• 如何协调团队进度<br>• 请帮我监控项目进展'},
+                    'nanqiao': {name:'南乔',role:'智能助手',emoji:'🌿',color:'#9C27B0',intro:'您的智能助手，擅长问题解答、任务协调和知识服务。',expertise:['问题解答','任务协调','知识服务','决策建议'],guidance:'您可以问我：<br>• 请帮我解答问题<br>• 请帮我协调任务<br>• 请帮我查找知识'}
+                };
+                
+                var a = agents[agentId];
+                if (!a) return;
+                
+                panel.style.display = 'block';
+                panel.innerHTML = '<div style="display:flex;align-items:flex-start;gap:16px;padding:16px;background:linear-gradient(135deg,#f5f7fa,#e4e7eb);border-radius:8px;border-left:4px solid ' + a.color + '">' +
+                    '<div style="width:60px;height:60px;border-radius:50%;background:' + a.color + ';display:flex;align-items:center;justify-content:center;font-size:28px;color:white;flex-shrink:0">' + a.emoji + '</div>' +
+                    '<div style="flex:1"><div style="font-size:20px;font-weight:bold;color:#333;margin-bottom:4px">' + a.name + '</div>' +
+                    '<div style="font-size:14px;color:#666;margin-bottom:8px">' + a.role + '</div>' +
+                    '<div style="font-size:13px;color:#888;line-height:1.6;margin-bottom:12px">' + a.intro + '</div>' +
+                    '<div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px">' + a.expertise.map(function(e){return'<span style="background:#e8f4ff;color:#006EBD;padding:4px 12px;border-radius:12px;font-size:12px">'+e+'</span>'}).join('') + '</div>' +
+                    '<div style="font-size:12px;color:#666;background:#fff;padding:12px;border-radius:8px;line-height:1.8">' + a.guidance + '</div></div></div>';
+                
+                document.title = a.name + ' - 指南针工程';
+                
+            } catch (e) {
+                console.error('selectAgent错误:', e);
             }
-            
-            // 初始化对话
-            if (!conversations[agentId]) {
-                conversations[agentId] = [];
-            }
-            
-            // 更新UI - 隐藏欢迎提示
-            document.getElementById('welcomeTip').style.display = 'none';
-            document.getElementById('messageInput').disabled = false;
-            document.getElementById('sendBtn').disabled = false;
-            
-            // 直接显示右侧面板（不依赖API）
-            var panel = document.getElementById('agentInfoPanel');
-            var agents = {
-                'caiwei': {name:'采薇',role:'需求分析专家',emoji:'🌸',color:'#409EFF',intro:'电信行业资深需求分析专家，深耕业务流程分析、用户故事编写及验收标准定义领域超十年。',expertise:['业务流程分析','用户故事编写','验收标准定义','需求追踪矩阵'],scenarios:['需求文档编写','业务痛点梳理','验收标准制定','需求变更分析']},
-                'zhijin': {name:'织锦',role:'架构设计师',emoji:'🧵',color:'#67C23A',intro:'系统架构设计专家，擅长复杂业务系统架构、微服务设计和技术选型。',expertise:['系统架构设计','微服务设计','技术选型','性能优化'],scenarios:['架构设计评审','技术方案制定','系统优化建议']},
-                'zhutai': {name:'筑台',role:'售前工程师',emoji:'🏗️',color:'#E6A23C',intro:'资深售前顾问，擅长需求分析、方案演讲和客户沟通。',expertise:['需求分析','方案演讲','客户沟通','报价估算'],scenarios:['售前咨询','方案演示','商务谈判']},
-                'chengcai': {name:'呈彩',role:'方案设计师',emoji:'🎨',color:'#FF9800',intro:'方案设计专家，擅长PPT制作、方案呈现和演示demo。',expertise:['PPT制作','方案呈现','演示demo','视觉设计'],scenarios:['方案PPT编写','汇报演示','产品演示']},
-                'yuheng': {name:'玉衡',role:'项目经理',emoji:'⚖️',color:'#F56C6C',intro:'项目管理专家，擅长项目计划、进度控制和风险管理。',expertise:['项目计划','进度控制','风险管理','团队协调'],scenarios:['项目规划','进度管理','风险预警']},
-                'gongchi': {name:'工尺',role:'系统设计师',emoji:'📐',color:'#607D8B',intro:'系统设计专家，擅长接口设计、数据库设计和详细设计。',expertise:['接口设计','数据库设计','详细设计','API规范'],scenarios:['接口设计','数据库设计','详细设计']},
-                'zhegui': {name:'折桂',role:'资源管家',emoji:'📚',color:'#00BCD4',intro:'知识管理专家，擅长知识整理、知识分类和知识图谱构建。',expertise:['知识整理','知识分类','知识图谱','智能搜索'],scenarios:['知识库建设','知识检索','知识管理']},
-                'fuyao': {name:'扶摇',role:'总指挥',emoji:'🌀',color:'#165DFF',intro:'团队协调专家，擅长任务调度、团队协作和进度监控。',expertise:['任务调度','团队协作','进度监控','资源协调'],scenarios:['任务分配','进度协调','团队管理']},
-                'nanqiao': {name:'南乔',role:'智能助手',emoji:'🌿',color:'#9C27B0',intro:'您的智能助手，擅长问题解答、任务协调和知识服务。',expertise:['问题解答','任务协调','知识服务','决策建议'],scenarios:['智能问答','任务协调','知识服务']}
-            };
-            var a = agents[agentId];
-            if (a) {
-                // 设置完整className，确保CSS能匹配
-                panel.className = 'agent-info-panel show';
-                panel.innerHTML = '<div class="agent-intro"><div class="agent-intro-avatar" style="background:' + a.color + '">' + a.emoji + '</div><div class="agent-intro-content"><div class="agent-intro-name">' + a.name + '</div><div class="agent-intro-role">' + a.role + '</div><div class="agent-intro-desc">' + a.intro + '</div><div class="agent-expertise">' + a.expertise.map(function(e){return'<span class="expertise-tag">'+e+'</span>'}).join('') + '</div></div></div>';
-                console.log('已切换到 ' + a.name + ', panel已显示');
-            }
-            
-            // 异步加载更多详细信息
-            loadAgentInfo(agentId);
-            
-            // 渲染消息
-            renderMessages();
-            
-            console.log('Agent切换完成: ' + agentId);
-        }
+        };
         
         // 加载专家详细信息
         function loadAgentInfo(agentId) {
@@ -1454,6 +1514,8 @@ SINGLE_AGENT_PAGE = '''
         // 渲染消息
         function renderMessages() {
             var area = document.getElementById('messagesArea');
+            if (!area) return;
+            
             var msgs = conversations[currentAgent] || [];
             
             area.innerHTML = '';
@@ -1463,10 +1525,11 @@ SINGLE_AGENT_PAGE = '''
                 var msgDiv = document.createElement('div');
                 msgDiv.className = 'message ' + msg.type;
                 
+                var agent = AGENTS[currentAgent] || {color:'#409EFF', emoji:'🌿'};
+                
                 if (msg.type === 'user') {
                     msgDiv.innerHTML = '<div class="message-avatar" style="background: #595959;">👤</div><div class="message-content">' + escapeHtml(msg.content) + '</div>';
                 } else if (msg.type === 'agent') {
-                    var agent = AGENTS[currentAgent];
                     msgDiv.innerHTML = '<div class="message-avatar" style="background: ' + agent.color + '">' + agent.emoji + '</div><div class="message-content">' + escapeHtml(msg.content) + '</div>';
                 }
                 
