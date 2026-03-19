@@ -885,7 +885,7 @@ SINGLE_AGENT_PAGE = '''
             padding: 8px;
         }
         
-        /* 专家卡片 - 关键修复 */
+        /* 专家卡片 */
         .agent-item {
             display: flex;
             align-items: center;
@@ -897,6 +897,9 @@ SINGLE_AGENT_PAGE = '''
             border: 2px solid transparent;
             background: white;
             transition: all 0.2s;
+            pointer-events: auto;
+            position: relative;
+            z-index: 1;
         }
         
         .agent-item:hover {
@@ -906,11 +909,6 @@ SINGLE_AGENT_PAGE = '''
         .agent-item.active {
             background: #e8f4ff;
             border-color: #006EBD;
-        }
-        
-        /* 子元素不阻挡点击 */
-        .agent-item * {
-            pointer-events: none;
         }
         
         .agent-avatar {
@@ -955,7 +953,9 @@ SINGLE_AGENT_PAGE = '''
         .agent-info-panel {
             padding: 16px 20px;
             border-bottom: 1px solid #e0e0e0;
-            display: none;
+            display: block !important;
+            background: #fff;
+            border: 2px solid red;
         }
         
         .agent-info-panel.show {
@@ -1180,7 +1180,44 @@ SINGLE_AGENT_PAGE = '''
     <div class="main-container">
         <div class="sidebar">
             <div class="sidebar-header">⭐ 选择专家顾问 <span style="font-size:10px;color:#999;margin-left:8px;">V3.1</span></div>
-            <div class="agent-list" id="agentList"></div>
+            <div class="agent-list" id="agentList">
+                <div class="agent-item" onclick="selectAgent('caiwei')" style="cursor:pointer">
+                    <div class="agent-avatar" style="background:#409EFF">🌸</div>
+                    <div class="agent-info"><div class="agent-name">采薇</div><div class="agent-role">需求分析专家</div></div>
+                </div>
+                <div class="agent-item" onclick="selectAgent('zhijin')" style="cursor:pointer">
+                    <div class="agent-avatar" style="background:#67C23A">🧵</div>
+                    <div class="agent-info"><div class="agent-name">织锦</div><div class="agent-role">架构设计师</div></div>
+                </div>
+                <div class="agent-item" onclick="selectAgent('zhutai')" style="cursor:pointer">
+                    <div class="agent-avatar" style="background:#E6A23C">🏗️</div>
+                    <div class="agent-info"><div class="agent-name">筑台</div><div class="agent-role">售前工程师</div></div>
+                </div>
+                <div class="agent-item" onclick="selectAgent('chengcai')" style="cursor:pointer">
+                    <div class="agent-avatar" style="background:#FF9800">🎨</div>
+                    <div class="agent-info"><div class="agent-name">呈彩</div><div class="agent-role">方案设计师</div></div>
+                </div>
+                <div class="agent-item" onclick="selectAgent('yuheng')" style="cursor:pointer">
+                    <div class="agent-avatar" style="background:#F56C6C">⚖️</div>
+                    <div class="agent-info"><div class="agent-name">玉衡</div><div class="agent-role">项目经理</div></div>
+                </div>
+                <div class="agent-item" onclick="selectAgent('gongchi')" style="cursor:pointer">
+                    <div class="agent-avatar" style="background:#607D8B">📐</div>
+                    <div class="agent-info"><div class="agent-name">工尺</div><div class="agent-role">系统设计师</div></div>
+                </div>
+                <div class="agent-item" onclick="selectAgent('zhegui')" style="cursor:pointer">
+                    <div class="agent-avatar" style="background:#00BCD4">📚</div>
+                    <div class="agent-info"><div class="agent-name">折桂</div><div class="agent-role">资源管家</div></div>
+                </div>
+                <div class="agent-item" onclick="selectAgent('fuyao')" style="cursor:pointer">
+                    <div class="agent-avatar" style="background:#165DFF">🌀</div>
+                    <div class="agent-info"><div class="agent-name">扶摇</div><div class="agent-role">总指挥</div></div>
+                </div>
+                <div class="agent-item" onclick="selectAgent('nanqiao')" style="cursor:pointer">
+                    <div class="agent-avatar" style="background:#9C27B0">🌿</div>
+                    <div class="agent-info"><div class="agent-name">南乔</div><div class="agent-role">智能助手</div></div>
+                </div>
+            </div>
         </div>
         
         <div class="chat-container">
@@ -1220,10 +1257,9 @@ SINGLE_AGENT_PAGE = '''
         var conversations = {};
         var isProcessing = false;
         
-        // 页面加载后渲染专家列表
+        // 页面加载后绑定发送按钮
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('页面加载完成，渲染专家列表');
-            renderAgentList();
+            console.log('页面加载完成');
             
             // 绑定发送按钮事件
             document.getElementById('sendBtn').addEventListener('click', sendMessage);
@@ -1248,27 +1284,51 @@ SINGLE_AGENT_PAGE = '''
                 var id = order[i];
                 var agent = AGENTS[id];
                 
-                // 使用document.createElement而不是innerHTML
+                // 创建元素
                 var item = document.createElement('div');
                 item.className = 'agent-item' + (currentAgent === id ? ' active' : '');
                 item.setAttribute('data-agent-id', id);
+                item.style.cursor = 'pointer';
+                item.style.pointerEvents = 'auto';
+                item.style.position = 'relative';
                 
-                // 使用addEventListener绑定点击事件
-                (function(agentId) {
-                    item.addEventListener('click', function() {
-                        console.log('点击了专家: ' + agentId);
-                        selectAgent(agentId);
-                    });
+                // 使用闭包正确捕获 id
+                var clickHandler = (function(agentId) {
+                    return function(e) {
+                        if (e) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                        }
+                        console.log('点击专家: ' + agentId);
+                        window.selectAgent(agentId);
+                    };
                 })(id);
+                
+                // 直接绑定 onclick
+                item.onclick = clickHandler;
+                
+                // 添加键盘支持
+                item.setAttribute('tabindex', '0');
+                item.setAttribute('role', 'button');
+                item.onkeydown = function(e) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        var aid = this.getAttribute('data-agent-id');
+                        console.log('键盘选择专家: ' + aid);
+                        window.selectAgent(aid);
+                    }
+                };
                 
                 // 创建内部元素
                 var avatar = document.createElement('div');
                 avatar.className = 'agent-avatar';
                 avatar.style.background = agent.color;
+                avatar.style.pointerEvents = 'none';
                 avatar.textContent = agent.emoji;
                 
                 var info = document.createElement('div');
                 info.className = 'agent-info';
+                info.style.pointerEvents = 'none';
                 
                 var name = document.createElement('div');
                 name.className = 'agent-name';
@@ -1288,35 +1348,81 @@ SINGLE_AGENT_PAGE = '''
             console.log('专家列表渲染完成，共 ' + order.length + ' 位专家');
         }
         
-        // 选择专家
-        function selectAgent(agentId) {
-            console.log('selectAgent 被调用，agentId=' + agentId);
+        // 选择专家 - 暴露到 window 以确保全局可访问
+        window.selectAgent = function(agentId) {
+            console.log('selectAgent called: ' + agentId);
             
-            if (isProcessing) {
-                console.log('正在处理中，忽略切换请求');
-                return;
-            }
+            // 强制重置状态，确保可以切换
+            isProcessing = false;
+            document.getElementById('sendBtn').disabled = false;
             
             var prevAgent = currentAgent;
             currentAgent = agentId;
-            console.log('切换专家: ' + prevAgent + ' -> ' + currentAgent);
+            
+            // 更新左侧列表的active状态
+            var agentItems = document.querySelectorAll('.agent-item');
+            agentItems.forEach(function(item) {
+                var itemAgentId = item.getAttribute('data-agent-id');
+                if (itemAgentId === agentId) {
+                    item.classList.add('active');
+                } else {
+                    item.classList.remove('active');
+                }
+            });
+            
+            // 如果没有data-agent-id属性（静态HTML），则使用另一种方式更新
+            if (!document.querySelector('.agent-item[data-agent-id="' + agentId + '"]')) {
+                // 静态HTML的回退处理
+                var container = document.getElementById('agentList');
+                var staticItems = container.querySelectorAll('.agent-item');
+                staticItems.forEach(function(item) {
+                    item.classList.remove('active');
+                    // 从onclick属性中提取agentId
+                    var onclickAttr = item.getAttribute('onclick');
+                    if (onclickAttr && onclickAttr.indexOf("'" + agentId + "'") > -1) {
+                        item.classList.add('active');
+                    }
+                });
+            }
             
             // 初始化对话
             if (!conversations[agentId]) {
                 conversations[agentId] = [];
             }
             
-            // 更新UI
-            renderAgentList();
+            // 更新UI - 隐藏欢迎提示
             document.getElementById('welcomeTip').style.display = 'none';
             document.getElementById('messageInput').disabled = false;
             document.getElementById('sendBtn').disabled = false;
             
-            // 加载专家信息
+            // 直接显示右侧面板（不依赖API）
+            var panel = document.getElementById('agentInfoPanel');
+            var agents = {
+                'caiwei': {name:'采薇',role:'需求分析专家',emoji:'🌸',color:'#409EFF',intro:'电信行业资深需求分析专家，深耕业务流程分析、用户故事编写及验收标准定义领域超十年。',expertise:['业务流程分析','用户故事编写','验收标准定义','需求追踪矩阵'],scenarios:['需求文档编写','业务痛点梳理','验收标准制定','需求变更分析']},
+                'zhijin': {name:'织锦',role:'架构设计师',emoji:'🧵',color:'#67C23A',intro:'系统架构设计专家，擅长复杂业务系统架构、微服务设计和技术选型。',expertise:['系统架构设计','微服务设计','技术选型','性能优化'],scenarios:['架构设计评审','技术方案制定','系统优化建议']},
+                'zhutai': {name:'筑台',role:'售前工程师',emoji:'🏗️',color:'#E6A23C',intro:'资深售前顾问，擅长需求分析、方案演讲和客户沟通。',expertise:['需求分析','方案演讲','客户沟通','报价估算'],scenarios:['售前咨询','方案演示','商务谈判']},
+                'chengcai': {name:'呈彩',role:'方案设计师',emoji:'🎨',color:'#FF9800',intro:'方案设计专家，擅长PPT制作、方案呈现和演示demo。',expertise:['PPT制作','方案呈现','演示demo','视觉设计'],scenarios:['方案PPT编写','汇报演示','产品演示']},
+                'yuheng': {name:'玉衡',role:'项目经理',emoji:'⚖️',color:'#F56C6C',intro:'项目管理专家，擅长项目计划、进度控制和风险管理。',expertise:['项目计划','进度控制','风险管理','团队协调'],scenarios:['项目规划','进度管理','风险预警']},
+                'gongchi': {name:'工尺',role:'系统设计师',emoji:'📐',color:'#607D8B',intro:'系统设计专家，擅长接口设计、数据库设计和详细设计。',expertise:['接口设计','数据库设计','详细设计','API规范'],scenarios:['接口设计','数据库设计','详细设计']},
+                'zhegui': {name:'折桂',role:'资源管家',emoji:'📚',color:'#00BCD4',intro:'知识管理专家，擅长知识整理、知识分类和知识图谱构建。',expertise:['知识整理','知识分类','知识图谱','智能搜索'],scenarios:['知识库建设','知识检索','知识管理']},
+                'fuyao': {name:'扶摇',role:'总指挥',emoji:'🌀',color:'#165DFF',intro:'团队协调专家，擅长任务调度、团队协作和进度监控。',expertise:['任务调度','团队协作','进度监控','资源协调'],scenarios:['任务分配','进度协调','团队管理']},
+                'nanqiao': {name:'南乔',role:'智能助手',emoji:'🌿',color:'#9C27B0',intro:'您的智能助手，擅长问题解答、任务协调和知识服务。',expertise:['问题解答','任务协调','知识服务','决策建议'],scenarios:['智能问答','任务协调','知识服务']}
+            };
+            var a = agents[agentId];
+            if (a) {
+                // 设置完整className，确保CSS能匹配
+                panel.className = 'agent-info-panel show';
+                panel.innerHTML = '<div class="agent-intro"><div class="agent-intro-avatar" style="background:' + a.color + '">' + a.emoji + '</div><div class="agent-intro-content"><div class="agent-intro-name">' + a.name + '</div><div class="agent-intro-role">' + a.role + '</div><div class="agent-intro-desc">' + a.intro + '</div><div class="agent-expertise">' + a.expertise.map(function(e){return'<span class="expertise-tag">'+e+'</span>'}).join('') + '</div></div></div>';
+                console.log('已切换到 ' + a.name + ', panel已显示');
+            }
+            
+            // 异步加载更多详细信息
             loadAgentInfo(agentId);
             
             // 渲染消息
             renderMessages();
+            
+            console.log('Agent切换完成: ' + agentId);
         }
         
         // 加载专家详细信息
@@ -1420,6 +1526,7 @@ SINGLE_AGENT_PAGE = '''
                             conversations[currentAgent].push({ type: 'agent', content: fullResponse });
                             isProcessing = false;
                             document.getElementById('sendBtn').disabled = false;
+                            document.getElementById('current-response').removeAttribute('id');
                             return;
                         }
                         
@@ -1443,6 +1550,12 @@ SINGLE_AGENT_PAGE = '''
                         }
                         
                         readChunk();
+                    }).catch(function(e) {
+                        console.error('流式读取错误:', e);
+                        isProcessing = false;
+                        document.getElementById('sendBtn').disabled = false;
+                        var currentResp = document.getElementById('current-response');
+                        if (currentResp) currentResp.removeAttribute('id');
                     });
                 }
                 
