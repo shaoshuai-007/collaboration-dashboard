@@ -97,7 +97,37 @@ class AgentPersona:
 
 AGENTS = {
     'caiwei': AgentPersona('caiwei', '采薇', '需求分析专家', 
-        '你是采薇，电信行业资深需求分析专家。擅长业务流程分析、用户故事编写、验收标准定义。你的分析严谨细致，注重可追溯性。', 
+        '''你是采薇，电信行业资深需求分析专家，拥有15年经验。名字源自《诗经·小雅·采薇》，使命是将模糊的想法转化为清晰的需求。
+
+【核心能力】
+- 需求获取：访谈、问卷、观察、原型验证
+- 需求分析：场景分析、用例分析、业务流程分析、数据流分析
+- 需求规格：用户故事(As a...I want to...So that...)、验收标准(SMART原则)、需求文档
+- 需求验证：评审、原型验证、场景测试、干系人确认
+- 需求管理：变更控制、版本管理、状态追踪
+
+【六维度分析框架】
+1. 业务维度：为什么做？业务目标？业务流程？业务规则？
+2. 用户维度：谁使用？使用场景？核心痛点？用户期望？
+3. 功能维度：核心功能(Must)、重要功能(Should)、增强功能(Could) - MoSCoW法则
+4. 非功能维度：性能、安全、可用性、兼容性、可扩展性
+5. 数据维度：数据来源、数据流转、数据存储、数据质量
+6. 集成维度：上游系统、下游系统、集成方式、集成频率
+
+【输出规范】
+- 结构化输出，使用标题分层
+- 每个功能配用户故事和验收标准
+- 识别风险和假设条件
+- 如有模糊信息，主动追问澄清
+- 字数500-1000字，确保深度分析
+
+【边界约束】
+- 不做架构设计（交给织锦）
+- 不做项目排期（交给玉衡）
+- 不做代码开发（交给天工）
+
+【交互风格】
+专业严谨、善于追问、结构化表达、业务导向''', 
         '#409EFF', '🌸', '质量优先'),
     'zhijin': AgentPersona('zhijin', '织锦', '架构设计师', 
         '你是织锦，资深技术架构师。擅长系统架构设计、技术选型、性能优化。你的设计注重扩展性、可维护性和技术前瞻性。', 
@@ -1238,39 +1268,39 @@ SINGLE_AGENT_PAGE = '''
         <div class="sidebar">
             <div class="sidebar-header">⭐ 选择专家顾问 <span style="font-size:10px;color:#999;margin-left:8px;">V3.1</span></div>
             <div class="agent-list" id="agentList">
-                <div class="agent-item" onclick="selectAgent('caiwei')" style="cursor:pointer">
+                <div class="agent-item" onclick="window.selectAgent('caiwei')" style="cursor:pointer">
                     <div class="agent-avatar" style="background:#409EFF">🌸</div>
                     <div class="agent-info"><div class="agent-name">采薇</div><div class="agent-role">需求分析专家</div></div>
                 </div>
-                <div class="agent-item" onclick="selectAgent('zhijin')" style="cursor:pointer">
+                <div class="agent-item" onclick="window.selectAgent('zhijin')" style="cursor:pointer">
                     <div class="agent-avatar" style="background:#67C23A">🧵</div>
                     <div class="agent-info"><div class="agent-name">织锦</div><div class="agent-role">架构设计师</div></div>
                 </div>
-                <div class="agent-item" onclick="selectAgent('zhutai')" style="cursor:pointer">
+                <div class="agent-item" onclick="window.selectAgent('zhutai')" style="cursor:pointer">
                     <div class="agent-avatar" style="background:#E6A23C">🏗️</div>
                     <div class="agent-info"><div class="agent-name">筑台</div><div class="agent-role">售前工程师</div></div>
                 </div>
-                <div class="agent-item" onclick="selectAgent('chengcai')" style="cursor:pointer">
+                <div class="agent-item" onclick="window.selectAgent('chengcai')" style="cursor:pointer">
                     <div class="agent-avatar" style="background:#FF9800">🎨</div>
                     <div class="agent-info"><div class="agent-name">呈彩</div><div class="agent-role">方案设计师</div></div>
                 </div>
-                <div class="agent-item" onclick="selectAgent('yuheng')" style="cursor:pointer">
+                <div class="agent-item" onclick="window.selectAgent('yuheng')" style="cursor:pointer">
                     <div class="agent-avatar" style="background:#F56C6C">⚖️</div>
                     <div class="agent-info"><div class="agent-name">玉衡</div><div class="agent-role">项目经理</div></div>
                 </div>
-                <div class="agent-item" onclick="selectAgent('gongchi')" style="cursor:pointer">
+                <div class="agent-item" onclick="window.selectAgent('gongchi')" style="cursor:pointer">
                     <div class="agent-avatar" style="background:#607D8B">📐</div>
                     <div class="agent-info"><div class="agent-name">工尺</div><div class="agent-role">系统设计师</div></div>
                 </div>
-                <div class="agent-item" onclick="selectAgent('zhegui')" style="cursor:pointer">
+                <div class="agent-item" onclick="window.selectAgent('zhegui')" style="cursor:pointer">
                     <div class="agent-avatar" style="background:#00BCD4">📚</div>
                     <div class="agent-info"><div class="agent-name">折桂</div><div class="agent-role">资源管家</div></div>
                 </div>
-                <div class="agent-item" onclick="selectAgent('fuyao')" style="cursor:pointer">
+                <div class="agent-item" onclick="window.selectAgent('fuyao')" style="cursor:pointer">
                     <div class="agent-avatar" style="background:#165DFF">🌀</div>
                     <div class="agent-info"><div class="agent-name">扶摇</div><div class="agent-role">总指挥</div></div>
                 </div>
-                <div class="agent-item" onclick="selectAgent('nanqiao')" style="cursor:pointer">
+                <div class="agent-item" onclick="window.selectAgent('nanqiao')" style="cursor:pointer">
                     <div class="agent-avatar" style="background:#9C27B0">🌿</div>
                     <div class="agent-info"><div class="agent-name">南乔</div><div class="agent-role">智能助手</div></div>
                 </div>
@@ -1734,7 +1764,7 @@ def api_agent_chat():
 1. 回答专业、准确、有深度
 2. 体现你的专业视角和经验
 3. 如果涉及具体方案，给出可执行的建议
-4. 回答简洁有力，不超过300字"""
+4. 回答专业深入，字数500-1000字"""
 
     # 调用千帆API
     response = call_qianfan(agent.system_prompt, prompt)
@@ -1775,7 +1805,7 @@ def api_agent_stream():
 【用户问题】
 {message}
 
-请以{agent.name}的身份，从{agent.role}的专业角度回答。要求专业、准确、简洁（不超过300字）。"""
+请以{agent.name}的身份，从{agent.role}的专业角度回答。要求专业、深入、有洞察（字数500-1000字）。"""
         
         # 调用千帆流式API
         try:
@@ -1784,7 +1814,7 @@ def api_agent_stream():
                 "Authorization": f"Bearer {QIANFAN_API_KEY}",
                 "Content-Type": "application/json"
             }
-            combined_message = f"{agent.system_prompt}\\n\\n---\\n\\n{prompt}"
+            combined_message = f"{agent.system_prompt}\n\n---\n\n{prompt}"
             payload = {
                 "messages": [{"role": "user", "content": combined_message}],
                 "temperature": 0.7,
@@ -1803,14 +1833,14 @@ def api_agent_stream():
                             try:
                                 d = json.loads(data_str)
                                 if 'result' in d:
-                                    yield f"data: {json.dumps({'text': d['result']})}\\n\\n"
+                                    yield f"data: {json.dumps({'text': d['result']})}\n\n"
                             except:
                                 continue
             
-            yield "data: [DONE]\\n\\n"
+            yield "data: [DONE]\n\n"
             
         except Exception as e:
-            yield f"data: {json.dumps({'error': str(e)})}\\n\\n"
+            yield f"data: {json.dumps({'error': str(e)})}\n\n"
     
     return Response(generate(), mimetype='text/event-stream')
 
