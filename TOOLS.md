@@ -38,3 +38,15 @@ Skills are shared. Your setup is yours. Keeping them apart means you can update 
 ---
 
 Add whatever helps you do your job. This is your cheat sheet.
+
+## 专属知识库
+
+**位置**: `/root/.openclaw/workspace/知识库/Agent专属/南乔/南乔知识库.md`
+
+**内容**:
+- 领导力五大维度
+- 每日运营机制
+- 决策建议框架
+- 《诗经》引用
+
+**引用方式**: 任务需要团队管理或决策建议时，先读取专属知识库
