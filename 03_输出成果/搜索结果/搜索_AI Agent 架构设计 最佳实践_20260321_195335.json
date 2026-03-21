@@ -1,0 +1,43 @@
+{
+  "query": "AI Agent 架构设计 最佳实践",
+  "timestamp": "2026-03-21T19:53:31.524724",
+  "search_depth": "basic",
+  "results": [
+    {
+      "url": "https://www.shaqiu.cn/article/593",
+      "title": "深度解析26种AI Agent架构设计模式 - 沙丘社区",
+      "content": "构建基于大模型的AI Agent系统需要采用模块化和可组合的软件架构方法，各个能力通常拆解为独立的功能模块（例如记忆、感知、执行、LLM接口等），各模块之间",
+      "score": 0.9999505,
+      "raw_content": null
+    },
+    {
+      "url": "https://blog.csdn.net/weixin_58753619/article/details/156041885",
+      "title": "AI Agent架构终极指南：26种核心设计模式一篇讲透，建议收藏！ 原创",
+      "content": "构建基于大模型的AI Agent系统需要采用模块化和可组合的软件架构方法，各个能力通常拆解为独立的功能模块（例如记忆、感知、执行、LLM接口等），各模块之间",
+      "score": 0.9999453,
+      "raw_content": null
+    },
+    {
+      "url": "https://developer.aliyun.com/article/1707264",
+      "title": "从模块到良好：如何设计一个生产级的Agent架构？",
+      "content": "### 探索云世界. #### 热门. #### 云计算. #### 大数据. #### 云原生. #### 人工智能. #### 数据库. #### 开发与运维. ### 活动广场. #### 任务中心. #### 训练营. #### 直播. #### 乘风者计划. ### 下载. #### 镜像站. #### 技术资料. # 从模块到良好：如何设计一个生产级的Agent架构？. # 从模块到良好：如何设计一个生产级的Agent架构？. 在当前AI应用从简单的快速工程向复杂系统工程转化的过程中，**Agent架构**成为了定义系统上限的核心。对于架构师而言，Agent架构不仅仅是工具的堆砌，而是关于感知、决策与执行的一套闭环控制系统设计。. **Agent Architecture（智能体架构）**是指智能体系统的整体结构设计，用于定义智能体内部各个功能模块的组成方式及其协作关系。 在典型的 Agent 架构中，系统通常包含感知模块、决策与推理模块、记忆模块以及执行模块，其中大语言模型（LLM）往往作为核心决策中枢。 Agent Architecture 的目标并非堆叠功能，而是通过清晰的分层与解耦设计，使智能体能够在复杂环境中保持可扩展性、可维护性和稳定性。 合理的智能体架构，是构建可落地、可演进的 LLM Agent 系统的基础。. ### 2.4 执行层（动作/工具层）. 这是架构的心脏。Agent架构并不直接调用LLM接口，而是将其封装作为推理层，负责解析复杂指令、逻辑推导以及任务的划分。拆解系统通常涉及思维链（CoT）或思维树（ToT）的策略整合。. 规划器负责将所有目标（Top-down Goal）转化为原子操作序列。在Agent Architecture中，规划器需要具备动态调整能力，即根据执行层的反馈实时重构后续任务路径。. 在 Agent Architecture 的演进中，构建 Agent 往往难以应对极其复杂度的任务，因此，设计模式转向了多 Agent 系统的良好：. ## 5、总结. Agent Architecture的设计定义了软件工程从“代码驱动”到“意图驱动”的覆盖。对于系统架构师而言，理解其模型级并构建健全的反馈闭环，是应对未来AI复杂系统挑战的核心竞争力。. 【实践补充】 在真实业务场景中，智能体的价值往往体现在是否能够稳定嵌入业务流程。 以智能体来了公司 @智能体来了 为例，其在相关实践中主要围绕智能体工作流的设计与落地， 通过将大模型能力与具体业务任务结合， 探索智能体在信息整理、流程辅助和决策支持等环节中的实际应用方式。. ### 为什么选择阿里云. ### 大模型. ### 产品和定价. ### 技术内容. ### 权益. ### 服务. ### 关注阿里云. ### 友情链接. © 2009-现在 Aliyun.com 版权所有 增值电信业务经营许可证： 浙B2-20080101 域名注册服务机构许可： 浙D3-20210002. 浙公网安备 33010602009975号浙公网安备 33010602009975号浙B2-20080101-4.",
+      "score": 0.99984396,
+      "raw_content": null
+    },
+    {
+      "url": "https://www.infoq.cn/article/ovk37gmwcrjug7q17qcf",
+      "title": "Eino ADK：一文搞定AI Agent 核心设计模式，从0 到1 搭建智能体系统",
+      "content": "# Eino ADK：一文搞定 AI Agent 核心设计模式，从 0 到 1 搭建智能体系统. **Eino ADK**[1] 是一个专为 Go 语言设计的 Agent 和 Multi-Agent 开发框架，设计上参考了 **Google-ADK**[2] 中对 Agent 与协作机制的定义。. Eino ADK 提供了专用于协调子 Agent 执行流程的 WorkflowAgents 模式，用于通过预定义逻辑管理 Agent 的运行方式，产生确定的执行过程，协助实现**可预测可控制的多 Agent 协作方式**。您可以按需对下列模式进行排列组合，结合 `ChatModelAgent` 构造出符合自身需求的完整工作流水线**：**. Eino ADK 基于日常 Multi-Agent 协作实践中沉淀的最佳工程经验，为用户提供**两种预构建的 Multi-Agent 范式**，无需从头设计协作逻辑即可开箱即用，覆盖「集中式协调」与「结构化问题解决」两大核心场景，高效支撑复杂任务的智能协作。. Supervisor Agent 是 ADK 提供的一种中心化 Multi-Agent 协作模式，旨在为集中决策与分发执行的通用场景提供解决方案，由一个 Supervisor Agent（监督者） 和多个 SubAgent （子 Agent）组成，其中：. Plan-Execute Agent 是 ADK 提供的基于「规划-执行-反思」范式的 Multi-Agent 协作模式（参考论文 **Plan-and-Solve Prompting**），旨在解决复杂任务的分步拆解、执行与动态调整问题，通过 Planner（规划器）、Executor（执行器）和 Replanner（重规划器） 三个核心智能体的协同工作，实现任务的结构化规划、工具调用执行、进度评估与动态重规划，最终达成用户目标，其中：. Eino 中的 Multi-Agent 架构要如何设计与实现？. Eino ADK 支持处于同一个系统内的 Agent 之间以多种方式进行协作（交换数据或触发运行）：. Eino ADK 提供运行时中断与恢复的功能，允许正在运行中的 Agent 主动中断并保存其当前状态，并在未来从中断点恢复执行。该功能为长时间等待、可暂停或需要外部输入（Human in the loop）等场景下的开发提供协助。. func main() func main// Init chat model for agents os \"OPENAI_API_KEY\" os \"OPENAI_MODEL\" os \"OPENAI_BASE_URL\" ByAzurefunc() func return \"OPENAI_BY_AZURE\" \"true\" if nil Fatal// Init research agent if nil Fatal// Init code agent if nil Fatal// Init technical agent if nil Fatal// Init project manager agent if nil Fatal// into pattern// Supervisor: project manager// Sub-agents: researcher / coder / reviewer if nil Fatal// Init Agent runner true// enable stream output// enable checkpoint for interrupt & resume// Replace it with your own query\"please generate a simple ai chat project with python.\" \"1\"// Start with new iter false event break if event event if event event true event return// interrupt and ask for additional user context Print\"\\ninput additional context for web search: \" id with iter if nil Fatal event break if event event event. [2] Google-ADK: https://google.github.io/adk-docs/agents/.",
+      "score": 0.9998074,
+      "raw_content": null
+    },
+    {
+      "url": "https://developer.volcengine.com/articles/7540133820868067370",
+      "title": "构建高效AI Agent：Anthropic 架构设计与实践完全指南",
+      "content": "``def route(input: str, routes: Dict[str, str]) -> str:` `\"\"\"Route input to specialized prompt using content classification.\"\"\"` `# First determine appropriate route using LLM` `selector_prompt = f\"\"\"` `Analyze the input and select the most appropriate route: {list(routes.keys())}` `Provide your reasoning and selection in XML format.` `Input: {input}` `\"\"\"` `route_response = llm_call(selector_prompt)` `route_key = extract_xml(route_response, 'selection').strip().lower()` `# Process with selected specialized prompt` `return llm_call(f\"{routes[route_key]}\\nInput: {input}\")``. def process(self, task: str, context: Optional[Dict] = None) -> Dict:. async def solve_task(self, task_description: str):. def generate_solution(self, task: str, context: str = \"\"):. prompt = f\"{self.generator_prompt}\\nTask: {task}\\nContext: {context}\". def evaluate_solution(self, solution: str, task: str):. prompt = f\"{self.evaluator_prompt}\\nTask: {task}\\nSolution: {solution}\". def optimize(self, task: str, max_iterations: int = 5):. async def execute_with_fallback(self, agent: AgentSystem, task: str):. \"\"\"Execute agent task with fallback mechanisms.\"\"\". return await self._execute_with_timeout(agent, task). async def _execute_with_timeout(self, agent: AgentSystem, task: str):. def _handle_fallback(self, task: str):. async def monitor_execution(self, task_id: str, coroutine):. def needs_optimization(self, task_id: str) -> bool:. async def execute_subtask(self, subtask: Task):. async def process_task(self, task: Task) -> Result:.",
+      "score": 0.9997981,
+      "raw_content": null
+    }
+  ],
+  "answer": "AI Agent architecture emphasizes modular design, separating perception, decision-making, memory, and execution. Best practices include clear layering and decoupling to enhance scalability and stability. Use frameworks like Eino ADK for structured multi-agent collaboration."
+}

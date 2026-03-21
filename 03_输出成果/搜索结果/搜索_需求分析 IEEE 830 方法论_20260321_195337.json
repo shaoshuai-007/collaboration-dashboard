@@ -1,0 +1,43 @@
+{
+  "query": "需求分析 IEEE 830 方法论",
+  "timestamp": "2026-03-21T19:53:35.278099",
+  "search_depth": "basic",
+  "results": [
+    {
+      "url": "https://blog.csdn.net/mengxing12138/article/details/124435904",
+      "title": "智慧金融系统软件需求规格说明(IEEE 830 标准)最终版 - CSDN博客",
+      "content": "本说明书在于清晰地指导最终用户、开发者完成对本系统规定的边界和目标，描述系统的功能性需求和非功能性需求。功能性需求即系统要实现的功能及概要的界面",
+      "score": 0.98542,
+      "raw_content": null
+    },
+    {
+      "url": "https://srs.pub/specification/srs-information-item-srs.html",
+      "title": "IEEE软件工程规范需求工程过程中的信息项之软件需求规范文档",
+      "content": "软件需求规范(SRS) 详细定义了特定软件产品在特定环境中的功能和性能要求。SRS 可由供应商和采购方共同编写，适用于整个项目或作为更大系统的一部分。",
+      "score": 0.98357,
+      "raw_content": null
+    },
+    {
+      "url": "https://fgchen.com/wpedu/2021/05/ieee-830-%E8%BB%9F%E9%AB%94%E9%9C%80%E6%B1%82%E8%A6%8F%E6%A0%BC%E6%9B%B8%E5%BB%BA%E8%AD%B0-%E4%B8%AD%E6%96%87%EF%BC%89/",
+      "title": "IEEE 830 軟體需求規格書建議(中文 - 陳富國博士",
+      "content": "IEEE 830 軟體需求規格書建議(中文）. 簡介. 系統目的; 系統範圍; 名詞定義、縮寫; 參考; 系統概觀. 系統整體性描述. 產品角度; 產品功能; 系統使用者",
+      "score": 0.97823,
+      "raw_content": null
+    },
+    {
+      "url": "https://cloud.tencent.com/developer/article/2639728",
+      "title": "软件需求规格说明书（SRS）多层级评估框架与质量属性深度解析",
+      "content": "**标准规定与工程评估：**IEEE 830-1998 规定，“当且仅当SRS 中陈述的每一个需求都是软件必须满足的需求时，该SRS 才是正确的。SRS 应正确定义所有软件需求，",
+      "score": 0.97421,
+      "raw_content": null
+    },
+    {
+      "url": "https://www.cnblogs.com/ljbguanli/p/19539094",
+      "title": "深入解析：需求分析介绍- ljbguanli - 博客园",
+      "content": "需求分析是软件开发生命周期（SDLC）中的核心阶段，它凭借系统化的方法识别、收集、梳理、验证并规范软件系统的特性需求、非功能需求及约束条件，最终形成明确",
+      "score": 0.97039,
+      "raw_content": null
+    }
+  ],
+  "answer": "IEEE 830 specifies the content and format for software requirement specifications (SRS). It ensures all requirements are clear, complete, and verifiable. SRS documents define functional and non-functional requirements for software."
+}
