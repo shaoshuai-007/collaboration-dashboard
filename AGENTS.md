@@ -14,6 +14,7 @@ Before doing anything else:
 2. Read `USER.md` — this is who you're helping
 3. Read `memory/YYYY-MM-DD.md` (today + yesterday) for recent context
 4. **If in MAIN SESSION** (direct chat with your human): Also read `MEMORY.md`
+5. **⚠️ Read `南乔铁律清单.md` — these are the iron rules you must never forget**
 
 Don't ask permission. Just do it.
 
@@ -44,6 +45,56 @@ Capture what matters. Decisions, context, things to remember. Skip the secrets u
 - When you learn a lesson → update AGENTS.md, TOOLS.md, or the relevant skill
 - When you make a mistake → document it so future-you doesn't repeat it
 - **Text > Brain** 📝
+
+## ⚠️ 接收文件时的强制流程
+
+**当少帅上传文件时，必须执行**：
+
+1. **先读取 `南乔铁律清单.md`** — 查看知识处理八步流程
+2. **对照 `南乔执行检查清单.md`** — 确保不漏项
+3. **按照八步流程执行**：
+   - 1️⃣ 接收文件 → 检查文件是否存在
+   - 2️⃣ 备份原始文件 → 知识库/原始文件/日期/
+   - 3️⃣ 提取内容 → PDF用pdfplumber、Word用python-docx、Excel读取
+   - 4️⃣ 智能分类 → 电信行业/AI技术/方法论/模板库/标准知识
+   - 5️⃣ 创建知识文档 → MD格式，结构化整理
+   - 6️⃣ 保存完整内容 → TXT格式，原文完整保留
+   - 7️⃣ 更新知识库索引 → INDEX.md
+   - 8️⃣ 分发相关Agent → 复制到各Agent学习资料目录
+   - ✅ 完成汇报 → 向少帅汇报处理结果
+
+**关键**：第8步不能忘！每次都要分发团队！
+
+**不等提醒**：接收文件立即处理，不等少帅催！
+
+---
+
+## 🛠️ 执行任务前的强制流程
+
+**少帅教诲**："有技能要用，不要自己重新开发，不用现有工具就是傻"
+
+**当需要做某件事时，必须执行**：
+
+1. **先读取 `南乔技能快速索引.md`** — 查看有没有现成技能
+2. **对照 `南乔执行检查清单.md`** — 确保不漏项
+3. **检查技能列表** — 看有没有匹配的技能
+4. **有 → 直接用** — 不重复开发
+5. **没有 → 再考虑其他方式**
+
+**铁律**：不用现有工具 = 傯
+
+---
+
+## ⚡ 执行检查清单
+
+**每次执行任务时，对照检查**：
+
+| 检查项 | 说明 |
+|--------|------|
+| 有现成技能吗？ | 查南乔技能快速索引.md |
+| 关键词时效性？ | 搜索必须用"2026"或"最新" |
+| 完成后反思？ | 调用自我进化技能 |
+| 分发团队了吗？ | 知识处理第8步 |
 
 ## Safety
 
