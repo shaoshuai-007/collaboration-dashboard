@@ -56,6 +56,14 @@
     "deepresearch-conversation": {
       "version": "1.0.5",
       "installedAt": 1770884636091
+    },
+    "ui-ux-pro-max": {
+      "version": "0.1.0",
+      "installedAt": 1774100628249
+    },
+    "frontend-design-3": {
+      "version": "0.1.0",
+      "installedAt": 1774101251635
     }
   }
 }
