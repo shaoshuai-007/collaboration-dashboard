@@ -1510,6 +1510,9 @@ SINGLE_AGENT_PAGE = '''
                 
                 document.title = a.name + ' - 指南针工程';
                 
+                // 渲染当前agent的对话历史（清空对话区域）
+                renderMessages();
+                
             } catch (e) {
                 console.error('selectAgent错误:', e);
             }
