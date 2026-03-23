@@ -69,5 +69,47 @@
 
 ---
 
+---
+
+## 🔍 Agent产出物自动审核机制
+
+**触发条件**：Agent完成任务生成产出物后
+
+**自动执行**：
+```python
+from scripts.agent_output_auditor import audit_after_agent_task
+
+# Agent完成任务后，南乔自动调用
+result = audit_after_agent_task(
+    agent_name="采薇",  # Agent名称
+    output_path="产出物路径.md",
+    task_description="任务描述"
+)
+
+# 审核通过 → 自动通知少帅
+# 审核未通过 → 等待少帅指示
+```
+
+**审核流程**：
+```
+Agent完成产出
+    ↓
+【自动触发审核】
+    ↓
+【五维评估】→ 确定审核模式
+    ↓
+【闭环审核】→ 检查质量
+    ↓
+审核通过？
+    ├── 是 → ✅ 通知少帅（QQ/邮箱）
+    └── 否 → ⚠️ 报告问题，等待指示
+```
+
+**审核目标**：
+- 等级：A级或B级
+- 得分：≥80分
+
+---
+
 *南有乔木，不可休思*
 *自我进化，永不停止*

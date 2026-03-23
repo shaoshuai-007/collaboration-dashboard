@@ -1,5 +1,365 @@
 # MEMORY.md - 南乔的长期记忆
 
+---
+
+## 2026-03-23 双重审核闭环系统（永久记住！）⭐⭐⭐⭐⭐
+
+**少帅教诲**："记住，把这个流程固化，后续直接调用"
+
+### 系统定位
+
+**指南针工程质量保证核心系统**：确保每份产出达到A级标准
+
+---
+
+### 快速调用
+
+```python
+# 方法1：完整闭环（推荐）
+from scripts.closed_loop_executor import ClosedLoopExecutor
+
+executor = ClosedLoopExecutor()
+result = executor.execute("/path/to/document.md", mode="smart")
+
+# 方法2：仅审核
+from scripts.quality_auditor import DocumentQualityAuditor
+
+auditor = DocumentQualityAuditor()
+result = auditor.audit("/path/to/document.md")
+
+# 方法3：仅评估重要性
+from scripts.document_importance_evaluator import DocumentImportanceEvaluator
+
+evaluator = DocumentImportanceEvaluator()
+score = evaluator.evaluate("/path/to/document.md")
+```
+
+---
+
+### 三种审核模式
+
+| 模式 | 说明 | 适用场景 |
+|------|------|----------|
+| `smart` | 智能判断（推荐） | 系统自动根据文档重要性选择 |
+| `semi` | 半自动 | 重要文档，人工确认每步 |
+| `auto` | 全自动 | 普通文档，一键完成 |
+
+---
+
+### 五维评估模型
+
+| 维度 | 权重 | 高分项 | 中分项 | 低分项 |
+|------|:----:|:------:|:------:|:------:|
+| 用途 | 25% | 对外汇报(90) | 内部协作(60) | 个人草稿(30) |
+| 类型 | 20% | 方案PPT(95) | 需求文档(80) | 其他(40) |
+| 审阅对象 | 25% | 客户(95) | 团队(60) | 自己(30) |
+| 业务价值 | 20% | 高价值(90) | 中价值(70) | 低价值(50) |
+| 影响范围 | 10% | 全局(90) | 项目(50) | 个人(30) |
+
+**等级判断**：
+- ≥80分：重要 → 半自动审核
+- 60-79分：较重要 → 半自动审核
+- <60分：普通 → 全自动审核
+
+---
+
+### 标准标签体系
+
+**在文档标题下添加标签行**：
+
+```markdown
+# 文档标题
+
+**标签**：[对外汇报] [客户] [高价值] [项目]
+
+正文内容...
+```
+
+**标签列表**：
+
+| 类别 | 标签 | 适用场景 |
+|------|------|----------|
+| 用途 | [对外汇报] | 客户汇报、领导汇报 |
+| 用途 | [内部协作] | 团队协作、项目沟通 |
+| 用途 | [个人草稿] | 学习笔记、草稿 |
+| 审阅对象 | [客户] | 外部客户、甲方 |
+| 审阅对象 | [领导] | 公司领导、高层决策 |
+| 审阅对象 | [团队] | 项目团队 |
+| 业务价值 | [高价值] | 百万级项目、战略重点 |
+| 业务价值 | [中价值] | 十万级项目 |
+| 业务价值 | [低价值] | 测试学习 |
+| 影响范围 | [全局] | 公司层面 |
+| 影响范围 | [部门] | 部门层面 |
+| 影响范围 | [项目] | 项目层面 |
+
+---
+
+### 审核等级标准
+
+| 等级 | 得分 | 处理方式 |
+|:----:|:----:|----------|
+| A级 | 90-100 | 直接通过 |
+| B级 | 80-89 | 小幅优化后通过 |
+| C级 | 70-79 | 需要修复，重新审核 |
+| D级 | <70 | 需要重新编写 |
+
+---
+
+### 系统文件位置
+
+| 文件 | 路径 | 功能 |
+|------|------|------|
+| 闭环执行器 | `scripts/closed_loop_executor.py` | 完整闭环流程 |
+| 审核器 | `scripts/quality_auditor.py` | 质量审核 |
+| 诊断器 | `scripts/quality_fixer.py` | 问题诊断 |
+| Agent调度 | `scripts/agent_auto_fixer.py` | Agent调用 |
+| 重要性评估 | `scripts/document_importance_evaluator.py` | 五维评估 |
+| 打标工具 | `scripts/document_tagger.py` | 标签管理 |
+
+---
+
+### 完整闭环流程
+
+```
+文档进入系统
+    ↓
+【五维评估】→ 确定审核模式（smart/semi/auto）
+    ↓
+【审核】→ 检查格式/完整性/一致性
+    ↓
+【判断等级】
+    ├── A/B级 → 通过
+    └── C/D级 → 诊断问题
+        ↓
+    【生成补充内容】（AI生成）
+        ↓
+    【更新文档】（自动插入）
+        ↓
+    【复审】→ 循环直到通过
+```
+
+---
+
+### 使用示例
+
+**场景1：审核需求文档**
+
+```python
+from scripts.closed_loop_executor import ClosedLoopExecutor
+
+executor = ClosedLoopExecutor()
+result = executor.execute(
+    "03_输出成果/湖北电信AI配案需求文档.md",
+    mode="smart"  # 智能判断
+)
+
+print(f"最终等级：{result['final_grade']}")
+print(f"最终得分：{result['final_score']}")
+```
+
+**场景2：批量审核**
+
+```python
+from pathlib import Path
+from scripts.quality_auditor import DocumentQualityAuditor
+
+auditor = DocumentQualityAuditor()
+
+# 扫描所有文档
+docs = Path("03_输出成果").glob("**/*.md")
+for doc in docs:
+    result = auditor.audit(str(doc))
+    print(f"{doc.name}: {result['score']}分 - {result['grade']}级")
+```
+
+---
+
+### 南乔承诺
+
+- ✅ 每份产出必须经过审核
+- ✅ 达不到B级不交付
+- ✅ 重要文档必须人工确认
+- ✅ 审核记录自动保存
+- ✅ 这是铁律，不可逾越！
+
+**来源**：2026-03-23 少帅教诲"把这个流程固化"
+
+---
+
+## 2026-03-23 Agent产出物自动审核机制（永久记住！）⭐⭐⭐⭐⭐
+
+**少帅指示**："按照推荐方案执行"
+
+### 机制说明
+
+**Agent完成任务生成产出物后，南乔自动触发审核**，确保质量达标。
+
+---
+
+### 快速调用
+
+```python
+from scripts.agent_output_auditor import audit_after_agent_task
+
+# Agent完成任务后，南乔自动调用
+result = audit_after_agent_task(
+    agent_name="采薇",
+    output_path="03_输出成果/需求文档.md",
+    task_description="生成湖北电信AI配案需求文档"
+)
+
+# 审核结果
+if result["status"] == "passed":
+    # ✅ 审核通过，自动通知少帅
+    print(f"等级：{result['final_grade']}级，得分：{result['final_score']}分")
+else:
+    # ⚠️ 审核未通过，等待少帅指示
+    print(f"状态：{result['status']}")
+```
+
+---
+
+### Agent列表
+
+| Agent | 技能 | 产出类型 |
+|:-----:|------|----------|
+| 🌸 采薇 | compass-needdoc | 需求文档 |
+| 🧵 织锦 | compass-solution | 方案举措 |
+| 🎨 呈彩 | compass-ppt | 方案PPT |
+| 📐 工尺 | compass-design | 详细设计 |
+| ⚖️ 玉衡 | compass-project | 项目管控 |
+| 🏗️ 筑台 | compass-solution | 售前方案 |
+| 📚 折桂 | compass-resource | 知识文档 |
+| 🌀 扶摇 | compass-coordinator | 协调报告 |
+| 💻 天工 | compass-dev | 代码/接口 |
+| 📊 知微 | compass-analysis | 分析报告 |
+
+---
+
+### 自动审核流程
+
+```
+Agent完成产出
+    ↓
+【自动触发审核】← 南乔在这里介入
+    ↓
+【五维评估】→ 确定审核模式
+    ↓
+【闭环审核】→ 检查质量
+    ↓
+审核通过？
+    ├── 是 → ✅ 通知少帅（QQ/邮箱）
+    └── 否 → ⚠️ 报告问题，等待指示
+```
+
+---
+
+### 系统文件位置
+
+| 文件 | 路径 | 功能 |
+|------|------|------|
+| Agent产出审核器 | `scripts/agent_output_auditor.py` | 拦截Agent产出，自动审核 |
+| 闭环执行器 | `scripts/closed_loop_executor.py` | 完整闭环流程 |
+| 快速审核脚本 | `scripts/audit_doc.py` | 命令行快速调用 |
+
+---
+
+### 南乔承诺
+
+- ✅ Agent产出生成后，立即触发审核
+- ✅ 审核通过，自动通知少帅
+- ✅ 审核未通过，报告问题等待指示
+- ✅ 审核记录自动保存
+- ✅ 这是铁律，不可逾越！
+
+**来源**：2026-03-23 少帅指示"按照推荐方案执行"
+
+---
+
+## 2026-03-23 Agent调用包装器（永久记住！）⭐⭐⭐⭐⭐
+
+**少帅指示**："现在搞"
+
+### 功能说明
+
+**调用Agent技能后自动触发审核，确保产出质量达标。**
+
+---
+
+### 快速调用
+
+```python
+from scripts.agent_wrapper import run_agent_with_audit
+
+result = run_agent_with_audit(
+    agent_name="采薇",
+    task="生成湖北电信AI配案需求文档",
+    output_file="03_输出成果/需求文档.md"
+)
+
+# 自动执行：调用Agent → 审核产出 → 通知少帅
+
+if result["audit_status"] == "passed":
+    print("✅ 审核通过")
+else:
+    print("⚠️ 审核未通过")
+```
+
+---
+
+### 执行流程
+
+```
+确定Agent和任务
+    ↓
+【调用Agent执行】
+    ↓
+【自动触发审核】← 关键步骤！
+    ↓
+【审核结果】
+    ├── 通过 → 通知少帅
+    └── 未通过 → 等待指示
+```
+
+---
+
+### Agent与技能映射
+
+| Agent | 技能ID |
+|:-----:|--------|
+| 采薇 | compass-needdoc |
+| 织锦 | compass-solution |
+| 呈彩 | compass-ppt |
+| 工尺 | compass-design |
+| 玉衡 | compass-project |
+| 筑台 | compass-solution |
+| 折桂 | compass-resource |
+| 扶摇 | compass-coordinator |
+| 天工 | compass-dev |
+| 知微 | compass-analysis |
+
+---
+
+### 系统文件
+
+| 文件 | 路径 | 功能 |
+|------|------|------|
+| Agent调用包装器 | `scripts/agent_wrapper.py` | 调用Agent + 自动审核 |
+| Agent产出审核器 | `scripts/agent_output_auditor.py` | 拦截产出，自动审核 |
+
+---
+
+### 南乔承诺
+
+- ✅ 调用Agent后，立即触发审核
+- ✅ 审核结果自动通知少帅
+- ✅ 未通过审核，等待指示
+- ✅ 这是铁律，不可逾越！
+
+**来源**：2026-03-23 少帅指示"现在搞"
+
+---
+
 ## 2026-03-23 消息发送规则（永久记住！）⭐⭐⭐⭐⭐
 
 **少帅教诲**：不需要发送群，发送我QQ就行，有重要的发送我szideaf7@163.com
