@@ -1809,6 +1809,7 @@ HTML_TEMPLATE = '''
             </div>
             <button class="filter-btn" onclick="window.location.href='/dispatch'" style="background:#C93832; color:white;">📋 调度看板</button>
             <button class="filter-btn" id="generateProductBtn" style="display:none; background:#67C23A; color:white; font-weight:bold;" onclick="generateProduct()">🚀 生成产物</button>
+            <button class="filter-btn" id="auditProductBtn" style="display:none; background:#E6A23C; color:white; font-weight:bold;" onclick="auditProduct()">🔍 审核产物</button>
             <button class="filter-btn" onclick="exportWord()">📥 Word</button>
             <button class="filter-btn" onclick="exportExcel()">📊 Excel</button>
             <button class="filter-btn" onclick="exportMarkdown()">📝 MD</button>
@@ -2109,6 +2110,13 @@ HTML_TEMPLATE = '''
                     if (productBtn) {
                         productBtn.style.display = 'inline-block';
                         console.log('[DEBUG] 已显示"生成产物"按钮');
+                    }
+                    
+                    // 显示"审核产物"按钮
+                    const auditBtn = document.getElementById('auditProductBtn');
+                    if (auditBtn) {
+                        auditBtn.style.display = 'inline-block';
+                        console.log('[DEBUG] 已显示"审核产物"按钮');
                     }
                     
                     console.log('[DEBUG] ✅ 讨论完成，已解锁输入，isProcessing:', isProcessing);
@@ -2953,6 +2961,178 @@ HTML_TEMPLATE = '''
 
         // 清空
         async function clearChat() {
+
+        // 审核产物（V16新增）
+        async function auditProduct() {
+            // 获取讨论内容
+            const discussionContent = conversations.map(c => 
+                `【${c.speaker_name || c.speaker}】${c.content}`
+            ).join('\\n\\n');
+            
+            if (!discussionContent || discussionContent.length < 50) {
+                alert('讨论内容不足，无法审核');
+                return;
+            }
+            
+            // 显示审核中提示
+            const chatMessages = document.getElementById('chatMessages');
+            const auditMsg = document.createElement('div');
+            auditMsg.className = 'message';
+            auditMsg.id = 'audit-loading';
+            auditMsg.innerHTML = `
+                <div class="message-avatar" style="background: #E6A23C;">🔍</div>
+                <div class="message-content">
+                    <div class="message-header">
+                        <span class="message-speaker" style="color: #E6A23C;">🔍 质量审核引擎</span>
+                        <span class="message-time">自动审核</span>
+                    </div>
+                    <div class="message-text">
+                        正在执行质量审核...<br>
+                        <span style="color: var(--text-muted);">基于指南针工程审核标准</span>
+                    </div>
+                </div>
+            `;
+            chatMessages.appendChild(auditMsg);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            
+            try {
+                // 步骤1审核
+                const step1Response = await fetch('/api/audit/step/step1', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        content: discussionContent,
+                        prev_score: 100
+                    })
+                });
+                
+                const step1Result = await step1Response.json();
+                
+                if (step1Result.status === 'success') {
+                    const data = step1Result.data;
+                    
+                    // 显示审核结果
+                    const gradeEmoji = {
+                        'A级': '🟢',
+                        'B级': '🟡',
+                        'C级': '🟠',
+                        'D级': '🔴'
+                    };
+                    
+                    const emoji = gradeEmoji[data.grade] || '⚪';
+                    
+                    let resultHtml = `
+                        ${emoji} 审核完成！<br>
+                        <span style="font-size: 16px; font-weight: bold;">总分：${data.total_score}/100</span><br>
+                        <span style="color: ${data.grade === 'A级' ? 'var(--success)' : data.grade === 'B级' ? 'var(--primary)' : 'var(--warning)'};">
+                            等级：${data.grade}
+                        </span><br>
+                        <span style="color: var(--text-muted);">${data.conclusion}</span><br><br>
+                    `;
+                    
+                    // 显示各维度得分
+                    resultHtml += '<div style="background: #f5f7fa; padding: 12px; border-radius: 8px; margin: 8px 0;">';
+                    resultHtml += '<div style="font-weight: bold; margin-bottom: 8px;">📊 各维度得分</div>';
+                    for (const detail of data.output_details) {
+                        const percent = Math.round(detail.actual_score / detail.max_score * 100);
+                        const color = percent >= 80 ? '#67C23A' : percent >= 60 ? '#E6A23C' : '#F56C6C';
+                        resultHtml += `
+                            <div style="display: flex; justify-content: space-between; margin: 4px 0;">
+                                <span>${detail.name}</span>
+                                <span>${detail.actual_score}/${detail.max_score}</span>
+                            </div>
+                            <div style="background: #e4e7eb; height: 6px; border-radius: 3px; margin: 4px 0;">
+                                <div style="background: ${color}; height: 100%; width: ${percent}%; border-radius: 3px;"></div>
+                            </div>
+                        `;
+                    }
+                    resultHtml += '</div>';
+                    
+                    // 显示改进建议
+                    if (data.suggestions && data.suggestions.length > 0) {
+                        resultHtml += '<div style="background: #fff8e6; padding: 12px; border-radius: 8px; margin: 8px 0;">';
+                        resultHtml += '<div style="font-weight: bold; margin-bottom: 8px;">💡 改进建议</div>';
+                        for (const sug of data.suggestions) {
+                            resultHtml += `<div style="margin: 4px 0;">• ${sug}</div>`;
+                        }
+                        resultHtml += '</div>';
+                    }
+                    
+                    // 操作按钮
+                    resultHtml += `
+                        <br>
+                        <button class="quick-btn" onclick="showFullAuditReport()" style="background: var(--primary); color: white;">
+                            📋 查看完整报告
+                        </button>
+                    `;
+                    
+                    auditMsg.querySelector('.message-text').innerHTML = resultHtml;
+                    
+                    // 保存完整报告到全局变量
+                    window.lastAuditReport = data.report;
+                    window.lastAuditGrade = data.grade;
+                    window.lastAuditScore = data.total_score;
+                    
+                } else {
+                    auditMsg.querySelector('.message-text').innerHTML = `
+                        ❌ 审核失败<br>
+                        <span style="color: var(--danger);">${step1Result.message || '服务异常'}</span>
+                    `;
+                }
+                
+            } catch (e) {
+                console.error('[审核错误]', e);
+                auditMsg.querySelector('.message-text').innerHTML = `
+                    ❌ 审核异常<br>
+                    <span style="color: var(--danger);">${e.message || '网络错误'}</span>
+                `;
+            }
+        }
+        
+        // 显示完整审核报告
+        function showFullAuditReport() {
+            if (window.lastAuditReport) {
+                // 创建模态框
+                const modal = document.createElement('div');
+                modal.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000;';
+                
+                const content = document.createElement('div');
+                content.style.cssText = 'background: white; border-radius: 12px; padding: 24px; max-width: 800px; max-height: 80vh; overflow-y: auto; width: 90%;';
+                
+                content.innerHTML = `
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                        <h3 style="margin: 0;">📋 审核报告</h3>
+                        <button onclick="this.closest('div[style*=position]').remove()" style="background: none; border: none; font-size: 24px; cursor: pointer;">&times;</button>
+                    </div>
+                    <pre style="white-space: pre-wrap; font-family: monospace; font-size: 12px; line-height: 1.6; background: #f5f7fa; padding: 16px; border-radius: 8px;">${window.lastAuditReport}</pre>
+                    <div style="margin-top: 16px; text-align: right;">
+                        <button onclick="copyAuditReport()" style="background: var(--primary); color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer;">📋 复制报告</button>
+                    </div>
+                `;
+                
+                modal.appendChild(content);
+                document.body.appendChild(modal);
+                
+                // 点击背景关闭
+                modal.onclick = function(e) {
+                    if (e.target === modal) {
+                        modal.remove();
+                    }
+                };
+            }
+        }
+        
+        // 复制审核报告
+        function copyAuditReport() {
+            if (window.lastAuditReport) {
+                navigator.clipboard.writeText(window.lastAuditReport).then(() => {
+                    alert('审核报告已复制到剪贴板');
+                }).catch(err => {
+                    console.error('复制失败:', err);
+                });
+            }
+        }
+
             await fetch('/api/clear', {method: 'POST'});
             if (timerInterval) clearInterval(timerInterval);
             document.getElementById('elapsedTime').textContent = '00:00';
@@ -5285,6 +5465,184 @@ def api_minutes_download():
         import traceback
         traceback.print_exc()
         return jsonify({'status': 'error', 'message': str(e)}), 500
+
+
+
+# ==================== 审核API（V16新增）====================
+
+@app.route('/api/audit/step/<step>', methods=['POST'])
+def audit_step(step):
+    """审核指定步骤的输出物"""
+    try:
+        # 导入审核服务
+        import sys
+        sys.path.insert(0, '/root/.openclaw/workspace/03_输出成果')
+        from compass_auditor_service import CompassAuditorService, get_audit_summary, audit_step_output
+        
+        # 获取请求数据
+        data = request.get_json()
+        content = data.get('content', '')
+        prev_score = data.get('prev_score', 100)
+        
+        if not content:
+            return jsonify({
+                'status': 'error',
+                'message': '缺少审核内容'
+            }), 400
+        
+        # 执行审核
+        service = CompassAuditorService()
+        result = service.audit_content(step, content, prev_score)
+        
+        # 生成报告
+        report = service.generate_report(result)
+        summary = get_audit_summary(audit_step_output(step, content, prev_score))
+        
+        return jsonify({
+            'status': 'success',
+            'data': {
+                'step': result.step,
+                'step_name': result.step_name,
+                'total_score': result.total_score,
+                'grade': result.grade,
+                'conclusion': result.conclusion,
+                'can_proceed': result.can_proceed,
+                'suggestions': result.suggestions,
+                'output_details': [
+                    {
+                        'name': d.name,
+                        'max_score': d.max_score,
+                        'actual_score': d.actual_score,
+                        'passed': d.passed,
+                        'missing_points': d.missing_points
+                    } for d in result.output_details
+                ],
+                'report': report,
+                'summary': summary
+            }
+        })
+        
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        return jsonify({
+            'status': 'error',
+            'message': str(e)
+        }), 500
+
+
+@app.route('/api/audit/standards', methods=['GET'])
+def get_audit_standards():
+    """获取所有步骤的审核标准"""
+    try:
+        import sys
+        sys.path.insert(0, '/root/.openclaw/workspace/03_输出成果')
+        from compass_auditor_service import CompassAuditorService
+        
+        service = CompassAuditorService()
+        standards = service.get_standards()
+        
+        # 简化返回
+        result = {}
+        for step, config in standards.items():
+            result[step] = {
+                'name': config['name'],
+                'description': config['description'],
+                'input_checks': [c['text'] for c in config['input_checks']],
+                'output_items': [
+                    {'name': item['name'], 'max_score': item['max_score']}
+                    for item in config['output_items']
+                ],
+                'quality_items': [
+                    {'name': item['name'], 'max_score': item['max_score']}
+                    for item in config['quality_items']
+                ]
+            }
+        
+        return jsonify({
+            'status': 'success',
+            'data': result
+        })
+        
+    except Exception as e:
+        return jsonify({
+            'status': 'error',
+            'message': str(e)
+        }), 500
+
+
+@app.route('/api/audit/standard/<step>', methods=['GET'])
+def get_step_audit_standard(step):
+    """获取指定步骤的审核标准"""
+    try:
+        import sys
+        sys.path.insert(0, '/root/.openclaw/workspace/03_输出成果')
+        from compass_auditor_service import CompassAuditorService
+        
+        service = CompassAuditorService()
+        standard = service.get_step_standard(step)
+        
+        if not standard:
+            return jsonify({
+                'status': 'error',
+                'message': f'未找到步骤 {step} 的审核标准'
+            }), 404
+        
+        return jsonify({
+            'status': 'success',
+            'data': {
+                'step': step,
+                'name': standard['name'],
+                'description': standard['description'],
+                'input_checks': standard['input_checks'],
+                'output_items': standard['output_items'],
+                'quality_items': standard['quality_items']
+            }
+        })
+        
+    except Exception as e:
+        return jsonify({
+            'status': 'error',
+            'message': str(e)
+        }), 500
+
+
+@app.route('/api/audit/report/<step>', methods=['POST'])
+def generate_audit_report(step):
+    """生成审核报告（Markdown格式）"""
+    try:
+        import sys
+        sys.path.insert(0, '/root/.openclaw/workspace/03_输出成果')
+        from compass_auditor_service import CompassAuditorService
+        
+        data = request.get_json()
+        content = data.get('content', '')
+        prev_score = data.get('prev_score', 100)
+        
+        if not content:
+            return jsonify({
+                'status': 'error',
+                'message': '缺少审核内容'
+            }), 400
+        
+        service = CompassAuditorService()
+        result = service.audit_content(step, content, prev_score)
+        report = service.generate_report(result)
+        
+        return jsonify({
+            'status': 'success',
+            'data': {
+                'report': report,
+                'grade': result.grade,
+                'total_score': result.total_score
+            }
+        })
+        
+    except Exception as e:
+        return jsonify({
+            'status': 'error',
+            'message': str(e)
+        }), 500
 
 
 if __name__ == '__main__':
