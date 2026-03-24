@@ -196,7 +196,7 @@ def export(days: int = 7) -> tuple[Path, int]:
             }
         )
 
-    out = Path(__file__).resolve().parents[1] / f"湖北近一周招标公告_{now.strftime('%Y%m%d')}.xlsx"
+    out = Path(__file__).resolve().parent / "03_输出成果" / "招标公告" / f"湖北近一周招标公告_{now.strftime('%Y%m%d')}.xlsx"
     wb = Workbook()
     ws = wb.active
     ws.title = "湖北招标公告"
@@ -211,6 +211,8 @@ def export(days: int = 7) -> tuple[Path, int]:
     ws.append(headers)
     for r in sorted(rows, key=lambda x: x["发布时间"], reverse=True):
         ws.append([r[h] for h in headers])
+    # 确保输出目录存在
+    out.parent.mkdir(parents=True, exist_ok=True)
     wb.save(out)
     return out, len(rows)
 
