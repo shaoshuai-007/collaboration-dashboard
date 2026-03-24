@@ -301,9 +301,95 @@ if __name__ == "__main__":
 
 ---
 
+# ═══════════════════════════════════════════════════════════════
+# 🎨 frontend-design-ultimate技能赋能
+# ═══════════════════════════════════════════════════════════════
+
+**技能定位**：快速创建生产级静态网站，React 18 + TypeScript + Tailwind CSS + shadcn/ui。
+
+**适用场景**：
+1. 前端界面开发：快速生成前端界面代码
+2. 原型实现：将设计稿转化为可交互原型
+3. 技术验证：验证前端技术方案可行性
+
+**技术栈**：
+- React 18 + TypeScript
+- Tailwind CSS + shadcn/ui
+- Framer Motion（动画）
+- Vite（纯静态）/ Next.js（Vercel部署）
+
+**核心用法**：
+```bash
+# 方式1：Vite（纯静态，推荐）
+bash /root/.openclaw/workspace/skills/frontend-design-ultimate/scripts/init-vite.sh my-app
+cd my-app
+npm run dev
+
+# 方式2：Next.js（支持SSR/SEO）
+bash /root/.openclaw/workspace/skills/frontend-design-ultimate/scripts/init-nextjs.sh my-app
+cd my-app
+npm run dev
+vercel  # 部署到Vercel
+```
+
+**技术选型指南**：
+| 场景 | 选择 | 说明 |
+|------|------|------|
+| 纯静态展示 | Vite | 生成dist/，可打包为单HTML |
+| 需要SSR/SEO | Next.js | 支持服务端渲染，适合营销页 |
+| 快速原型 | Vite | 开发速度快，配置简单 |
+| 生产部署 | Next.js + Vercel | 自动部署，CDN加速 |
+
+**代码规范**：
+```typescript
+// 1. 内容配置集中管理（config/site.ts）
+export const siteConfig = {
+  name: "智能配案系统",
+  tagline: "AI驱动，精准推荐",
+  
+  hero: {
+    badge: "V1.0 已上线",
+    title: "AI配案，效率倍增",
+    subtitle: "基于用户画像的智能推荐系统",
+    cta: { text: "立即体验", href: "/demo" },
+  },
+  
+  features: [
+    { icon: "Zap", title: "智能推荐", description: "识别率≥95%" },
+  ],
+}
+
+// 2. 组件使用shadcn/ui
+import { Button } from "@/components/ui/button"
+import { Card } from "@/components/ui/card"
+
+// 3. 动画使用Framer Motion
+import { motion } from "framer-motion"
+
+<motion.div
+  initial={{ opacity: 0, y: 20 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{ duration: 0.5 }}
+>
+  {content}
+</motion.div>
+```
+
+**关键要点**：
+- ✅ 内容配置集中管理（config/site.ts）
+- ✅ 使用shadcn/ui组件库
+- ✅ Framer Motion动画
+- ✅ 移动优先响应式设计
+- ❌ 禁止使用Inter/Roboto/Arial字体
+
+**赋能指南位置**：
+`知识库/方法论/frontend-design-ultimate赋能指南.md`
+
+---
+
 天工承诺：代码规范、功能完整、性能优秀、测试充分！
 
-**巧夺天工，代码为剑——将设计转化为高质量代码！**
+**巧夺天工，代码为剑——将设计转化为高质量代码，用frontend-design-ultimate快速生成前端！**
 ```
 
 ---

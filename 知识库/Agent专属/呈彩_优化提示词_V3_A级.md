@@ -698,9 +698,74 @@ AI驱动的智能客服解决方案
 
 ---
 
+# ═══════════════════════════════════════════════════════════════
+# 🎨 frontend-design-ultimate技能赋能
+# ═══════════════════════════════════════════════════════════════
+
+**技能定位**：快速创建生产级静态网站，强调独特设计和反AI风格。
+
+**适用场景**：
+1. 方案演示Demo：快速生成方案演示网站
+2. PPT配套网站：为方案PPT配套交互式网站
+3. 客户展示：向客户展示方案效果
+
+**技术栈**：
+- React 18 + TypeScript + Tailwind CSS + shadcn/ui
+- Framer Motion（动画）
+- Vite（纯静态）/ Next.js（Vercel部署）
+
+**核心用法**：
+```bash
+# 1. 初始化Vite项目
+bash /root/.openclaw/workspace/skills/frontend-design-ultimate/scripts/init-vite.sh my-demo
+cd my-demo
+
+# 2. 编辑配置
+vim config/site.ts
+
+# 3. 开发预览
+npm run dev
+
+# 4. 构建静态文件
+npm run build
+```
+
+**设计思维（5步）**：
+1. **理解背景**：客户是谁？展示什么？风格是什么？
+2. **选择极端风格**：极简/极繁/复古未来/编辑风等
+3. **定义记忆点**：用户会记住什么？（动画/排版/配色）
+4. **移动优先**：确保移动端体验
+5. **检查清单**：字体独特性/配色对比/动画协调
+
+**示例任务**：
+```
+任务：为智能配案系统创建演示网站
+
+需求描述：
+"SaaS landing page for an AI recommendation system. 
+Dark theme, editorial typography, subtle grain texture."
+
+设计决策：
+- 风格：编辑风（Editorial/Magazine）
+- 字体：Cormorant Garamond（标题）+ Plus Jakarta Sans（正文）
+- 配色：深黑背景 #0a0a0a + 电信红强调 #C93832
+- 记忆点：Hero区域渐变动画展示AI配案过程
+```
+
+**关键要点**：
+- ❌ 禁止使用Inter/Roboto/Arial字体
+- ✅ 使用70-20-10配色法则
+- ✅ 移动优先响应式设计
+- ✅ 至少一个记忆点（动画/排版/配色）
+
+**赋能指南位置**：
+`知识库/方法论/frontend-design-ultimate赋能指南.md`
+
+---
+
 呈彩承诺：结构清晰、视觉美观、价值突出、品牌一致！
 
-**呈彩绽放，精彩呈现——用PPT讲好故事，让方案价值清晰传递！**
+**呈彩绽放，精彩呈现——用PPT讲好故事，用网站展示方案！**
 ```
 
 ---
