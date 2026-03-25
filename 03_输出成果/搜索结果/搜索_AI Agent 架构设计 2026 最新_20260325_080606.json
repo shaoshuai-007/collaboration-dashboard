@@ -1,0 +1,43 @@
+{
+  "query": "AI Agent 架构设计 2026 最新",
+  "timestamp": "2026-03-25T08:06:04.470281",
+  "search_depth": "basic",
+  "results": [
+    {
+      "url": "https://gitcode.csdn.net/69b4b0650a2f6a37c5973184.html",
+      "title": "AI Agent 升级必备：8 种LLM 架构全解析，2026 年开发者必读趋势",
+      "content": "这8 种LLM 架构，本质上就是AI Agent 从“能聊”到“真能干”的进化路线图。GPT 奠基，MoE 提效，LRM/HRM 强推理，VLM 多模态，LAM 执行落地，SLM 轻量化，LCM",
+      "score": 0.9999943,
+      "raw_content": null
+    },
+    {
+      "url": "https://www.youtube.com/watch?v=ugVQtByRqA0",
+      "title": "2026年10大Agent框架深度横评| AI Agent Framework选型指南",
+      "content": "2026年10大Agent框架深度横评 | AI Agent Framework选型指南\nTGLTommy\n4280 subscribers\n33 likes\n776 views\n20 Mar 2026\n最近一段时间，Agent 框架的发展非常快，各类项目层出不穷。\n\n但对于真正做技术落地的人来说，难点从来不是“知道有哪些框架”，而是：\n面对这么多选择，如何建立一套清晰、理性的选型思路。\n\n所以这期视频，我没有单纯做热门框架罗列，而是尝试从更底层的视角，对 2026 年 10 大主流 Agent 框架进行一次系统分析。\n\n本期重点包括：\n\n- 主流 Agent 框架横向比较\n- 五大架构范式梳理\n- 四步选型决策树\n- “开源免费”背后的真实隐性成本\n\n我希望这期内容能够帮助大家在做 AI Agent、智能体系统、多智能体协作、工作流编排和大模型应用开发时，少走一些技术选型上的弯路。\n\n如果内容对你有帮助，欢迎订阅频道。\n也欢迎在评论区交流你目前使用的 Agent 框架，以及你在项目里遇到的真实问题。\n\n🔗 更多AI前沿技术课程持续更新中，欢迎订阅我的频道。 \n🌐 官方网站：TGLTommy.com \n💬 微信公众号【唐国梁TGLTommy】：https://www.tgltommy.com/p/official-wechat\n6 comments\n",
+      "score": 0.99991965,
+      "raw_content": null
+    },
+    {
+      "url": "https://cj.sina.com.cn/articles/view/7879848900/1d5acf3c401902ucls?froms=ggmp",
+      "title": "2026 AI Agent开发路线图(非常详细)，一文读懂前沿技术!-CSDN博客",
+      "content": "# 2026 AI Agent开发路线图(非常详细)，一文读懂前沿技术!-CSDN博客. 任何AI Agent开发都从这里开始。Python仍然是首选语言，但JavaScript/TypeScript的使用也在增长。除了基础编程能力，提示工程是关键技能。. | 层次名称 | 必须做 | 可选 | 工具/技术 |. | 编程与提示 | 编程语言（如基础语法）；脚本与自动化（如API请求、文件处理）；提示概念（如提示工程、思维链提示） | 异步编程；网络抓取；多 Agent提示；目标导向提示；自我批判与重试循环；反思循环 | Python（首选）；JavaScript；TypeScript；Shell/Bash；HTTP/JSON库（如requests in Python）；文件处理库（如os, pathlib）；异步库（如asyncio）；网络抓取库（如BeautifulSoup, Scrapy） |. | 层次名称 | 必须做 | 可选 | 工具/技术 |. | AI Agent基础 | AI Agent定义；自治 vs. 半自治 Agent； Agent组件（如LLM、工具、记忆、规划器） | Agent架构设计 | LangChain（ Agent框架）；LlamaIndex（数据索引与 Agent）；Haystack（搜索 Agent）；Semantic Kernel（微软 Agent框架）；AutoGen（多 Agent）；CrewAI（团队 Agent） |. | 层次名称 | 必须做 | 可选 | 工具/技术 |. | LLM调用 | LLM API调用；提示模板（如动态提示、条件提示） | 高级调用（如流式传输、批量/并行调用、回调/钩子）；提示链 | OpenAI API；Anthropic API；Google AI；Cohere；Grok；本地LLM（如Ollama, LM Studio）；LangChain的LLM集成模块 |. | 工具调用 | 工具集成（如自定义工具、预构建工具）；工具类型（如搜索、计算、代码执行） | 浏览器自动化；数据库查询；外部API集成 | LangChain Tools；LlamaIndex Tools；Hugging Face Agents；Selenium（浏览器）；SQLAlchemy（数据库）；各种API SDK |. | 层次名称 | 必须做 | 可选 | 工具/技术 |. | 检索增强生成（RAG） | 嵌入模型；向量存储；简单RAG | 高级RAG（如查询重写、重新排名）； AgentRAG | OpenAI Embeddings；Sentence Transformers；Cohere Embeddings；FAISS（本地向量库）；Pinecone/Weaviate/Chroma/Milvus（托管向量DB） |. | 规划与推理 | 规划技术（如ReAct, Plan-and-Solve）；推理引擎（如LLM作为推理器） | Tree of Thoughts；Graph-based Planning；自问自答；辩论式推理 | LangChain的ReAct链；自定义LLM推理模块 |. | 多 Agent系统 | Agent协作（如分层 Agent、辩论 Agent） | 合作 Agent | AutoGen；CrewAI；Multi-Agent LangChain |. | 用户界面 | UI框架；交互（如聊天界面） | 多模态输入；实时反馈 | Streamlit/Gradio/Chainlit（快速原型）；Flask/Django（后端UI）；React/Vue（前端UI） |. | 部署 | API部署；Agent托管服务 | 无服务器函数；向量DB托管 | FastAPI/Streamlit/Gradio（API/UI）；Docker；Kubernetes；Replit/Modal（托管）；Pinecone等向量DB服务 |.",
+      "score": 0.99991035,
+      "raw_content": null
+    },
+    {
+      "url": "https://www.youtube.com/watch?v=LenB-tCVrp8",
+      "title": "【2026最新版】保姆级AI Agent智能应用从0到1定制开发教程！通俗 ...",
+      "content": "【2026最新版】保姆级AI Agent智能应用从0到1定制开发教程！通俗易懂少走99%弯路！ 476 views · 2 months ago ...more",
+      "score": 0.9997695,
+      "raw_content": null
+    },
+    {
+      "url": "https://cloud.tencent.com/developer/article/2620087",
+      "title": "2026 企业级AI 技术栈全景：6 款企业智能体架构解析 - 腾讯云",
+      "content": "2026年企业AI技术栈进入\"通用+垂直\"组合时代，DeepMiner等垂直智能体解决业务深水区问题，Microsoft 365 Copilot提供基础办公支持。企业需构建组合式AI",
+      "score": 0.9996345,
+      "raw_content": null
+    }
+  ],
+  "answer": "In 2026, AI Agent architectures focus on multi-modal capabilities, advanced LLM integrations, and multi-agent systems for enhanced collaboration and efficiency. Key tools include LangChain, AutoGen, and Microsoft's Semantic Kernel. Python remains the primary development language."
+}
