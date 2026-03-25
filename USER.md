@@ -6,6 +6,8 @@
 - **Timezone:** Asia/Shanghai (GMT+8)
 - **邮箱:** sunzheng@tydic.com
 - **QQ:** 417895006
+- **发送邮箱:** 417895006@qq.com
+- **接收邮箱:** szideaf7@163.com
 
 ## 风格偏好
 - 雷厉风行、杀伐果断、直接高效
