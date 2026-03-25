@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>湖北电信AI智能配案系统 - 价值收益</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'PingFang SC', 'Microsoft YaHei', 'Helvetica Neue', sans-serif;
+            background: linear-gradient(135deg, #1A365D 0%, #2D4A6F 50%, #3182CE 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .header h1 {
+            color: #fff;
+            font-size: 42px;
+            font-weight: 700;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .header .subtitle {
+            color: #A0C4E8;
+            font-size: 18px;
+            letter-spacing: 2px;
+        }
+        
+        .header .divider {
+            width: 120px;
+            height: 4px;
+            background: linear-gradient(90deg, #3182CE, #fff);
+            margin: 20px auto 0;
+            border-radius: 2px;
+        }
+        
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+        
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 50px rgba(0,0,0,0.3);
+        }
+        
+        .card-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+        
+        .card-label {
+            color: #4A5568;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .card-value {
+            color: #1A365D;
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        
+        .card-change {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .card-change.positive {
+            background: #C6F6D5;
+            color: #276749;
+        }
+        
+        .card-change.negative {
+            background: #FED7D7;
+            color: #C53030;
+        }
+        
+        .card-description {
+            color: #718096;
+            font-size: 13px;
+            margin-top: 12px;
+        }
+        
+        /* 效率卡片 */
+        .card-efficiency .card-icon {
+            background: linear-gradient(135deg, #1A365D, #3182CE);
+            color: #fff;
+        }
+        
+        /* 转化率卡片 */
+        .card-conversion .card-icon {
+            background: linear-gradient(135deg, #3182CE, #63B3ED);
+            color: #fff;
+        }
+        
+        /* 人效卡片 */
+        .card-productivity .card-icon {
+            background: linear-gradient(135deg, #4A5568, #718096);
+            color: #fff;
+        }
+        
+        /* 收益卡片 */
+        .card-revenue .card-icon {
+            background: linear-gradient(135deg, #2F855A, #48BB78);
+            color: #fff;
+        }
+        
+        .chart-section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        
+        .chart-title {
+            color: #1A365D;
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 24px;
+            text-align: center;
+        }
+        
+        .chart-container {
+            position: relative;
+            height: 300px;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #A0C4E8;
+            font-size: 14px;
+        }
+        
+        /* 导出说明 */
+        .export-tip {
+            text-align: center;
+            margin-top: 20px;
+            color: #A0C4E8;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>价值收益</h1>
+            <p class="subtitle">湖北电信AI智能配案系统</p>
+            <div class="divider"></div>
+        </div>
+        
+        <div class="cards-grid">
+            <!-- 配案效率 -->
+            <div class="card card-efficiency">
+                <div class="card-icon">⚡</div>
+                <div class="card-label">配案效率</div>
+                <div class="card-value">6分钟</div>
+                <span class="card-change negative">↓ 80%</span>
+                <div class="card-description">从30分钟缩短至6分钟</div>
+            </div>
+            
+            <!-- 转化率 -->
+            <div class="card card-conversion">
+                <div class="card-icon">📈</div>
+                <div class="card-label">转化率</div>
+                <div class="card-value">55%</div>
+                <span class="card-change positive">↑ 57%</span>
+                <div class="card-description">从35%提升至55%</div>
+            </div>
+            
+            <!-- 人效提升 -->
+            <div class="card card-productivity">
+                <div class="card-icon">👥</div>
+                <div class="card-label">人效提升</div>
+                <div class="card-value">2倍</div>
+                <span class="card-change positive">↑ 100%</span>
+                <div class="card-description">工作效率翻倍提升</div>
+            </div>
+            
+            <!-- 年度收益 -->
+            <div class="card card-revenue">
+                <div class="card-icon">💰</div>
+                <div class="card-label">年度收益</div>
+                <div class="card-value">500万+</div>
+                <span class="card-change positive">★</span>
+                <div class="card-description">预计年度收益超过500万</div>
+            </div>
+        </div>
+        
+        <!-- 图表区域 -->
+        <div class="chart-section">
+            <div class="chart-title">核心指标对比</div>
+            <div class="chart-container">
+                <canvas id="comparisonChart"></canvas>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>数据来源：湖北电信AI智能配案系统运营数据</p>
+        </div>
+        
+        <div class="export-tip">
+            <p>提示：按 Ctrl+P 或 Cmd+P 导出为PDF/PNG</p>
+        </div>
+    </div>
+    
+    <script>
+        // 麦肯锡配色
+        const mckinseyColors = {
+            darkBlue: '#1A365D',
+            gray: '#4A5568',
+            blue: '#3182CE'
+        };
+        
+        // 创建对比柱状图
+        const ctx = document.getElementById('comparisonChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['配案效率 (分钟)', '转化率 (%)', '人效 (倍)', '年度收益 (万)'],
+                datasets: [
+                    {
+                        label: '优化前',
+                        data: [30, 35, 1, 0],
+                        backgroundColor: mckinseyColors.gray,
+                        borderColor: mckinseyColors.gray,
+                        borderWidth: 1,
+                        borderRadius: 6
+                    },
+                    {
+                        label: '优化后',
+                        data: [6, 55, 2, 500],
+                        backgroundColor: mckinseyColors.blue,
+                        borderColor: mckinseyColors.blue,
+                        borderWidth: 1,
+                        borderRadius: 6
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: {
+                            font: {
+                                size: 14,
+                                family: "'PingFang SC', 'Microsoft YaHei', sans-serif"
+                            },
+                            color: mckinseyColors.darkBlue,
+                            padding: 20
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: {
+                            display: false
+                        },
+                        ticks: {
+                            font: {
+                                size: 12,
+                                family: "'PingFang SC', 'Microsoft YaHei', sans-serif"
+                            },
+                            color: mckinseyColors.gray
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: 'rgba(74, 85, 104, 0.1)'
+                        },
+                        ticks: {
+                            font: {
+                                size: 12,
+                                family: "'PingFang SC', 'Microsoft YaHei', sans-serif"
+                            },
+                            color: mckinseyColors.gray
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
