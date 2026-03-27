@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>南乔文件中心</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary: #C93832;
+            --secondary: #006EBD;
+            --bg: #f5f5f5;
+            --card: #ffffff;
+            --text: #333333;
+            --text-light: #666666;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            padding: 20px 0;
+        }
+        
+        .header h1 {
+            font-size: 22px;
+            color: var(--primary);
+            margin-bottom: 6px;
+        }
+        
+        .header p {
+            color: var(--text-light);
+            font-size: 13px;
+        }
+        
+        .file-list {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .file-card {
+            background: var(--card);
+            border-radius: 12px;
+            padding: 14px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .file-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary), #e85a5a);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+        
+        .file-info {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .file-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .file-meta {
+            font-size: 11px;
+            color: var(--text-light);
+            margin-top: 3px;
+        }
+        
+        .btn-group {
+            display: flex;
+            gap: 4px;
+            flex-shrink: 0;
+        }
+        
+        .copy-btn, .download-btn {
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .copy-btn {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .download-btn {
+            background: var(--secondary);
+            color: white;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .toast {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 14px 28px;
+            border-radius: 8px;
+            font-size: 14px;
+            z-index: 1000;
+            display: none;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 25px;
+            color: var(--text-light);
+            font-size: 12px;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-light);
+        }
+        
+        .refresh-btn {
+            background: var(--secondary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 13px;
+            margin-bottom: 15px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📁 南乔文件中心</h1>
+        <p>点击复制链接或直接下载</p>
+    </div>
+    
+    <div style="text-align:center;">
+        <button class="refresh-btn" onclick="loadFiles()">🔄 刷新列表</button>
+    </div>
+    
+    <div class="file-list" id="fileList">
+        <div class="loading">加载中...</div>
+    </div>
+    
+    <div class="toast" id="toast">链接已复制！</div>
+    
+    <div class="footer">
+        <p>🌿 南乔智能助手</p>
+    </div>
+    
+    <script>
+        const baseUrl = 'http://120.48.169.242';
+        
+        // 文件扩展名对应的图标
+        const iconMap = {
+            'md': '📄',
+            'doc': '📝',
+            'docx': '📝',
+            'pdf': '📕',
+            'xlsx': '📊',
+            'xls': '📊',
+            'csv': '📊',
+            'ppt': '📽️',
+            'pptx': '📽️',
+            'txt': '📃',
+            'png': '🖼️',
+            'jpg': '🖼️',
+            'jpeg': '🖼️',
+            'gif': '🖼️',
+            'zip': '📦',
+            'rar': '📦'
+        };
+        
+        function getIcon(filename) {
+            const ext = filename.split('.').pop().toLowerCase();
+            return iconMap[ext] || '📄';
+        }
+        
+        function formatSize(size) {
+            if (size < 1024) return size + 'B';
+            if (size < 1024 * 1024) return (size / 1024).toFixed(1) + 'KB';
+            return (size / 1024 / 1024).toFixed(1) + 'MB';
+        }
+        
+        // 预定义文件列表（当前目录已有的文件）
+        const knownFiles = [
+            {name: '中国电信vs中国移动_2025年业绩对比报告.md', size: 4727},
+            {name: '湖北电信AI智能配案需求文档_V1.0_20260324.md', size: 20000},
+            {name: '玉衡_项目风险预警报告_2026-03-25.md', size: 6000},
+            {name: '九星智囊团工作状态评估报告_2026-03-26.md', size: 8000},
+            {name: 'Agent专家级赋能完成报告.md', size: 7000},
+            {name: 'AI发展趋势报告_2025-2026.docx', size: 40000}
+        ];
+        
+        function renderFiles(files) {
+            const list = document.getElementById('fileList');
+            if (files.length === 0) {
+                list.innerHTML = '<div class="loading">暂无文件</div>';
+                return;
+            }
+            
+            let html = '';
+            files.forEach(f => {
+                const icon = getIcon(f.name);
+                const url = baseUrl + '/' + encodeURIComponent(f.name);
+                html += `
+                    <div class="file-card">
+                        <div class="file-icon">${icon}</div>
+                        <div class="file-info">
+                            <div class="file-name">${f.name}</div>
+                            <div class="file-meta">${formatSize(f.size)}</div>
+                        </div>
+                        <div class="btn-group">
+                            <button class="copy-btn" onclick="copyLink('${url}')">复制</button>
+                            <a href="${url}" class="download-btn" download>下载</a>
+                        </div>
+                    </div>
+                `;
+            });
+            list.innerHTML = html;
+        }
+        
+        function loadFiles() {
+            // 使用预定义列表（避免跨域问题）
+            renderFiles(knownFiles);
+        }
+        
+        function copyLink(url) {
+            navigator.clipboard.writeText(url).then(function() {
+                showToast('链接已复制！');
+            }, function(err) {
+                showToast('复制失败，请长按复制');
+            });
+        }
+        
+        function showToast(msg) {
+            var toast = document.getElementById('toast');
+            toast.textContent = msg;
+            toast.style.display = 'block';
+            setTimeout(function() {
+                toast.style.display = 'none';
+            }, 1500);
+        }
+        
+        // 页面加载时渲染
+        loadFiles();
+    </script>
+</body>
+</html>
