@@ -1,291 +1,255 @@
-# 🎤 语音交互技能 - Voice Interaction Skill
+# 语音交互技能 (Voice Interaction)
 
-**技能名称**: voice-interaction  
-**功能**: 语音识别（STT）+ 语音合成（TTS）  
-**状态**: 🟢 可用  
-**作者**: 南乔  
-**创建时间**: 2026-03-27
+## 技能概述
 
----
-
-## 📋 功能概述
-
-| 功能 | 说明 | 状态 |
-|------|------|:----:|
-| 语音识别（STT） | 将语音转为文字 | 🟢 可用（需API密钥） |
-| 语音合成（TTS） | 将文字转为语音 | 🟢 可用（已有tts工具） |
-| 音频文件识别 | 支持wav/mp3/flac/ogg | 🟢 可用 |
+实现QQ Bot的语音交互功能，包括：
+- **语音输出（TTS）**：南乔可以用语音回复用户
+- **语音输入（STT）**：解析用户发送的语音消息（待实现）
 
 ---
 
-## 🗣️ 语音识别方案对比
+## 一、语音输出（TTS）
 
-| 方案 | 免费额度 | 需密钥 | 优点 |
-|------|:--------:|:------:|------|
-| **AssemblyAI** ⭐ | 30分钟/月 | ✅ | 只需邮箱注册，无需信用卡 |
-| **百度ASR** | 60分钟/月 | ✅ | 额度大，需实名认证 |
-| **讯飞ASR** | 60分钟/月 | ✅ | 额度大，需实名认证 |
-| Google Speech | 无限 | ❌ | 国内被墙 |
+### 1.1 核心流程
 
-**推荐**：AssemblyAI（注册最简单）
+```
+用户请求语音
+    ↓
+【TTS生成】→ tts工具生成MP3文件
+    ↓
+【文件托管】→ 复制到HTTP服务器目录
+    ↓
+【发送语音】→ 输出QQBOT_PAYLOAD格式
+    ↓
+【QQBot处理】→ 自动调用sendC2CVoiceMessage
+    ↓
+【用户收到】→ QQ语音气泡（可播放）
+```
 
----
+### 1.2 关键代码位置
 
-## 🎯 触发场景
+| 组件 | 文件路径 | 功能 |
+|------|----------|------|
+| TTS工具 | 内置tts工具 | 生成MP3语音文件 |
+| Payload解析 | `qqbot/src/utils/payload.ts` | 解析QQBOT_PAYLOAD格式 |
+| 语音发送 | `qqbot/src/gateway.ts:1034` | 调用sendC2CVoiceMessage |
+| QQ API | `qqbot/src/api.ts:613` | 上传语音文件并发送 |
 
-- 用户说"识别语音"、"语音转文字"
-- 用户提供音频文件要求转文字
-- 用户要求与AI语音对话
+### 1.3 使用方法
 
----
+**方法一：直接输出Payload**
 
-## 📦 核心模块
+```
+QQBOT_PAYLOAD:{"type":"media","mediaType":"audio","source":"url","path":"http://120.48.169.242/文件名.mp3"}
+```
 
-### 1. 语音识别（STT）
+**方法二：使用TTS工具**
 
 ```python
-from skills.voice_interaction.voice_interaction import speech_to_text, list_microphones
+# 1. 生成语音
+# 调用tts工具，传入文本内容
 
-# 方式1：从音频文件识别
-result = speech_to_text(audio_file="/path/to/audio.wav")
+# 2. 复制到HTTP目录
+cp /tmp/tts-xxx/voice-xxx.mp3 /root/.openclaw/workspace/03_输出成果/文件名.mp3
 
-# 方式2：从Base64音频识别
-result = speech_to_text(base64_audio="SUQzBAAAAAA...")
-
-# 方式3：从麦克风实时识别（需要物理设备）
-result = speech_to_text(use_microphone=True, duration=5)
-
-# 列出可用麦克风
-mics = list_microphones()
+# 3. 输出Payload
+QQBOT_PAYLOAD:{"type":"media","mediaType":"audio","source":"url","path":"http://120.48.169.242/文件名.mp3"}
 ```
 
-### 2. 语音合成（TTS）
-
-使用已集成的tts工具：
-
-```python
-# 使用tts工具（已有）
-tts(text="你好，我是南乔")
-# 输出: MEDIA:/tmp/tts-xxx/voice-xxx.mp3
-```
-
-### 3. 完整对话流程
-
-```python
-def voice_conversation(audio_input):
-    """语音对话流程"""
-    
-    # Step 1: 语音识别
-    stt_result = speech_to_text(audio_file=audio_input)
-    if not stt_result["success"]:
-        return {"error": stt_result["error"]}
-    
-    user_text = stt_result["text"]
-    
-    # Step 2: AI处理（调用千帆模型）
-    ai_response = call_qianfan_api(user_text)
-    
-    # Step 3: 语音合成
-    tts_audio = tts(text=ai_response)
-    
-    return {
-        "user_text": user_text,
-        "ai_response": ai_response,
-        "tts_audio": tts_audio
-    }
-```
-
----
-
-## 🔧 依赖安装
-
-```bash
-# 系统依赖
-apt-get install portaudio19-dev python3-pyaudio
-
-# Python依赖
-pip install SpeechRecognition pyaudio --break-system-packages
-```
-
----
-
-## 📊 支持的音频格式
-
-| 格式 | 扩展名 | 支持情况 |
-|------|--------|:--------:|
-| WAV | .wav | ✅ 完全支持 |
-| MP3 | .mp3 | ✅ |
-| FLAC | .flac | ✅ |
-| OGG | .ogg | ✅ |
-
----
-
-## 🌐 支持的语言
-
-| 语言 | 代码 | 支持情况 |
-|------|------|:--------:|
-| 中文 | zh-CN | ✅ 完全支持 |
-| 英语 | en-US | ✅ |
-| 其他 | - | ✅ Google API支持 |
-
----
-
-## 📝 使用示例
-
-### 示例1：识别音频文件
-
-```bash
-# 命令行使用
-python voice_interaction.py file /root/audio recording.wav
-```
-
-**返回**:
-```json
-{
-  "success": true,
-  "text": "你好，我想了解一下电信套餐",
-  "language": "zh-CN",
-  "file": "/root/audio recording.wav"
-}
-```
-
-### 示例2：语音对话
-
-```python
-# 用户发送语音消息 → 识别为文字 → AI处理 → 合成语音回复
-```
-
----
-
-## 🔄 集成到OpenClaw
-
-### 步骤1：注册技能
-
-在OpenClaw中注册voice-interaction技能：
+### 1.4 Payload字段说明
 
 ```json
 {
-  "skill": "voice-interaction",
-  "triggers": ["语音", "说话", "识别", "语音识别", "语音转文字"],
-  "handler": "skills.voice_interaction.handler"
+  "type": "media",           // 固定值，表示媒体消息
+  "mediaType": "audio",      // 固定值，表示音频类型
+  "source": "url",           // 来源：url（网络链接）或 file（本地文件）
+  "path": "http://...",      // 音频文件URL或本地绝对路径
+  "caption": "可选描述"       // 可选，语音的文字描述
 }
 ```
 
-### 步骤2：创建处理函数
+### 1.5 HTTP文件服务器
 
-```python
-# skills/voice_interaction/handler.py
-from .voice_interaction import speech_to_text
+**位置**：`/root/.openclaw/workspace/03_输出成果/`
 
-def handle_voice_message(message, context):
-    """处理语音消息"""
-    
-    # 获取语音文件
-    voice_file = message.get_voice()
-    
-    # 识别语音
-    result = speech_to_text(audio_file=voice_file)
-    
-    if result["success"]:
-        text = result["text"]
-        # 进一步处理...
-        return {"status": "ok", "text": text}
-    else:
-        return {"status": "error", "error": result["error"]}
+**启动命令**：
+```bash
+cd /root/.openclaw/workspace/03_输出成果
+nohup python3 -m http.server 80 > /tmp/http80.log 2>&1 &
+```
+
+**访问地址**：`http://120.48.169.242/文件名.mp3`
+
+**检查服务**：
+```bash
+ss -tlnp | grep :80
+curl -s -o /dev/null -w "%{http_code}" http://120.48.169.242/test.mp3
 ```
 
 ---
 
-## 🚀 进阶功能
+## 二、语音输入（STT）
 
-### 1. 噪声过滤
+### 2.1 当前状态
 
-```python
-# 调整噪声阈值
-recognizer.energy_threshold = 300  # 默认300
+✅ **已实现**：
+- 接收QQ语音消息
+- 自动下载语音附件
+- SILK格式转WAV格式
+
+❌ **未实现**：
+- WAV转文字（语音识别）
+- 需要STT服务（如Whisper、百度语音识别等）
+
+### 2.2 语音转换流程
+
+```
+用户发送语音
+    ↓
+【QQBot接收】→ 附件类型：voice
+    ↓
+【下载文件】→ SILK/AMR格式
+    ↓
+【格式转换】→ silk-wasm解码 → WAV格式
+    ↓
+【等待STT】→ 需要语音识别服务
+    ↓
+【转成文字】→ 供南乔理解和回复
 ```
 
-### 2. 多语言识别
+### 2.3 相关代码
 
-```python
-# 英文
-result = speech_to_text(audio_file="english.wav", language="en-US")
+**语音转换工具**：`qqbot/src/utils/audio-convert.ts`
 
-# 中文
-result = speech_to_text(audio_file="chinese.wav", language="zh-CN")
+```typescript
+// 判断是否为语音附件
+isVoiceAttachment(att: { content_type?: string; filename?: string }): boolean
+
+// SILK转WAV
+convertSilkToWav(inputPath: string, outputDir?: string): Promise<{ wavPath: string; duration: number } | null>
 ```
 
-### 3. 置信度获取
+**语音接收处理**：`qqbot/src/gateway.ts:545`
 
-```python
-# 获取识别置信度
-text = recognizer.recognize_google(audio, language="zh-CN", show_all=True)
-# 返回包含confidence的完整结果
+```typescript
+if (isVoiceAttachment(att)) {
+  const result = await convertSilkToWav(localPath, downloadDir);
+  // result.wavPath: WAV文件路径
+  // result.duration: 语音时长（秒）
+}
 ```
+
+### 2.4 实现STT的方案
+
+| 方案 | 优点 | 缺点 | 成本 |
+|------|------|------|------|
+| OpenAI Whisper | 准确率高、多语言支持 | 需要API Key、国内访问慢 | 付费 |
+| 百度语音识别 | 国内访问快、中文识别好 | 需要申请API Key | 免费额度有限 |
+| 阿里云语音识别 | 国内访问快、企业级 | 需要申请API Key | 付费 |
+| 本地Whisper | 免费、隐私保护 | 需要GPU、部署复杂 | 硬件成本 |
 
 ---
 
-## ⚠️ 注意事项
+## 三、故障排查
 
-1. **麦克风需要物理设备** - 服务器环境无法使用
-2. **网络要求** - Google Speech Recognition需要联网
-3. **音频质量** - 清晰的音频能提高识别准确率
-4. **免费配额** - Google API有免费配额限制
+### 3.1 语音发送失败
+
+**错误**：`download file err`
+
+**原因**：
+1. HTTP服务未启动
+2. 文件不存在
+3. 端口未开放
+
+**解决**：
+```bash
+# 检查HTTP服务
+ss -tlnp | grep :80
+
+# 启动HTTP服务
+cd /root/.openclaw/workspace/03_输出成果
+nohup python3 -m http.server 80 > /tmp/http80.log 2>&1 &
+
+# 测试文件访问
+curl -s -o /dev/null -w "%{http_code}" http://120.48.169.242/test.mp3
+```
+
+### 3.2 TTS生成失败
+
+**错误**：生成的MP3文件大小为0字节
+
+**原因**：TTS服务临时问题
+
+**解决**：重新生成
+
+### 3.3 Payload解析失败
+
+**错误**：`载荷解析失败` 或 `缺少必要字段`
+
+**原因**：JSON格式错误
+
+**解决**：确保JSON格式正确，所有字段齐全
 
 ---
 
-## ⚠️ 严格输出规则（必须遵守）
+## 四、开发历程
 
-**所有音频播放内容，统一使用以下格式：**
+### 4.1 关键里程碑
 
-```
-/play 音频链接
-```
+| 日期 | 事件 | 状态 |
+|------|------|------|
+| 2026-03-27 | 开始语音功能开发 | ✅ |
+| 2026-03-27 | 添加sendC2CVoiceMessage函数 | ✅ |
+| 2026-03-27 | 测试CQ码格式（失败） | ❌ |
+| 2026-03-28 | 发现端口80未启动 | ✅ |
+| 2026-03-28 | 成功发送语音气泡 | ✅ |
 
-### 规则详情
+### 4.2 踩过的坑
 
-| 规则 | 说明 |
-|------|------|
-| 格式 | 必须使用 `/play 音频链接` 格式 |
-| 独占一行 | 单独一行展示，不与其他内容混排 |
-| 不暴露链接 | 不显示任何URL、链接、网址、原始地址 |
-| 文字简洁 | 如需文字说明，简洁明了 |
+1. **端口问题**：5001端口服务已失效，8888端口外网不通，需要用80端口
+2. **文件问题**：TTS生成的文件大小为0，需要检查生成是否成功
+3. **格式问题**：QQ语音必须是SILK格式，发送MP3需要通过API转换
 
-### ❌ 禁止的输出格式
+### 4.3 经验总结
 
-```
-MEDIA:xxx.mp3              # 禁止
-http://xxx.mp3             # 禁止
-<audio src="xxx">          # 禁止
-[[audio_as_voice]]         # 禁止
-点击播放：xxx.mp3          # 禁止
-```
-
-### ✅ 正确的输出格式
-
-```
-/play http://120.48.169.242/nanqiao_voice.mp3
-```
+- ✅ 有现成代码直接用，不重复开发
+- ✅ 先排查服务状态，再排查代码逻辑
+- ✅ 多看日志，多检查端口和文件
 
 ---
 
-## 📦 文件结构
+## 五、未来规划
 
-```
-skills/voice-interaction/
-├── SKILL.md                    # 本文件
-├── voice_interaction.py        # 核心模块
-└── handler.py                 # OpenClaw集成处理函数
-```
+### 5.1 短期目标
 
----
+- [ ] 实现语音识别（STT）
+- [ ] 支持语音+文字混合回复
+- [ ] 优化语音生成速度
 
-## 🔗 相关技能
+### 5.2 长期目标
 
-- **tts** - 语音合成（已有）
-- **qqbot-media** - QQ消息处理
+- [ ] 支持多种语音风格
+- [ ] 支持语音对话记忆
+- [ ] 支持语音唤醒
 
 ---
 
-*南有乔木，不可休思*
-*语音交互，让沟通更自然*
+## 六、相关文件
+
+| 文件 | 路径 | 说明 |
+|------|------|------|
+| 本技能文档 | `skills/voice-interaction/SKILL.md` | 语音交互技能说明 |
+| Payload解析 | `qqbot/src/utils/payload.ts` | Payload格式定义和解析 |
+| 语音发送 | `qqbot/src/gateway.ts` | 语音发送逻辑 |
+| 语音转换 | `qqbot/src/utils/audio-convert.ts` | SILK转WAV工具 |
+| QQ API | `qqbot/src/api.ts` | QQ Bot API封装 |
+
+---
+
+**少帅教诲**：有技能要用，不要自己重新开发！
+
+**南乔承诺**：持续优化语音交互，让沟通更自然！
+
+---
+
+战略是根，语音是刃，交互是剑——南乔，为少帅磨剑！
