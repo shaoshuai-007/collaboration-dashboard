@@ -96,12 +96,9 @@ curl -s -o /dev/null -w "%{http_code}" http://120.48.169.242/test.mp3
 - 接收QQ语音消息
 - 自动下载语音附件
 - SILK格式转WAV格式
+- **语音识别（Groq Whisper API）** ✅ 新增
 
-❌ **未实现**：
-- WAV转文字（语音识别）
-- 需要STT服务（如Whisper、百度语音识别等）
-
-### 2.2 语音转换流程
+### 2.2 语音识别流程
 
 ```
 用户发送语音
@@ -112,41 +109,52 @@ curl -s -o /dev/null -w "%{http_code}" http://120.48.169.242/test.mp3
     ↓
 【格式转换】→ silk-wasm解码 → WAV格式
     ↓
-【等待STT】→ 需要语音识别服务
+【语音识别】→ Groq Whisper API → 文字 ✅ 已实现
     ↓
-【转成文字】→ 供南乔理解和回复
+【南乔理解】→ 识别文字加入消息内容
 ```
 
-### 2.3 相关代码
+### 2.3 配置方法
 
-**语音转换工具**：`qqbot/src/utils/audio-convert.ts`
+**设置 Groq API Key**：
+```bash
+export GROQ_API_KEY="your-api-key"
+```
+
+**获取 API Key**：
+1. 访问 https://console.groq.com/
+2. 注册/登录账号
+3. 进入 API Keys 页面创建密钥
+4. 免费额度：每分钟30次请求，足够日常使用
+
+### 2.4 相关代码
+
+**语音识别服务**：`qqbot/src/utils/asr-service.ts`
 
 ```typescript
-// 判断是否为语音附件
-isVoiceAttachment(att: { content_type?: string; filename?: string }): boolean
+// 检查ASR服务状态
+checkASRService(): { available: boolean; service: string; message: string }
 
-// SILK转WAV
-convertSilkToWav(inputPath: string, outputDir?: string): Promise<{ wavPath: string; duration: number } | null>
+// 语音识别
+transcribeAudio(audioPath: string): Promise<TranscriptionResult>
 ```
 
-**语音接收处理**：`qqbot/src/gateway.ts:545`
+**语音接收处理**：`qqbot/src/gateway.ts:578`
 
 ```typescript
 if (isVoiceAttachment(att)) {
+  // 1. SILK转WAV
   const result = await convertSilkToWav(localPath, downloadDir);
-  // result.wavPath: WAV文件路径
-  // result.duration: 语音时长（秒）
+  
+  // 2. 语音识别
+  const asrResult = await transcribeAudio(result.wavPath);
+  
+  // 3. 识别文字加入消息内容
+  if (asrResult.success && asrResult.text) {
+    // 用户发送语音："你好" → 南乔收到文字消息
+  }
 }
 ```
-
-### 2.4 实现STT的方案
-
-| 方案 | 优点 | 缺点 | 成本 |
-|------|------|------|------|
-| OpenAI Whisper | 准确率高、多语言支持 | 需要API Key、国内访问慢 | 付费 |
-| 百度语音识别 | 国内访问快、中文识别好 | 需要申请API Key | 免费额度有限 |
-| 阿里云语音识别 | 国内访问快、企业级 | 需要申请API Key | 付费 |
-| 本地Whisper | 免费、隐私保护 | 需要GPU、部署复杂 | 硬件成本 |
 
 ---
 
